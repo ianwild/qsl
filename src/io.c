@@ -13,7 +13,7 @@ void printc (uint8_t ch)
   putchar (ch);
 }
 
-obj read (obj *argv)
+obj fn_read (obj *argv)
 {
   uint8_t ch1;
   while ((ch1 = readc ()) <= ' ')
@@ -27,7 +27,7 @@ static void print1 (obj o)
   printf ("%d\n", o);
 }
 
-obj print (obj *argv)
+obj fn_print (obj *argv)
 {
   uint16_t argc = *argv++;
   while (argc--)

@@ -1,12 +1,13 @@
 #ifndef QSL_TYPE_H
 #define QSL_TYPE_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 enum typecode
 {
   unallocated_type,
-  system_fn_type,
+  rom_symbol_type,
   closure_type,
   symbol_type,
   cons_type,
@@ -30,6 +31,7 @@ enum errcode
 {
   no_error,
   bad_type,
+  bad_obj,
   bad_argc,
   div_by_zero
 };
@@ -54,24 +56,22 @@ typedef struct
 
 typedef obj (*built_in_fn) (obj *args);
 
+
 typedef struct
 {
-  built_in_fn     fn;
-  byte_object name;
-} fn_descriptor;
-
+  const uint8_t     *name;
+  const built_in_fn  global_fn;
+  const bool         is_fexpr;
+} rom_object;
 
 typedef struct
 {
   uint8_t flags;
-  uint8_t type;
+  uint8_t xtype;
 
   union
   {
     // switch type in
-    // case system_fn_type:
-    fn_descriptor *system_fn_val;
-
     // case closure_type:
     struct
     {
@@ -82,8 +82,8 @@ typedef struct
     // case symbol_type:
     struct
     {
-      byte_object *spelling;
-      obj          global_fn;
+      uint8_t *spelling;
+      obj      global_fn;
     } symbol_val;
 
     // case cons_type:
@@ -97,17 +97,11 @@ typedef struct
     int32_t int_val;
 
     // case string_type:
-    struct
-    {
-      byte_object *spelling;
-    } string_val;
+    uint8_t *string_val;
 
     // case array_type:
     // case environment_type:
-    struct
-    {
-      word_object *body;
-    } array_val;
+    obj  *array_val;
   } u;
 } objhdr;
 

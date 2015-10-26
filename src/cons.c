@@ -4,10 +4,9 @@
 
 static objhdr *get_cons_header (obj o)
 {
-  objhdr *p = get_header (o);
-  if (p -> type != cons_type)
-    error (bad_type);
-  return (p);
+  if (get_type (o) != cons_type)
+    throw_error (bad_type);
+  return (get_header (o));
 }
 
 static obj create_cons (obj car, obj cdr)
@@ -22,7 +21,7 @@ static obj create_cons (obj car, obj cdr)
 obj fn_car (obj *argv)
 {
   if (argv [0] != 1)
-    error (bad_argc);
+    throw_error (bad_argc);
   obj cons_cell = argv [1];
   if (cons_cell == obj_NIL)
     return (obj_NIL);
@@ -33,7 +32,7 @@ obj fn_car (obj *argv)
 obj fn_cdr (obj *argv)
 {
   if (argv [0] != 1)
-    error (bad_argc);
+    throw_error (bad_argc);
   obj cons_cell = argv [1];
   if (cons_cell == obj_NIL)
     return (obj_NIL);
@@ -44,7 +43,7 @@ obj fn_cdr (obj *argv)
 obj fn_cons (obj *argv)
 {
   if (argv [0] != 2)
-    error (bad_argc);
+    throw_error (bad_argc);
   return (create_cons (argv [1], argv [2]));
 }
 
@@ -70,7 +69,7 @@ obj fn_list (obj *argv)
 obj fn_rplca (obj *argv)
 {
   if (argv [0] != 2)
-    error (bad_argc);
+    throw_error (bad_argc);
   obj cons_cell = argv [1];
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.car_cell = argv [2]);
@@ -79,7 +78,7 @@ obj fn_rplca (obj *argv)
 obj fn_rplcd (obj *argv)
 {
   if (argv [0] != 2)
-    error (bad_argc);
+    throw_error (bad_argc);
   obj cons_cell = argv [1];
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.cdr_cell = argv [2]);

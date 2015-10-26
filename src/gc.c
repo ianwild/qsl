@@ -1,10 +1,11 @@
 #include "obj.h"
+#include "rom-symbols.h"
 
 static obj next_to_sweep;
 
 static void want_obj (obj o)
 {
-  if (o > LAST_POSSIBLE_OBJECT)
+  if (o > last_allocated_object)
     return;
   objhdr *p = get_header (o);
   if (o < next_to_sweep && (p -> flags & gc_wanted) == 0)
@@ -22,7 +23,7 @@ static void compact_string_space (void)
 
 void do_gc (void)
 {
-  next_to_sweep = obj_NIL;
+  next_to_sweep = FIRST_RAM_OBJ;
 
   mark_roots ();
 
@@ -34,7 +35,7 @@ void do_gc (void)
     if ((p -> flags & (gc_wanted | gc_swept)) == gc_wanted)
     {
       p -> flags |= gc_swept;
-      switch (p -> type)
+      switch (p -> xtype)
       {
       case closure_type:
         want_obj (p -> u.closure_val.environment);
@@ -49,6 +50,15 @@ void do_gc (void)
         want_obj (p -> u.cons_val.car_cell);
         want_obj (p -> u.cons_val.cdr_cell);
         break;
+
+      case array_type:
+      {
+	obj *q = p -> u.array_val;
+	uint16_t len = *q++;
+	while (len--)
+	  want_obj (*q++);
+	break;
+      }
       }
     }
   }
@@ -67,7 +77,7 @@ void do_gc (void)
       high_water_mark = i;
     }
     else
-      p -> type = unallocated_type;
+      p -> xtype = unallocated_type;
   }
 
   last_allocated_object = high_water_mark;

@@ -3,7 +3,7 @@
 
 obj current_environment;
 
-obj eval (obj *argv)
+obj fn_eval (obj *argv)
 {
   switch (*argv)
   {
@@ -12,7 +12,7 @@ obj eval (obj *argv)
   case 2:
     return (eval_internal (argv [1], argv [2]));
   default:
-    error (bad_argc);
+    throw_error (bad_argc);
     return (obj_NIL);
   }
 }
@@ -25,4 +25,9 @@ obj eval_internal (obj expr, obj env)
 obj eval_here (obj expr)
 {
   return (eval_internal (expr, current_environment));
+}
+
+obj fn_apply (obj *argv)
+{
+  return (*argv);
 }

@@ -5,10 +5,9 @@ static int32_t get_int_val (obj o)
 {
   if (o >= FIRST_SMALL_INT)
     return ((int32_t) o - (int32_t) OBJ_ZERO);
-  objhdr *p = get_header (o);
-  if (p -> type != int_type)
-    error (bad_type);
-  return (p -> u.int_val);
+  if (get_type (o) != int_type)
+    throw_error (bad_type);
+  return (get_header (o) -> u.int_val);
 }
 
 static obj create_int (int32_t val)
@@ -44,7 +43,7 @@ obj fn_minus (obj *args)
 {
   uint16_t argc = *args++;
   if (argc == 0)
-    error (bad_argc);
+    throw_error (bad_argc);
   int32_t ans = *args++;
   if (argc == 1)
     return (create_int (- ans));
@@ -57,19 +56,19 @@ obj fn_divide (obj *args)
 {
   uint16_t argc = *args++;
   if (argc == 0)
-    error (bad_argc);
+    throw_error (bad_argc);
   int32_t ans = *args++;
   if (argc == 1)
   {
     if (ans == 0)
-      error (div_by_zero);
+      throw_error (div_by_zero);
     return (create_int (1 / ans));
   }
   while (--argc)
   {
     int32_t factor = get_int_val (*args++);
     if (factor == 0)
-      error (div_by_zero);
+      throw_error (div_by_zero);
     ans /= factor;
   }
   return (create_int (ans));
