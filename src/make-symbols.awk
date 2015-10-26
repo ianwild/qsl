@@ -19,7 +19,7 @@ NF && ! /^#/ {
 }
 
 END {
-    print "static const uint8_t bytes [] = {";
+    print "static const PROGMEM uint8_t bytes [] = {";
     idx = 0;
     for (i = 0; i < next_sym; i += 1) {
 	lisp_name = symbol_table [i];
@@ -34,7 +34,7 @@ END {
     }
     print "};\n";
 
-    print "static const rom_object rom_symbols [] = {";
+    print "static const PROGMEM rom_object rom_symbols [] = {";
     for (i = 0; i < next_sym; i += 1) {
 	lisp_name = symbol_table [i];
 	spelling = name_offset [lisp_name];

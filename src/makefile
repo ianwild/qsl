@@ -13,7 +13,7 @@ GENERATED += qsl
 GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 
-CFLAGS = -Os -flto
+CFLAGS = -Os -flto -DUSE_STDIO
 LDFLAGS = -Os -flto
 
 qsl:	$(OBJECTS)

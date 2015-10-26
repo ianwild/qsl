@@ -1,4 +1,10 @@
+#if USE_STDIO
 #include <stdio.h>
+#define PROGMEM
+#else
+#include <Arduino.h>
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,23 +23,6 @@ static objhdr *header_table;
 obj last_allocated_object;
 
 #include "rom-symbols.ci"
-
-void (throw_error) (enum errcode e, char *file, int line)
-{
-  char *msg = "weird";
-  switch (e)
-  {
-#define MSG(x) case x: msg = #x; break
-    MSG (no_error);
-    MSG (bad_type);
-    MSG (bad_obj);
-    MSG (bad_argc);
-    MSG (div_by_zero);
-#undef MSG
-  }
-  fprintf (stderr, "%s(%d): %s\n", file, line, msg);
-  exit (1);
-}
 
 objhdr *get_header (obj o)
 {
