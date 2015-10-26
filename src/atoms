@@ -1,0 +1,24 @@
+nil	-
+t	-
+
+car	fn
+cdr	fn
+cons	fn
+list	fn
+rplca	fn
+rplcd	fn
+
++	fn_plus
+-	fn_minus
+*	fn_times
+/	fn_divide
+
+cond	fe
+while	fe
+quote	fe
+
+eval	fn
+apply	fn
+
+read	fn
+print	fn
