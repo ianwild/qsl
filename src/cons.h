@@ -10,7 +10,8 @@ obj  fn_list   (obj *argv);
 obj  fn_rplca  (obj *argv);
 obj  fn_rplcd  (obj *argv);
 
-obj  cons      (obj car, obj cdr);
-void decons    (obj cons, obj *car, obj *cdr);
+obj      cons           (obj car, obj cdr);
+void     decons         (obj cons, obj *car, obj *cdr);
+uint16_t internal_len   (obj o);
 
 #endif /* QSL_CONS_H */

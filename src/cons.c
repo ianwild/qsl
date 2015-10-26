@@ -28,6 +28,18 @@ void decons (obj cons, obj *car, obj *cdr)
   *cdr = p -> u.cons_val.cdr_cell;
 }
 
+uint16_t internal_len (obj o)
+{
+  uint16_t res = 0;
+  while (o != obj_NIL)
+  {
+    obj dummy;
+    decons (o, &dummy, &o);
+    res += 1;
+  }
+  return (res);
+}
+
 obj fn_car (obj *argv)
 {
   if (argv [0] != 1)

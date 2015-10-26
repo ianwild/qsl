@@ -1,3 +1,4 @@
+#include "cons.h"
 #include "eval.h"
 #include "obj.h"
 
@@ -19,12 +20,30 @@ obj fn_eval (obj *argv)
 
 obj eval_internal (obj expr, obj env)
 {
-  return (env ? env : expr);
-}
-
-obj eval_here (obj expr)
-{
-  return (eval_internal (expr, current_environment));
+  if (get_type (expr) == cons_type)
+  {
+    uint16_t argc = internal_len (expr);
+    objhdr *p = get_header (new_extended_object (array_type, argc));
+    p -> flags |= gc_fixed;
+    {
+      obj car, cdr;
+      decons (expr, &car, &cdr);
+      p -> u.array_val [1] = car;
+      uint16_t i;
+      for (i = 2; i <= argc; i += 1)
+      {
+	decons (cdr, &car, &cdr);
+	car = eval_internal (car, env);
+	p -> u.array_val [i] = car;
+      }
+    }
+    {
+      obj res = fn_apply (p -> u.array_val);
+      p -> flags &= ~ gc_fixed;
+      return (res);
+    }
+  }
+  return (expr);
 }
 
 obj fn_apply (obj *argv)

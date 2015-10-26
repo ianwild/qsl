@@ -3,13 +3,13 @@
 #include "eval.h"
 #include "obj.h"
 
-static obj eval_progn (obj o, obj res)
+static obj eval_progn (obj o, obj res, obj env)
 {
   while (o != obj_NIL)
   {
     obj car, cdr;
     decons (o, &car, &cdr);
-    res = eval_here (car);
+    res = eval_internal (car, env);
     o = cdr;
   }
   return (res);
@@ -17,37 +17,33 @@ static obj eval_progn (obj o, obj res)
 
 obj fe_cond (obj *argv)
 {
-  uint16_t argc = *argv++;
-  while (argc--)
+  obj elist = argv [1];
+  obj env = argv [2];
+  while (elist != obj_NIL)
   {
-    obj car, cdr;
-    decons (*argv++, &car, &cdr);
-    obj res = eval_here (car);
+    obj clause, car, cdr;
+    decons (elist, &clause, &elist);
+    decons (clause, &car, &cdr);
+    obj res = eval_internal (car, env);
     if (res != obj_NIL)
-      return (eval_progn (cdr, res));
+      return (eval_progn (cdr, res, env));
   }
   return (obj_NIL);
 }
 
+
 obj fe_while (obj *argv)
 {
-  uint16_t argc = *argv++;
-  if (argc > 0)
-  {
-    obj test = *argv;
-    while (eval_here (test) != obj_NIL)
-    {
-      uint16_t i;
-      for (i = 1; i <= argc; i += 1)
-	eval_here (argv [i]);
-    }
-  }
+  obj elist = argv [1];
+  obj env = argv [2];
+  obj car, cdr;
+  decons (elist, &car, &cdr);
+  while (eval_internal (car, env) != obj_NIL)
+    eval_progn (cdr, obj_NIL, env);
   return (obj_NIL);
 }
 
 obj fe_quote (obj *argv)
 {
-  if (*argv != 1)
-    throw_error (bad_argc);
   return (argv [1]);
 }
