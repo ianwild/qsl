@@ -10,13 +10,22 @@ static objhdr *get_cons_header (obj o)
   return (get_header (o));
 }
 
-static obj create_cons (obj car, obj cdr)
+obj cons (obj car, obj cdr)
 {
   objhdr *p;
   obj res = new_object (cons_type, &p);
   p -> u.cons_val.car_cell = car;
   p -> u.cons_val.cdr_cell = cdr;
   return (res);
+}
+
+void decons (obj cons, obj *car, obj *cdr)
+{
+  if (get_type (cons) != cons_type)
+    throw_error (bad_type);
+  objhdr *p = get_header (cons);
+  *car = p -> u.cons_val.car_cell;
+  *cdr = p -> u.cons_val.cdr_cell;
 }
 
 obj fn_car (obj *argv)
@@ -45,24 +54,18 @@ obj fn_cons (obj *argv)
 {
   if (argv [0] != 2)
     throw_error (bad_argc);
-  return (create_cons (argv [1], argv [2]));
+  return (cons (argv [1], argv [2]));
 }
 
 obj fn_list (obj *argv)
 {
-  uint16_t argc = *argv++;
-  if (argc == 0)
-    return (obj_NIL);
-  obj res = working_root = create_cons (*argv++, obj_NIL);
-  objhdr *p = get_header (res);
-  objhdr *q = p;
-  while (--argc)
+  uint16_t argc = *argv;
+  obj res = obj_NIL;
+  while (argc)
   {
-    obj cdr = create_cons (*argv++, obj_NIL);
-    q -> u.cons_val.cdr_cell = cdr;
-    q = get_header (cdr);
+    res = cons (argv [argc], res);
+    argc -= 1;
   }
-  working_root = obj_NIL;
   return (res);
 }
 

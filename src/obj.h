@@ -12,15 +12,19 @@
 #define LAST_POSSIBLE_OBJECT  OBJECT_C (0x7EFF)
 
 
-uint8_t            get_flags        (obj o);
-uint8_t            get_type         (obj o);
-objhdr            *get_header       (obj o);
-uint8_t           *get_spelling     (obj o, uint16_t *len);
-const uint8_t     *get_rom_spelling (obj o, uint16_t *len);
-const rom_object  *get_rom_header   (obj o);
+void               init_memory          (void);
+
+uint8_t            get_flags            (obj o);
+uint8_t            get_type             (obj o);
+objhdr            *get_header           (obj o);
+uint8_t           *get_spelling         (obj o, uint16_t *len);
+const uint8_t     *get_rom_spelling     (obj o, uint16_t *len);
+const rom_object  *get_rom_header       (obj o);
+obj                new_object           (enum typecode type, objhdr **hdr);
+obj                new_extended_object  (enum typecode type, uint16_t size);
+
 void               throw_error      (enum errcode e, char *file, int line);
 #define throw_error(e) throw_error (e, __FILE__, __LINE__)
-obj                new_object       (enum typecode type, objhdr **hdr);
 
 extern obj last_allocated_object;
 

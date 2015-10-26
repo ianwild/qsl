@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define pgm_read_byte_near(x) (*(x))
+#else
+#include <Arduino.h>
 #endif
 
 #include "io.h"
@@ -30,6 +32,7 @@ void (throw_error) (enum errcode e, char *file, int line)
     MSG (bad_obj);
     MSG (bad_argc);
     MSG (div_by_zero);
+    MSG (no_mem);
 #undef MSG
   }
 #if USE_STDIO
@@ -42,9 +45,12 @@ void (throw_error) (enum errcode e, char *file, int line)
 
 obj fn_read (obj *argv)
 {
+  (void) argv;
   uint8_t ch1;
   while ((ch1 = readc ()) <= ' ')
     ;
+  if (ch1 == 0xFF)
+    return (obj_NIL);
   return (ch1 + FIRST_CHAR);
 }
 

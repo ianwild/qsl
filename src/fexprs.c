@@ -1,27 +1,18 @@
+#include "cons.h"
 #include "fexprs.h"
 #include "eval.h"
 #include "obj.h"
 
-static obj cond_test (obj o)
-{
-  if (o == obj_NIL)
-    return (obj_NIL);
-  if (get_type (o) != cons_type)
-    throw_error (bad_type);
-  objhdr *p = get_header (o);
-  return (eval_here (get_header (o) -> u.cons_val.car_cell));
-}
-
-static obj cond_then (obj o, obj res)
+static obj eval_progn (obj o, obj res)
 {
   while (o != obj_NIL)
   {
-    if (get_type (o) != cons_type)
-      throw_error (bad_type);
-    objhdr *p = get_header (o);
-    res = eval_here (p -> u.cons_val.car_cell);
-    o = p -> u.cons_val.cdr_cell;
+    obj car, cdr;
+    decons (o, &car, &cdr);
+    res = eval_here (car);
+    o = cdr;
   }
+  return (res);
 }
 
 obj fe_cond (obj *argv)
@@ -29,13 +20,11 @@ obj fe_cond (obj *argv)
   uint16_t argc = *argv++;
   while (argc--)
   {
-    obj clause = *argv++;
-    obj res = cond_test (clause);
+    obj car, cdr;
+    decons (*argv++, &car, &cdr);
+    obj res = eval_here (car);
     if (res != obj_NIL)
-    {
-      res = cond_then (clause, res);
-      return (res);
-    }
+      return (eval_progn (cdr, res));
   }
   return (obj_NIL);
 }

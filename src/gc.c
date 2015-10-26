@@ -1,3 +1,4 @@
+#include "gc.h"
 #include "obj.h"
 #include "rom-symbols.h"
 
@@ -32,6 +33,8 @@ void do_gc (void)
   while (next_to_sweep <= last_allocated_object)
   {
     objhdr *p = get_header (next_to_sweep++);
+    if ((p -> flags & (gc_fixed | gc_wanted)) == gc_fixed)
+      p -> flags |= gc_wanted;
     if ((p -> flags & (gc_wanted | gc_scanned)) == gc_wanted)
     {
       p -> flags |= gc_scanned;

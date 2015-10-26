@@ -23,6 +23,7 @@ enum flag_bits
 {
   gc_wanted  = 0x01,
   gc_scanned = 0x02,
+  gc_fixed   = 0x04,
 
   fexpr      = 0x80
 };
@@ -33,13 +34,15 @@ enum errcode
   bad_type,
   bad_obj,
   bad_argc,
-  div_by_zero
+  div_by_zero,
+  no_mem
 };
 
 
 typedef uint16_t obj;
 #define OBJECT_C(x) UINT16_C(x)
 
+/*
 typedef struct
 {
   obj      owner;
@@ -53,6 +56,7 @@ typedef struct
   uint16_t length;
   obj      body [1];
 } word_object;
+*/
 
 typedef obj (*built_in_fn) (obj *args);
 
