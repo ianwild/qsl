@@ -9,7 +9,7 @@ void     printc          (uint8_t ch);
 void     error_helper    (char *file, int line, char *msg);
 #endif
 
-obj      fn_read         (obj *argv);
-obj      fn_print        (obj *argv);
+obj      fn_read         (obj args);
+obj      fn_print        (obj args);
 
 #endif /* QSL_IO_H */

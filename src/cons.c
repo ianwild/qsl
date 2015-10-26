@@ -40,8 +40,9 @@ uint16_t internal_len (obj o)
   return (res);
 }
 
-obj fn_car (obj *argv)
+obj fn_car (obj args)
 {
+  obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 1)
     throw_error (bad_argc);
   obj cons_cell = argv [1];
@@ -51,8 +52,9 @@ obj fn_car (obj *argv)
   return (p -> u.cons_val.car_cell);
 }
 
-obj fn_cdr (obj *argv)
+obj fn_cdr (obj args)
 {
+  obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 1)
     throw_error (bad_argc);
   obj cons_cell = argv [1];
@@ -62,27 +64,29 @@ obj fn_cdr (obj *argv)
   return (p -> u.cons_val.cdr_cell);
 }
 
-obj fn_cons (obj *argv)
+obj fn_cons (obj args)
 {
+  obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 2)
     throw_error (bad_argc);
   return (cons (argv [1], argv [2]));
 }
 
-obj fn_list (obj *argv)
+obj fn_list (obj args)
 {
-  uint16_t argc = *argv;
+  uint16_t argc = get_header (args) -> u.array_val [0];
   obj res = obj_NIL;
   while (argc)
   {
-    res = cons (argv [argc], res);
+    res = cons (get_header (args) -> u.array_val [argc], res);
     argc -= 1;
   }
   return (res);
 }
 
-obj fn_rplca (obj *argv)
+obj fn_rplca (obj args)
 {
+  obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 2)
     throw_error (bad_argc);
   obj cons_cell = argv [1];
@@ -90,8 +94,9 @@ obj fn_rplca (obj *argv)
   return (p -> u.cons_val.car_cell = argv [2]);
 }
 
-obj fn_rplcd (obj *argv)
+obj fn_rplcd (obj args)
 {
+  obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 2)
     throw_error (bad_argc);
   obj cons_cell = argv [1];

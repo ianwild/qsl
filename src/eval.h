@@ -3,8 +3,9 @@
 
 #include "types.h"
 
-obj fn_eval       (obj *argv);
-obj fn_apply      (obj *argv);
+obj fn_eval       (obj args);
+obj fn_apply      (obj args);
+
 obj eval_internal (obj expr, obj env);
 
 extern obj current_environment;

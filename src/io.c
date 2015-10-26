@@ -43,9 +43,9 @@ void (throw_error) (enum errcode e, char *file, int line)
 #endif
 }
 
-obj fn_read (obj *argv)
+obj fn_read (obj args)
 {
-  (void) argv;
+  (void) args;
   uint8_t ch1;
   while ((ch1 = readc ()) <= ' ')
     ;
@@ -90,10 +90,11 @@ static void print1 (obj o)
   printc ('\n');
 }
 
-obj fn_print (obj *argv)
+obj fn_print (obj args)
 {
-  uint16_t argc = *argv++;
+  obj *p = get_header (args) -> u.array_val;
+  uint16_t argc = *p++;
   while (argc--)
-    print1 (*argv++);
+    print1 (*p++);
   return (obj_NIL);
 }

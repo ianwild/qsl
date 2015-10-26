@@ -42,23 +42,7 @@ enum errcode
 typedef uint16_t obj;
 #define OBJECT_C(x) UINT16_C(x)
 
-/*
-typedef struct
-{
-  obj      owner;
-  uint16_t length;
-  uint8_t  body [1];
-} byte_object;
-
-typedef struct
-{
-  obj      owner;
-  uint16_t length;
-  obj      body [1];
-} word_object;
-*/
-
-typedef obj (*built_in_fn) (obj *args);
+typedef obj (*built_in_fn) (obj args);
 
 
 typedef struct

@@ -4,8 +4,9 @@
 
 obj current_environment;
 
-obj fn_eval (obj *argv)
+obj fn_eval (obj args)
 {
+  obj *argv = get_header (args) -> u.array_val;
   switch (*argv)
   {
   case 1:
@@ -23,7 +24,8 @@ obj eval_internal (obj expr, obj env)
   if (get_type (expr) == cons_type)
   {
     uint16_t argc = internal_len (expr);
-    objhdr *p = get_header (new_extended_object (array_type, argc));
+    obj apply_args = new_extended_object (array_type, argc);
+    objhdr *p = get_header (apply_args);
     p -> flags |= gc_fixed;
     {
       obj car, cdr;
@@ -38,7 +40,7 @@ obj eval_internal (obj expr, obj env)
       }
     }
     {
-      obj res = fn_apply (p -> u.array_val);
+      obj res = fn_apply (apply_args);
       p -> flags &= ~ gc_fixed;
       return (res);
     }
@@ -46,7 +48,7 @@ obj eval_internal (obj expr, obj env)
   return (expr);
 }
 
-obj fn_apply (obj *argv)
+obj fn_apply (obj args)
 {
-  return (*argv);
+  return (args);
 }

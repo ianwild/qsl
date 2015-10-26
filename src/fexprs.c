@@ -15,10 +15,17 @@ static obj eval_progn (obj o, obj res, obj env)
   return (res);
 }
 
-obj fe_cond (obj *argv)
+static obj split_args (obj args, obj *env)
 {
-  obj elist = argv [1];
-  obj env = argv [2];
+  obj *argv = get_header (args) -> u.array_val;
+  *env = argv [2];
+  return (argv [1]);
+}
+
+obj fe_cond (obj args)
+{
+  obj env;
+  obj elist = split_args (args, &env);
   while (elist != obj_NIL)
   {
     obj clause, car, cdr;
@@ -32,10 +39,10 @@ obj fe_cond (obj *argv)
 }
 
 
-obj fe_while (obj *argv)
+obj fe_while (obj args)
 {
-  obj elist = argv [1];
-  obj env = argv [2];
+  obj env;
+  obj elist = split_args (args, &env);
   obj car, cdr;
   decons (elist, &car, &cdr);
   while (eval_internal (car, env) != obj_NIL)
@@ -43,7 +50,7 @@ obj fe_while (obj *argv)
   return (obj_NIL);
 }
 
-obj fe_quote (obj *argv)
+obj fe_quote (obj args)
 {
-  return (argv [1]);
+  return (get_header (args) -> u.array_val [1]);
 }

@@ -3,9 +3,9 @@
 
 #include "types.h"
 
-obj fn_plus   (obj *args);
-obj fn_times  (obj *args);
-obj fn_minus  (obj *args);
-obj fn_divide (obj *args);
+obj fn_plus   (obj args);
+obj fn_times  (obj args);
+obj fn_minus  (obj args);
+obj fn_divide (obj args);
 
 #endif /* QSL_INTEGER_H */

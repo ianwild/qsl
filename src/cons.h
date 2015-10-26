@@ -3,12 +3,12 @@
 
 #include "types.h"
 
-obj  fn_car    (obj *argv);
-obj  fn_cdr    (obj *argv);
-obj  fn_cons   (obj *argv);
-obj  fn_list   (obj *argv);
-obj  fn_rplca  (obj *argv);
-obj  fn_rplcd  (obj *argv);
+obj  fn_car    (obj args);
+obj  fn_cdr    (obj args);
+obj  fn_cons   (obj args);
+obj  fn_list   (obj args);
+obj  fn_rplca  (obj args);
+obj  fn_rplcd  (obj args);
 
 obj      cons           (obj car, obj cdr);
 void     decons         (obj cons, obj *car, obj *cdr);

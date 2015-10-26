@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-obj fe_cond    (obj *argv);
-obj fe_while   (obj *argv);
-obj fe_quote   (obj *argv);
+obj fe_cond    (obj args);
+obj fe_while   (obj args);
+obj fe_quote   (obj args);
 
 #endif /* QSL_FEXPRS_H */
