@@ -1,7 +1,7 @@
 #if USE_STDIO
 #include <stdio.h>
 #include <string.h>
-#define pgm_read_byte_near(x) (*(x))
+#include "not-arduino.h"
 #else
 #include <Arduino.h>
 #endif

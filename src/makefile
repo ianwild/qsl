@@ -60,19 +60,20 @@ dep:
 ## AUTODEPS START ##
 cons.c:	cons.h gc.h obj.h
 cons.h:	types.h
-eval.c:	eval.h obj.h
+eval.c:	cons.h eval.h obj.h
 eval.h:	types.h
 fexprs.c:	cons.h eval.h fexprs.h obj.h
 fexprs.h:	types.h
-gc.c:	obj.h rom-symbols.h
+gc.c:	gc.h obj.h rom-symbols.h
 gc.h:	obj.h
 integer.c:	integer.h obj.h
 integer.h:	types.h
 io.c:	io.h obj.h
 io.h:	types.h
-main.c:	io.h obj.h
-obj.c:	cons.h eval.h fexprs.h gc.h integer.h io.h obj.h rom-symbols.ci rom-symbols.h types.h
+main.c:	io.h not-arduino.h obj.h symbols.h
+obj.c:	cons.h eval.h fexprs.h gc.h integer.h io.h not-arduino.h obj.h rom-symbols.ci rom-symbols.h types.h
 obj.h:	types.h
-symbols.c:	obj.h rom-symbols.h symbols.h
+rom-symbols.h:	types.h
+symbols.c:	not-arduino.h obj.h rom-symbols.h symbols.h
 symbols.h:	types.h
 ## AUTODEPS END ##

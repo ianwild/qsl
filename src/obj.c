@@ -1,7 +1,8 @@
 #if USE_STDIO
 #include <stdio.h>
-#define PROGMEM
+#include "not-arduino.h"
 #else
+#include <stdio.h>
 #include <Arduino.h>
 #endif
 
@@ -20,7 +21,7 @@
 #include "types.h"
 
 static objhdr *headers;
-static uint8_t string_space [1280];
+static uint8_t string_space [640];
 static uint8_t *string_space_top = string_space;
 
 obj last_allocated_object = LAST_ROM_OBJ;
@@ -43,6 +44,7 @@ const rom_object *get_rom_header (obj o)
 {
   if (o > LAST_ROM_OBJ)
     throw_error (bad_obj);
+
   return (rom_symbols + o);
 }
 
@@ -75,8 +77,8 @@ const uint8_t *get_rom_spelling (obj o, uint16_t *len)
 {
   if (o > LAST_ROM_OBJ)
     throw_error (bad_obj);
-  const uint8_t *p = rom_symbols [o].name;
-  *len = *p;
+  const uint8_t *p = (void *)pgm_read_word_near (&rom_symbols [o].name);
+  *len = pgm_read_byte_near (p);
   return (p + 1);
 }
 
@@ -162,7 +164,7 @@ obj new_extended_object (enum typecode type, uint16_t size)
   case array_type:
   case environment_type:
     p -> u.array_val = (obj *) string_space_top;
-    *(uint16_t*) string_space_top = size;
+    *(obj *) string_space_top = (obj) size;
     string_space_top += sizeof (obj);
     memset (string_space_top, 0, size * sizeof (obj));
     string_space_top += size * sizeof (obj);

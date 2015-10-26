@@ -19,6 +19,12 @@ void printc (uint8_t ch)
 {
   putchar (ch);
 }
+
+void msg (char *txt)
+{
+  puts (txt);
+}
+
 #endif
 
 void (throw_error) (enum errcode e, char *file, int line)
