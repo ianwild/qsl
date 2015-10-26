@@ -1,4 +1,4 @@
-#if USE_STDIO
+#if USE_LINUX
 #include <stdio.h>
 #include <string.h>
 #include "not-arduino.h"

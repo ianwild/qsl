@@ -1,5 +1,5 @@
-#if USE_STDIO
 #include <stdio.h>
+#if USE_LINUX
 #include <stdlib.h>
 #include "not-arduino.h"
 #else
@@ -18,23 +18,29 @@ extern "C" {
 }
 #endif
 
+#if ! USE_LINUX
+static int stdout_write (char ch, FILE *dummy)
+{
+  (void) dummy;
+  printc (ch);
+}
+#endif
+
 int main (void)
 {
-#if ! USE_STDIO
+#if ! USE_LINUX
   init ();
   Serial.begin (9600);
+  stderr = stdout = fdevopen (stdout_write, 0);
 #endif
   init_memory ();
 
   for (;;)
   {
-    char buf [32];
-    sprintf (buf, "t is 0x%04x", find_symbol ((uint8_t *) "t", 1));
-    msg (buf);
-    sprintf (buf, "xyzzy is 0x%04x", find_symbol ((uint8_t *) "xyzzy", 5));
-    msg (buf);
-    sprintf (buf, "plugh is 0x%04x", find_symbol ((uint8_t *) "plugh", 5));
-    msg (buf);
+    printf ("t is 0x%04x\n", find_symbol ((uint8_t *) "t", 1));
+    printf ("xyzzy is 0x%04x\n", find_symbol ((uint8_t *) "xyzzy", 5));
+    printf ("plugh is 0x%04x\n", find_symbol ((uint8_t *) "plugh", 5));
+
     obj x = new_extended_object (array_type, 1);
     get_header (x) -> u.array_val [1] = fn_read (x);
     obj printer = find_symbol ((uint8_t *) "print", 5);

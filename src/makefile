@@ -16,7 +16,7 @@ GENERATED += rom-symbols.h
 
 OPTIMISER_FLAGS = -O6 -flto
 WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
-CFLAGS = $(OPTIMISER_FLAGS) -DUSE_STDIO $(WARNING_FLAGS)
+CFLAGS = $(OPTIMISER_FLAGS) -DUSE_LINUX $(WARNING_FLAGS)
 LDFLAGS = $(OPTIMISER_FLAGS)
 
 qsl:	$(OBJECTS)

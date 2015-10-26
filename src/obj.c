@@ -1,8 +1,7 @@
-#if USE_STDIO
 #include <stdio.h>
+#if USE_LINUX
 #include "not-arduino.h"
 #else
-#include <stdio.h>
 #include <Arduino.h>
 #endif
 

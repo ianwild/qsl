@@ -1,7 +1,7 @@
-#if USE_STDIO
 #include <stdio.h>
+#if USE_LINUX
 #include <stdlib.h>
-#define pgm_read_byte_near(x) (*(x))
+#include "not-arduino.h"
 #else
 #include <Arduino.h>
 #endif
@@ -9,7 +9,7 @@
 #include "io.h"
 #include "obj.h"
 
-#if USE_STDIO
+#if USE_LINUX
 uint8_t readc (void)
 {
   return (getchar ());
@@ -19,12 +19,6 @@ void printc (uint8_t ch)
 {
   putchar (ch);
 }
-
-void msg (char *txt)
-{
-  puts (txt);
-}
-
 #endif
 
 void (throw_error) (enum errcode e, char *file, int line)
@@ -41,12 +35,8 @@ void (throw_error) (enum errcode e, char *file, int line)
     MSG (no_mem);
 #undef MSG
   }
-#if USE_STDIO
   fprintf (stderr, "%s(%d): %s\n", file, line, msg);
   exit (1);
-#else
-  error_helper (file, line, msg);
-#endif
 }
 
 obj fn_read (obj args)
