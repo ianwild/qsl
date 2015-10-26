@@ -1,5 +1,6 @@
 
 #include "cons.h"
+#include "gc.h"
 #include "obj.h"
 
 static objhdr *get_cons_header (obj o)
@@ -11,8 +12,8 @@ static objhdr *get_cons_header (obj o)
 
 static obj create_cons (obj car, obj cdr)
 {
-  obj res = new_object (cons_type);
-  objhdr *p = get_header (res);
+  objhdr *p;
+  obj res = new_object (cons_type, &p);
   p -> u.cons_val.car_cell = car;
   p -> u.cons_val.cdr_cell = cdr;
   return (res);
@@ -52,9 +53,8 @@ obj fn_list (obj *argv)
   uint16_t argc = *argv++;
   if (argc == 0)
     return (obj_NIL);
-  obj res = create_cons (*argv++, obj_NIL);
+  obj res = working_root = create_cons (*argv++, obj_NIL);
   objhdr *p = get_header (res);
-  p -> flags |= gc_fixed;
   objhdr *q = p;
   while (--argc)
   {
@@ -62,7 +62,7 @@ obj fn_list (obj *argv)
     q -> u.cons_val.cdr_cell = cdr;
     q = get_header (cdr);
   }
-  p -> flags &= ~ gc_fixed;
+  working_root = obj_NIL;
   return (res);
 }
 

@@ -15,10 +15,12 @@
 uint8_t            get_flags        (obj o);
 uint8_t            get_type         (obj o);
 objhdr            *get_header       (obj o);
+uint8_t           *get_spelling     (obj o, uint16_t *len);
+const uint8_t     *get_rom_spelling (obj o, uint16_t *len);
 const rom_object  *get_rom_header   (obj o);
 void               throw_error      (enum errcode e, char *file, int line);
 #define throw_error(e) throw_error (e, __FILE__, __LINE__)
-obj                new_object       (enum typecode type);
+obj                new_object       (enum typecode type, objhdr **hdr);
 
 extern obj last_allocated_object;
 

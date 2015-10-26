@@ -1,6 +1,7 @@
 #if USE_STDIO
 #include <stdio.h>
 #include <stdlib.h>
+#define pgm_read_byte_near(x) (*(x))
 #endif
 
 #include "io.h"
@@ -56,11 +57,31 @@ static void print1 (obj o)
     printc ('#');
     printc ('\\');
     printc (o - FIRST_CHAR);
-    printc ('\n');
     break;
+
+  case string_type:
+  case symbol_type:
+  {
+    uint16_t len;
+    uint8_t *p = get_spelling (o, &len);
+    while (len--)
+      printc (*p++);
+    break;
+  }
+
+  case rom_symbol_type:
+  {
+    uint16_t len;
+    const uint8_t *p = get_rom_spelling (o, &len);
+    while (len--)
+      printc (pgm_read_byte_near (p++));
+    break;
+  }
+
   default:
     break;
   }
+  printc ('\n');
 }
 
 obj fn_print (obj *argv)

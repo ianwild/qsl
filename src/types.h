@@ -7,24 +7,24 @@
 enum typecode
 {
   unallocated_type,
-  rom_symbol_type,
   closure_type,
   symbol_type,
   cons_type,
   int_type,
-  char_type,
   string_type,
   array_type,
-  environment_type
+  environment_type,
+
+  char_type,
+  rom_symbol_type,
 };
 
 enum flag_bits
 {
-  gc_wanted = 0x01,
-  gc_swept  = 0x02,
-  gc_fixed  = 0x04,
+  gc_wanted  = 0x01,
+  gc_scanned = 0x02,
 
-  fexpr  = 0x80
+  fexpr      = 0x80
 };
 
 enum errcode

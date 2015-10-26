@@ -15,8 +15,8 @@ static obj create_int (int32_t val)
   uint32_t xval = (uint32_t) val + OBJ_ZERO;
   if (xval >= FIRST_SMALL_INT && xval <= UINT16_MAX)
     return ((obj) xval);
-  obj res = new_object (int_type);
-  objhdr *p = get_header (res);
+  objhdr *p;
+  obj res = new_object (int_type, &p);
   p -> u.int_val = val;
   return (res);
 }
