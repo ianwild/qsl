@@ -1,0 +1,32 @@
+# Initial (ROM-based) contents of the object table
+# Column 1: name (as seen by Lisp)
+# Column 2: the name of the C function to call:
+#    blank or "-": no function
+#    "fn" or "fe": use {col2}_{col1}
+#    else        : use the name given
+# (Note: if the C name starts "fe_", it's actually a fexpr, not a function)
+
+nil	-
+t	-
+
+car	fn
+cdr	fn
+cons	fn
+list	fn
+rplca	fn
+rplcd	fn
+
++	fn_plus
+-	fn_minus
+*	fn_times
+/	fn_divide
+
+cond	fe
+while	fe
+quote	fe
+
+eval	fn
+apply	fn
+
+read	fn
+print	fn
