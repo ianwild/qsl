@@ -24,13 +24,12 @@ END {
     for (i = 0; i < next_sym; i += 1) {
 	lisp_name = symbol_table [i];
 	len = length(lisp_name);
-	printf ("  /* %3d */  ", idx + len);
+	name_offset [lisp_name] = idx;
+	printf ("  /* %3d */  %d, ", idx, len);
 	for (j = 1; j <= len; j += 1)
 	    printf ("%d, ", ascii [substr (lisp_name, j, 1)]);
-	idx += len;
-	name_offset [lisp_name] = idx;
-	printf ("%d,\n", len);
-	idx += 1;
+	idx += len + 1;
+	printf ("\n");
     }
     print "};\n";
 

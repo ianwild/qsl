@@ -7,7 +7,7 @@ obj working_root;
 
 static void want_obj (obj o)
 {
-  if (o < FIRST_RAM_OBJ || o > last_allocated_object)
+  if (o <= LAST_ROM_OBJ || o > last_allocated_object)
     return;
   objhdr *p = get_header (o);
   if (o < next_to_sweep && (p -> flags & gc_wanted) == 0)
@@ -25,7 +25,7 @@ static void compact_string_space (void)
 
 void do_gc (void)
 {
-  next_to_sweep = FIRST_RAM_OBJ;
+  next_to_sweep = LAST_ROM_OBJ + 1;
 
   mark_roots ();
   want_obj (working_root);
@@ -70,7 +70,7 @@ void do_gc (void)
 
   compact_string_space ();
 
-  obj i = FIRST_RAM_OBJ;
+  obj i = LAST_ROM_OBJ + 1;
   obj high_water_mark = obj_NIL;
 
   while (i <= last_allocated_object)

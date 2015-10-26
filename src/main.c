@@ -32,11 +32,6 @@ int main (void)
     obj printer = find_symbol ((uint8_t *) "print", 5);
     built_in_fn f = get_rom_header (printer) -> global_fn;
     f (x);
-    x [1] = find_symbol ((uint8_t *) "cons", 4);
-    f (x);
-    x [0] = 1;
-    x [1] = find_symbol ((uint8_t *) "xyzzy", 5);
-    f (x);
   }
   return (0);
 }

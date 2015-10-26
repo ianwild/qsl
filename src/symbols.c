@@ -13,7 +13,7 @@
 obj find_symbol (uint8_t *spelling, uint16_t len)
 {
   obj sym;
-  for (sym = 0; sym < FIRST_RAM_OBJ; sym += 1)
+  for (sym = 0; sym <= LAST_ROM_OBJ; sym += 1)
   {
     uint16_t rom_len;
     const uint8_t *rom_spelling = get_rom_spelling (sym, &rom_len);
