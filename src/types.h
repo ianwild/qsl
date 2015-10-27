@@ -45,14 +45,15 @@ typedef uint16_t obj;
 typedef obj (*built_in_fn) (obj args);
 
 
-typedef struct
+typedef struct rom_object
 {
   const uint8_t     *name;
   const built_in_fn  global_fn;
   const bool         is_fexpr;
 } rom_object;
 
-typedef struct
+
+typedef struct objhdr
 {
   uint8_t flags;
   uint8_t xtype;

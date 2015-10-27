@@ -20,7 +20,7 @@
 #include "types.h"
 
 static objhdr *headers;
-static uint8_t string_space [640];
+static uint8_t string_space [1280];
 static uint8_t *string_space_top = string_space;
 
 obj last_allocated_object = LAST_ROM_OBJ;

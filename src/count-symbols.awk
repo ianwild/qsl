@@ -1,5 +1,8 @@
 #! /usr/bin/awk -f
 
+# create "rom-symbols.h", which simply tells the rest of
+# the system how many symbols are defined in ROM
+
 BEGIN {
     next_sym = 0;
 }

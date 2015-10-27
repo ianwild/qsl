@@ -15,6 +15,11 @@ uint8_t readc (void)
   return (getchar ());
 }
 
+int peekc (void)
+{
+  return (getchar ());
+}
+
 void printc (uint8_t ch)
 {
   putchar (ch);
@@ -93,4 +98,20 @@ obj fn_print (obj args)
   while (argc--)
     print1 (*p++);
   return (obj_NIL);
+}
+
+obj fn_readchar (obj args)
+{
+  (void) args;
+  return (FIRST_CHAR + readc ());
+}
+
+obj fn_peekchar (obj args)
+{
+  (void) args;
+  int ch = peekc ();
+  if (ch >= 0)
+    return (FIRST_CHAR + (ch & 0xFF));
+  else
+    return (obj_NIL);
 }
