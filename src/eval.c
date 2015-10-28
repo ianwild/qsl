@@ -1,6 +1,7 @@
 #include "cons.h"
 #include "eval.h"
 #include "obj.h"
+#include "symbols.h"
 
 obj current_environment;
 
@@ -21,7 +22,9 @@ obj fn_eval (obj args)
 
 obj eval_internal (obj expr, obj env)
 {
-  if (get_type (expr) == cons_type)
+  switch (get_type (expr))
+  {
+  case cons_type:
   {
     uint16_t argc = internal_len (expr);
     obj apply_args = new_extended_object (array_type, argc);
@@ -45,7 +48,14 @@ obj eval_internal (obj expr, obj env)
       return (res);
     }
   }
-  return (expr);
+
+  case symbol_type:
+  case rom_symbol_type:
+    return (symbol_value (expr, env));
+
+  default:
+    return (expr);
+  }
 }
 
 obj fn_apply (obj args)

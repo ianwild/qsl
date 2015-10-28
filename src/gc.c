@@ -50,6 +50,7 @@ void do_gc (void)
         break;
 
       case cons_type:
+      case global_binding_type:
         want_obj (p -> u.cons_val.car_cell);
         want_obj (p -> u.cons_val.cdr_cell);
         break;

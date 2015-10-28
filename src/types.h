@@ -10,6 +10,7 @@ enum typecode
   closure_type,
   symbol_type,
   cons_type,
+  global_binding_type,
   int_type,
   string_type,
   array_type,
@@ -76,6 +77,7 @@ typedef struct objhdr
     } symbol_val;
 
     // case cons_type:
+    // case global_binding_type:
     struct
     {
       obj car_cell;

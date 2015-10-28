@@ -48,3 +48,33 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
   memcpy (new_spelling, spelling, len);
   return (sym);
 }
+
+obj symbol_value (obj sym, obj env)
+{
+  if (sym <= obj_T)
+    return (sym);
+  while (env != obj_NIL)
+  {
+    obj *p = get_header (env) -> u.array_val;
+    uint16_t len = (uint16_t) *p++ - 1;
+    env = *p++;			// parent environment
+    while (len)
+    {
+      if (p [0] == sym)
+	return (p [1]);
+      p += 2;
+      len -= 2;
+    }
+  }
+  obj res;
+  for (res = LAST_ROM_OBJ + 1; res <= last_allocated_object; res += 1)
+    if (get_type (res) == global_binding_type)
+    {
+      objhdr *p = get_header (res);
+      if (p -> u.cons_val.car_cell == sym)
+	return (p -> u.cons_val.cdr_cell);
+    }
+  return (sym);
+}
+
+
