@@ -26,13 +26,17 @@ obj eval_internal (obj expr, obj env)
   {
   case cons_type:
   {
-    uint16_t argc = internal_len (expr);
-    obj apply_args = new_extended_object (array_type, argc);
-    objhdr *p = get_header (apply_args);
-    p -> flags |= gc_fixed;
+    obj car, cdr;
+    decons (expr, &car, &cdr);
+    if (car == obj_LAMBDA)
+      return (expr);
+    objhdr *p;
+    obj apply_args;
     {
-      obj car, cdr;
-      decons (expr, &car, &cdr);
+      uint16_t argc = internal_len (expr);
+      apply_args = new_extended_object (array_type, argc);
+      p = get_header (apply_args);
+      p -> flags |= gc_fixed;
       p -> u.array_val [1] = car;
       uint16_t i;
       for (i = 2; i <= argc; i += 1)

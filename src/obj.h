@@ -5,6 +5,7 @@
 
 #define obj_NIL               OBJECT_C (0)
 #define obj_T                 OBJECT_C (1)
+#define obj_LAMBDA            OBJECT_C (2)
 
 #define FIRST_SMALL_INT       OBJECT_C (0x8000)
 #define OBJ_ZERO              OBJECT_C (0xC000)
