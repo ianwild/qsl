@@ -27,10 +27,15 @@ obj eval_internal (obj expr, obj env)
   case cons_type:
   {
     obj car, cdr;
+    objhdr *p;
     decons (expr, &car, &cdr);
     if (car == obj_LAMBDA)
-      return (expr);
-    objhdr *p;
+    {
+      obj res = new_object (closure_type, &p);
+      p -> u.closure_val.environment = current_environment;
+      p -> u.closure_val.code = expr;
+      return (res);
+    }
     obj apply_args;
     {
       uint16_t argc = internal_len (expr);
