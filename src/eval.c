@@ -32,7 +32,7 @@ obj eval_internal (obj expr, obj env)
     if (car == obj_LAMBDA)
     {
       obj res = new_object (closure_type, &p);
-      p -> u.closure_val.environment = current_environment;
+      p -> u.closure_val.environment = env;
       p -> u.closure_val.code = expr;
       return (res);
     }
