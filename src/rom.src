@@ -26,6 +26,7 @@ cond		fe
 while		fe
 quote		fe
 setq		fe
+defun		fe
 
 eval		fn
 apply		fn

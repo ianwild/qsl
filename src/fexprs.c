@@ -67,3 +67,21 @@ obj fe_setq (obj args)
     throw_error (bad_argc);
   return (set_symbol_value (sym, env, eval_internal (car, env)));
 }
+
+obj fe_defun (obj args)
+{
+  obj env;
+  obj arglist = split_args (args, &env);
+  obj sym, cdr;
+  decons (arglist, &sym, &cdr);
+  if (get_type (sym) != symbol_type)
+    throw_error (bad_type);
+  objhdr *p;
+  obj closure = new_object (closure_type, &p);
+  p -> flags |= gc_fixed;
+  p -> u.closure_val.environment = env;
+  p -> u.closure_val.code = cons (obj_LAMBDA, cdr);
+  p -> flags &= ~ gc_fixed;
+  get_header (sym) -> u.symbol_val.global_fn = closure;
+  return (sym);
+}
