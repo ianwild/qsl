@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include "gc.h"
+#include "eval.h"
 #include "obj.h"
 #include "rom-symbols.h"
 
@@ -17,10 +19,13 @@ static void want_obj (obj o)
 
 static void mark_roots (void)
 {
-}
-
-static void compact_string_space (void)
-{
+  obj i;
+  for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+  {
+    objhdr *p = get_header (i);
+    if ((p -> flags & gc_fixed) || (p -> xtype == global_binding_type))
+      p -> flags |= gc_wanted;
+  }
 }
 
 void do_gc (void)
@@ -29,12 +34,11 @@ void do_gc (void)
 
   mark_roots ();
   want_obj (working_root);
+  want_obj (current_environment);
 
   while (next_to_sweep <= last_allocated_object)
   {
     objhdr *p = get_header (next_to_sweep++);
-    if ((p -> flags & (gc_fixed | gc_wanted)) == gc_fixed)
-      p -> flags |= gc_wanted;
     if ((p -> flags & (gc_wanted | gc_scanned)) == gc_wanted)
     {
       p -> flags |= gc_scanned;
@@ -71,10 +75,10 @@ void do_gc (void)
 
   compact_string_space ();
 
-  obj i = LAST_ROM_OBJ + 1;
+  obj i;
   obj high_water_mark = obj_NIL;
 
-  while (i <= last_allocated_object)
+  for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
     if (p -> flags & gc_wanted)
@@ -88,5 +92,4 @@ void do_gc (void)
 
   last_allocated_object = high_water_mark;
 }
-
 

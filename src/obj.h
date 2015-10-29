@@ -23,6 +23,7 @@ const uint8_t     *get_rom_spelling     (obj o, uint16_t *len);
 const rom_object  *get_rom_header       (obj o);
 obj                new_object           (enum typecode type, objhdr **hdr);
 obj                new_extended_object  (enum typecode type, uint16_t size);
+void               compact_string_space (void);
 
 void               throw_error      (enum errcode e, char *file, int line);
 #define throw_error(e) throw_error (e, __FILE__, __LINE__)

@@ -184,3 +184,40 @@ uint8_t get_type (obj o)
     return (rom_symbol_type);
   return ((headers - (o - LAST_ROM_OBJ)) -> xtype);
 }
+
+void compact_string_space (void)
+{
+  uint8_t *from = string_space;
+  uint8_t *to = string_space;
+
+  while (from < string_space_top)
+  {
+    obj o = *(obj *)from;
+    objhdr *p = get_header (o);
+    uint16_t len = 0;
+    void *back_ptr = NULL;
+    switch (p -> xtype)
+    {
+    case symbol_type:
+    case string_type:
+      len = * (from + sizeof (obj)) + 1;
+      back_ptr = p -> u.string_val;
+      break;
+    case array_type:
+    case environment_type:
+      len = * (obj *) (from + sizeof (obj)) + 1;
+      len *= sizeof (obj);
+      back_ptr = p -> u.array_val;
+      break;
+    }
+    len += sizeof (obj);
+    if ((p -> flags & gc_wanted) && (back_ptr == from + sizeof (obj)))
+    {
+      memcpy (to, from, len);
+      p -> u.string_val = to + sizeof (obj);
+      to += len;
+    }
+    from += len;
+  }
+  string_space_top = to;
+}
