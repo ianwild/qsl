@@ -22,6 +22,13 @@ rplcd		fn
 *		fn_times
 /		fn_divide
 
+<		fn_lt
+<=		fn_le
+>		fn_gt
+>=		fn_ge
+=		fn_equals
+/=		fn_not_equals
+
 cond		fe
 while		fe
 quote		fe
