@@ -49,10 +49,8 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
   return (sym);
 }
 
-obj symbol_value (obj sym, obj env)
+static obj *find_lexical_binding (obj sym, obj env)
 {
-  if (sym <= obj_T)
-    return (sym);
   while (env != obj_NIL)
   {
     obj *p = get_header (env) -> u.array_val;
@@ -60,21 +58,71 @@ obj symbol_value (obj sym, obj env)
     env = *p++;			// parent environment
     while (len)
     {
-      if (p [0] == sym)
-	return (p [1]);
+      if (*p == sym)
+	return (p + 1);
       p += 2;
       len -= 2;
     }
   }
+  return (NULL);
+}
+
+static objhdr *find_global_binding (obj sym)
+{
   obj res;
   for (res = LAST_ROM_OBJ + 1; res <= last_allocated_object; res += 1)
     if (get_type (res) == global_binding_type)
     {
       objhdr *p = get_header (res);
       if (p -> u.cons_val.car_cell == sym)
-	return (p -> u.cons_val.cdr_cell);
+	return (p);
     }
+  return (NULL);
+}
+
+obj symbol_value (obj sym, obj env)
+{
+  if (sym <= obj_T)
+    return (sym);
+  {
+    obj *p = find_lexical_binding (sym, env);
+    if (p)
+      return (*p);
+  }
+  {
+    objhdr *p = find_global_binding (sym);
+    if (p)
+      return (p -> u.cons_val.cdr_cell);
+  }
+
   return (sym);
 }
 
 
+obj set_symbol_value (obj sym, obj env, obj val)
+{
+  if (sym <= obj_T)
+    throw_error (bad_obj);
+  {
+    obj *p = find_lexical_binding (sym, env);
+    if (p)
+      return (*p = val);
+  }
+  {
+    objhdr *p = find_global_binding (sym);
+    if (p)
+    {
+      if (sym == val)
+	p -> xtype = unallocated_type;
+      else
+	p -> u.cons_val.cdr_cell = val;
+    }
+    return (val);
+  }
+  {
+    objhdr *p;
+    new_object (global_binding_type, &p);
+    p -> u.cons_val.car_cell = sym;
+    return (p -> u.cons_val.cdr_cell = val);
+  }
+}

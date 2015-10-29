@@ -25,6 +25,7 @@ rplcd		fn
 cond		fe
 while		fe
 quote		fe
+setq		fe
 
 eval		fn
 apply		fn

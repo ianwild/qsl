@@ -2,6 +2,7 @@
 #include "fexprs.h"
 #include "eval.h"
 #include "obj.h"
+#include "symbols.h"
 
 static obj eval_progn (obj o, obj res, obj env)
 {
@@ -53,4 +54,16 @@ obj fe_while (obj args)
 obj fe_quote (obj args)
 {
   return (get_header (args) -> u.array_val [1]);
+}
+
+obj fe_setq (obj args)
+{
+  obj env;
+  obj arglist = split_args (args, &env);
+  obj sym, car, cdr;
+  decons (arglist, &sym, &cdr);
+  decons (cdr, &car, &cdr);
+  if (cdr != obj_NIL)
+    throw_error (bad_argc);
+  return (set_symbol_value (sym, env, eval_internal (car, env)));
 }
