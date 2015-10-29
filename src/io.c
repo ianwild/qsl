@@ -37,6 +37,7 @@ void (throw_error) (enum errcode e, char *file, int line)
     MSG (bad_obj);
     MSG (bad_argc);
     MSG (div_by_zero);
+    MSG (no_fdefn);
     MSG (no_mem);
 #undef MSG
   }

@@ -36,6 +36,7 @@ enum errcode
   bad_obj,
   bad_argc,
   div_by_zero,
+  no_fdefn,
   no_mem
 };
 
