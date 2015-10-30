@@ -6,8 +6,6 @@
 
 BEGIN {
     next_sym = 0;
-    for (i = 1; i < 256; i += 1)
-	ascii [sprintf ("%c", i)] = i;
 }
 
 NF && ! /^#/ {
@@ -30,8 +28,12 @@ END {
 	len = length(lisp_name);
 	name_offset [lisp_name] = idx;
 	printf ("  /* %3d */  %d, ", idx, len);
-	for (j = 1; j <= len; j += 1)
-	    printf ("%d, ", ascii [substr (lisp_name, j, 1)]);
+	for (j = 1; j <= len; j += 1) {
+	    ch = substr (lisp_name, j, 1);
+	    if (ch == "\\" || ch == "'")
+		ch = "\\" ch;
+	    printf ("'%s', ", ch);
+	}
 	idx += len + 1;
 	printf ("\n");
     }
