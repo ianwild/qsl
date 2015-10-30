@@ -8,6 +8,7 @@
 
 nil		-
 t		-
+quote		fe
 lambda		-
 fexpr		-
 
@@ -32,7 +33,6 @@ rplacd		fn
 
 cond		fe
 while		fe
-quote		fe
 setq		fe
 defun		fe
 

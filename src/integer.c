@@ -1,7 +1,7 @@
 #include "integer.h"
 #include "obj.h"
 
-static int32_t get_int_val (obj o)
+int32_t get_int_val (obj o)
 {
   if (o >= FIRST_SMALL_INT)
     return ((int32_t) o - (int32_t) OBJ_ZERO);
@@ -10,7 +10,7 @@ static int32_t get_int_val (obj o)
   return (get_header (o) -> u.int_val);
 }
 
-static obj create_int (int32_t val)
+obj create_int (int32_t val)
 {
   uint32_t xval = (uint32_t) val + OBJ_ZERO;
   if (xval >= FIRST_SMALL_INT && xval <= UINT16_MAX)

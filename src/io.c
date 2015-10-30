@@ -6,8 +6,14 @@
 #include <Arduino.h>
 #endif
 
+#include "cons.h"
+#include "integer.h"
 #include "io.h"
 #include "obj.h"
+#include "symbols.h"
+
+static obj internal_read (void);
+
 
 #if USE_LINUX
 uint8_t readc (void)
@@ -17,7 +23,9 @@ uint8_t readc (void)
 
 int peekc (void)
 {
-  return (getchar ());
+  int ch = getchar ();
+  ungetc (ch, stdin);
+  return (ch);
 }
 
 void printc (uint8_t ch)
@@ -45,15 +53,104 @@ void (throw_error) (enum errcode e, char *file, int line)
   exit (1);
 }
 
+static obj read_token (uint8_t ch1)
+{
+  uint8_t spelling [MAX_TOKEN];
+  uint8_t len = 0;
+  for (;;)
+  {
+    spelling [len] = ch1;
+    if ((len += 1) == MAX_TOKEN)
+      break;
+    if ((ch1 = peekc ()) <= ' ' ||
+	ch1 == ';' ||
+	ch1 == '(' ||
+	ch1 == ')')
+      break;
+    ch1 = readc ();
+  }
+  bool neg = (len > 1) && (spelling [0] == '-');
+  uint8_t i = neg;
+  int32_t tot = 0;
+ 
+  for (; i < len; i += 1)
+  {
+    if ((ch1 = spelling [i] - '0') > 9)
+      return (find_symbol (spelling, len));
+    tot = tot * 10 + ch1;
+  }
+  if (neg)
+    tot = - tot;
+  return (create_int (tot));
+}
+
+static void skip_blanks (void)
+{
+  for (;;)
+  {
+    uint8_t ch1 = peekc ();
+    if (ch1 == ';')
+    {
+      while ((ch1 = readc ()) != '\r' && ch1 != '\n')
+	;
+    }
+    else if (ch1 > ' ')
+      return;
+    readc ();
+  }
+}
+
+static obj nreverse (obj x)
+{
+  obj prev = obj_NIL;
+  while (x != obj_NIL)
+  {
+    objhdr *p = get_header (x);
+    obj tmp = p -> u.cons_val.cdr_cell;
+    p -> u.cons_val.cdr_cell = prev;
+    prev = x;
+    x = tmp;
+  }
+  return (prev);
+}
+
+static obj read_list (void)
+{
+  obj res = obj_NIL;
+  for (;;)
+  {
+    skip_blanks ();
+    if (peekc () == ')')
+    {
+      readc ();
+      return (nreverse (res));
+    }
+    objhdr *p = (res != obj_NIL) ? get_header (res) : NULL;
+    if (p)
+      p -> flags |= gc_fixed;
+    res = cons (internal_read (), res);
+    if (p)
+      p -> flags &= ~gc_fixed;
+  }
+}
+
+static obj internal_read (void)
+{
+  skip_blanks ();
+  uint8_t ch1 = readc ();
+  if (ch1 == '\'')
+    return (cons (obj_QUOTE, cons (internal_read (), obj_NIL)));
+
+  if (ch1 == '(')
+    return (read_list ());
+
+  return (read_token (ch1));
+}
+
 obj fn_read (obj args)
 {
   (void) args;
-  uint8_t ch1;
-  while ((ch1 = readc ()) <= ' ')
-    ;
-  if (ch1 == 0xFF)
-    return (obj_NIL);
-  return (ch1 + FIRST_CHAR);
+  return (internal_read ());
 }
 
 
@@ -72,8 +169,10 @@ static void print1 (obj o)
   {
     uint16_t len;
     uint8_t *p = get_spelling (o, &len);
+    printc ('|');
     while (len--)
       printc (*p++);
+    printc ('|');
     break;
   }
 
@@ -86,10 +185,35 @@ static void print1 (obj o)
     break;
   }
 
-  default:
+  case cons_type:
+  {
+    printc ('(');
+    while (get_type (o) == cons_type)
+    {
+      obj car;
+      decons (o, &car, &o);
+      print1 (car);
+      if (o != obj_NIL)
+	printc (' ');
+    }
+    if (o != obj_NIL)
+    {
+      printc ('.');
+      printc (' ');
+      print1 (o);
+    }
+    printc (')');
     break;
   }
-  printc ('\n');
+
+  case int_type:
+    printf ("%d", get_int_val (o));
+    break;
+
+  default:
+    printf ("#<obj 0x%04x, type %d>", o, get_type (o));
+    break;
+  }
 }
 
 obj fn_print (obj args)
@@ -98,6 +222,7 @@ obj fn_print (obj args)
   uint16_t argc = *p++;
   while (argc--)
     print1 (*p++);
+  printc ('\n');
   return (obj_NIL);
 }
 
