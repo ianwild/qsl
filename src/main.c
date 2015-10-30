@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+#include "eval.h"
 #include "io.h"
 #include "obj.h"
 #include "symbols.h"
@@ -42,7 +43,9 @@ int main (void)
     printf ("plugh is 0x%04x\n", find_symbol ((uint8_t *) "plugh", 5));
 
     obj x = new_extended_object (array_type, 1);
-    get_header (x) -> u.array_val [1] = fn_read (x);
+    obj tmp = fn_read (x);
+    tmp = eval_internal (tmp, current_environment);
+    get_header (x) -> u.array_val [1] = tmp;
     obj printer = find_symbol ((uint8_t *) "print", 5);
     built_in_fn f = (built_in_fn) pgm_read_word_near (&get_rom_header (printer) -> global_fn);
     f (x);

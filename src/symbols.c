@@ -1,3 +1,4 @@
+#include <stdio.h>
 #if USE_LINUX
 #include <string.h>
 #include "not-arduino.h"
@@ -116,8 +117,8 @@ obj set_symbol_value (obj sym, obj env, obj val)
 	p -> xtype = unallocated_type;
       else
 	p -> u.cons_val.cdr_cell = val;
+      return (val);
     }
-    return (val);
   }
   {
     objhdr *p;
