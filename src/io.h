@@ -3,9 +3,11 @@
 
 #include "types.h"
 
-int      peekc           (void);
+int16_t  peekc           (void);
 uint8_t  readc           (void);
+void     pushbackc       (uint8_t ch);
 void     printc          (uint8_t ch);
+void     print1          (obj o);
 
 obj      fn_peekchar     (obj args);
 obj      fn_readchar     (obj args);

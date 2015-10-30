@@ -21,11 +21,16 @@ uint8_t readc (void)
   return (getchar ());
 }
 
-int peekc (void)
+int16_t peekc (void)
 {
-  int ch = getchar ();
+  int16_t ch = getchar ();
   ungetc (ch, stdin);
   return (ch);
+}
+
+void pushbackc (uint8_t ch)
+{
+  ungetc (ch, stdin);
 }
 
 void printc (uint8_t ch)
@@ -62,12 +67,14 @@ static obj read_token (uint8_t ch1)
     spelling [len] = ch1;
     if ((len += 1) == MAX_TOKEN)
       break;
-    if ((ch1 = peekc ()) <= ' ' ||
+    if ((ch1 = readc ()) <= ' ' ||
 	ch1 == ';' ||
 	ch1 == '(' ||
 	ch1 == ')')
+    {
+      pushbackc (ch1);
       break;
-    ch1 = readc ();
+    }
   }
   bool neg = (len > 1) && (spelling [0] == '-');
   uint8_t i = neg;
@@ -88,15 +95,17 @@ static void skip_blanks (void)
 {
   for (;;)
   {
-    uint8_t ch1 = peekc ();
+    int16_t ch1 = readc ();
     if (ch1 == ';')
     {
       while ((ch1 = readc ()) != '\r' && ch1 != '\n')
 	;
     }
     else if (ch1 > ' ')
+    {
+      pushbackc (ch1);
       return;
-    readc ();
+    }
   }
 }
 
@@ -120,11 +129,11 @@ static obj read_list (void)
   for (;;)
   {
     skip_blanks ();
-    if (peekc () == ')')
-    {
-      readc ();
+    uint8_t ch;
+    if ((ch = readc ()) == ')')
       return (nreverse (res));
-    }
+
+    pushbackc (ch);
     objhdr *p = (res != obj_NIL) ? get_header (res) : NULL;
     if (p)
       p -> flags |= gc_fixed;
@@ -154,7 +163,7 @@ obj fn_read (obj args)
 }
 
 
-static void print1 (obj o)
+void print1 (obj o)
 {
   switch (get_type (o))
   {
@@ -207,7 +216,7 @@ static void print1 (obj o)
   }
 
   case int_type:
-    printf ("%d", get_int_val (o));
+    printf ("%ld", (long)get_int_val (o));
     break;
 
   default:

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "gc.h"
 #include "eval.h"
+#include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
 
@@ -30,6 +31,7 @@ static void mark_roots (void)
 
 void do_gc (void)
 {
+  printc ('.');
   next_to_sweep = LAST_ROM_OBJ + 1;
 
   mark_roots ();

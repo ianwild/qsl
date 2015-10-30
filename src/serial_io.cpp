@@ -4,7 +4,7 @@ extern "C" {
 #include "io.h"
 }
 
-static int latch = -1;
+static int16_t latch = -1;
 
 uint8_t readc (void)
 {
@@ -21,7 +21,7 @@ uint8_t readc (void)
   return (Serial.read ());
 }
 
-int peekc (void)
+int16_t peekc (void)
 {
   if (latch >= 0)
     return (latch);
@@ -30,8 +30,14 @@ int peekc (void)
   return (-1);
 }
 
+void pushbackc (uint8_t ch)
+{
+  latch = ch;
+}
+
 void printc (uint8_t ch)
 {
   Serial.write (ch);
+//  delay (10);
 }
 

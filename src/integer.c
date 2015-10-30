@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include "integer.h"
+#include "io.h"
 #include "obj.h"
 
 int32_t get_int_val (obj o)
@@ -47,7 +49,7 @@ obj fn_minus (obj args)
   uint16_t argc = *argv++;
   if (argc == 0)
     throw_error (bad_argc);
-  int32_t ans = *argv++;
+  int32_t ans = get_int_val (*argv++);
   if (argc == 1)
     return (create_int (- ans));
   while (--argc)
@@ -61,7 +63,7 @@ obj fn_divide (obj args)
   uint16_t argc = *argv++;
   if (argc == 0)
     throw_error (bad_argc);
-  int32_t ans = *argv++;
+  int32_t ans = get_int_val (*argv++);
   if (argc == 1)
   {
     if (ans == 0)

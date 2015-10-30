@@ -1,3 +1,4 @@
+#include <stdio.h>
 #if USE_LINUX
 #include "not-arduino.h"
 #else
@@ -6,6 +7,7 @@
 
 #include "cons.h"
 #include "eval.h"
+#include "io.h"
 #include "obj.h"
 #include "symbols.h"
 
@@ -65,7 +67,7 @@ static obj apply_internal (obj fn, obj args, obj env)
     built_in_fn f = (built_in_fn) pgm_read_word_near (&p -> global_fn);
     if (! f)
       throw_error (no_fdefn);
-    return (f (make_argv (args, env, p -> is_fexpr)));
+    return (f (make_argv (args, env, pgm_read_byte_near (&p -> is_fexpr))));
   }
 
   case symbol_type:

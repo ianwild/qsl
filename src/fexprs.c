@@ -53,7 +53,9 @@ obj fe_while (obj args)
 
 obj fe_quote (obj args)
 {
-  return (get_header (args) -> u.array_val [1]);
+  obj car, cdr;
+  decons (get_header (args) -> u.array_val [1], &car, &cdr);
+  return (car);
 }
 
 obj fe_setq (obj args)

@@ -24,6 +24,7 @@ static int stdout_write (char ch, FILE *dummy)
 {
   (void) dummy;
   printc (ch);
+  return (1);
 }
 #endif
 
