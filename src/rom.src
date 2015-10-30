@@ -9,13 +9,14 @@
 nil		-
 t		-
 lambda		-
+fexpr		-
 
 car		fn
 cdr		fn
 cons		fn
 list		fn
-rplca		fn
-rplcd		fn
+rplaca		fn
+rplacd		fn
 
 +		fn_plus
 -		fn_minus

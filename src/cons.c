@@ -84,7 +84,7 @@ obj fn_list (obj args)
   return (res);
 }
 
-obj fn_rplca (obj args)
+obj fn_rplaca (obj args)
 {
   obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 2)
@@ -94,7 +94,7 @@ obj fn_rplca (obj args)
   return (p -> u.cons_val.car_cell = argv [2]);
 }
 
-obj fn_rplcd (obj args)
+obj fn_rplacd (obj args)
 {
   obj *argv = get_header (args) -> u.array_val;
   if (argv [0] != 2)
