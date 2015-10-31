@@ -6,6 +6,7 @@
 #include <Arduino.h>
 #endif
 
+#include "eval.h"
 #include "obj.h"
 #include "rom-symbols.h"
 #include "symbols.h"
@@ -50,8 +51,9 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
   return (sym);
 }
 
-static obj *find_lexical_binding (obj sym, obj env)
+static obj *find_lexical_binding (obj sym)
 {
+  obj env = current_environment;
   while (env != obj_NIL)
   {
     obj *p = get_header (env) -> u.array_val;
@@ -81,12 +83,12 @@ static objhdr *find_global_binding (obj sym)
   return (NULL);
 }
 
-obj symbol_value (obj sym, obj env)
+obj symbol_value (obj sym)
 {
   if (sym <= obj_T)
     return (sym);
   {
-    obj *p = find_lexical_binding (sym, env);
+    obj *p = find_lexical_binding (sym);
     if (p)
       return (*p);
   }
@@ -100,12 +102,12 @@ obj symbol_value (obj sym, obj env)
 }
 
 
-obj set_symbol_value (obj sym, obj env, obj val)
+obj set_symbol_value (obj sym, obj val)
 {
   if (sym <= obj_T)
     throw_error (bad_obj);
   {
-    obj *p = find_lexical_binding (sym, env);
+    obj *p = find_lexical_binding (sym);
     if (p)
       return (*p = val);
   }

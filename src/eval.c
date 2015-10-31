@@ -14,15 +14,35 @@
 
 obj current_environment;
 
+static bool save_env (void)
+{
+  if (current_environment == obj_NIL)
+    return (false);
+  objhdr *p = get_header (current_environment);
+  if (p -> flags & gc_fixed)
+    return (false);
+  p -> flags |= gc_fixed;
+  return (true);
+}
+
 obj fn_eval (obj args)
 {
   obj *argv = get_header (args) -> u.array_val;
   switch (*argv)
   {
   case 1:
-    return (eval_internal (argv [1], current_environment));
+    return (eval_internal (argv [1]));
   case 2:
-    return (eval_internal (argv [1], argv [2]));
+  {
+    bool unprotect = save_env ();
+    obj keep_env = current_environment;
+    current_environment = argv [2];
+    obj res = eval_internal (argv [1]);
+    current_environment = keep_env;
+    if (unprotect)
+      get_header (current_environment) -> flags &= ~gc_fixed;
+    return (res);
+  }
   default:
     throw_error (bad_argc);
     return (obj_NIL);
@@ -30,14 +50,14 @@ obj fn_eval (obj args)
 }
 
 
-static obj make_argv (obj args, obj env, bool is_fexpr)
+static obj make_argv (obj args, bool evaluate, bool is_fexpr)
 {
   if (is_fexpr)
   {
     obj res = new_extended_object (array_type, 2);
     obj *p = get_header (res) -> u.array_val;
     p [1] = args;
-    p [2] = env;
+    p [2] = current_environment;
     return (res);
   }
   else
@@ -54,7 +74,9 @@ static obj make_argv (obj args, obj env, bool is_fexpr)
       {
 	obj car;
 	decons (args, &car, &args);
-	p -> u.array_val [i] = (env == obj_T) ? car : eval_internal (car, env);
+	if (evaluate)
+	  car = eval_internal (car);
+	p -> u.array_val [i] = car;
       }
     }
     p -> flags &= ~ gc_fixed;
@@ -63,7 +85,7 @@ static obj make_argv (obj args, obj env, bool is_fexpr)
   }
 }
 
-static obj make_lambda_binding (obj params, obj args, obj env)
+static obj make_lambda_binding (obj params, obj args, bool evaluate)
 {
   uint16_t len = internal_len (params);
   if (len != internal_len (args))
@@ -81,8 +103,8 @@ static obj make_lambda_binding (obj params, obj args, obj env)
     {
       obj val;
       decons (args, &val, &args);
-      if (env != obj_T)
-	val = eval_internal (val, env);
+      if (evaluate)
+	val = eval_internal (val);
       obj *bindings = p -> u.array_val;
       decons (params, &bindings [i], &params);
       bindings [i + 1] = val;
@@ -102,7 +124,7 @@ static obj make_fexpr_binding (obj params, obj args, obj env)
   return (obj_NIL);
 }
 
-static obj apply_internal (obj fn, obj args, obj env)
+static obj apply_internal (obj fn, obj args, bool evaluate)
 {
   switch (get_type (fn))
   {
@@ -112,7 +134,12 @@ static obj apply_internal (obj fn, obj args, obj env)
     built_in_fn f = (built_in_fn) pgm_read_word_near (&p -> global_fn);
     if (! f)
       throw_error (no_fdefn);
-    return (f (make_argv (args, env, pgm_read_byte_near (&p -> is_fexpr))));
+    obj argv = make_argv (args, evaluate, pgm_read_byte_near (&p -> is_fexpr));
+    objhdr *argv_hdr = get_header (argv);
+    argv_hdr -> flags |= gc_fixed;
+    obj res = f (argv);
+    argv_hdr -> flags &= ~ gc_fixed;
+    return (res);
   }
 
   case symbol_type:
@@ -134,22 +161,27 @@ static obj apply_internal (obj fn, obj args, obj env)
       decons (code, &type_sym, &code);
       decons (code, &params, &code);
       if (type_sym == obj_LAMBDA)
-	new_env = make_lambda_binding (params, args, env);
+	new_env = make_lambda_binding (params, args, evaluate);
       else
-	new_env = make_fexpr_binding (params, args, env);
+	new_env = make_fexpr_binding (params, args, current_environment);
     }
-    objhdr *env_hdr = NULL;
     if (new_env)
     {
+      objhdr *env_hdr = NULL;
       env_hdr = get_header (new_env);
-      env_hdr -> flags |= gc_fixed;
       env_hdr -> u.array_val [1] = fn_hdr -> u.closure_val.environment;
     }
     else
       new_env = fn_hdr -> u.closure_val.environment;
-    obj res = eval_progn (code, obj_NIL, new_env);
-    if (env_hdr)
-      env_hdr -> flags &= ~gc_fixed;
+
+    bool unprotect = save_env ();
+    obj keep_env = current_environment;
+    current_environment = new_env;
+    obj res = eval_progn (code, obj_NIL);
+    current_environment = keep_env;
+    if (unprotect)
+      get_header (current_environment) -> flags &= ~gc_fixed;
+
     return (res);
   }
 
@@ -158,7 +190,7 @@ static obj apply_internal (obj fn, obj args, obj env)
   }
 }
 
-obj eval_internal (obj expr, obj env)
+obj eval_internal (obj expr)
 {
   switch (get_type (expr))
   {
@@ -170,16 +202,16 @@ obj eval_internal (obj expr, obj env)
     {
       objhdr *p;
       obj res = new_object (closure_type, &p);
-      p -> u.closure_val.environment = env;
+      p -> u.closure_val.environment = current_environment;
       p -> u.closure_val.code = expr;
       return (res);
     }
-    return (apply_internal (car, cdr, env));
+    return (apply_internal (car, cdr, true));
   }
 
   case symbol_type:
   case rom_symbol_type:
-    return (symbol_value (expr, env));
+    return (symbol_value (expr));
 
   default:
     return (expr);
@@ -191,6 +223,5 @@ obj fn_apply (obj args)
   obj *argv = get_header (args) -> u.array_val;
   if (*argv++ != 2)
     throw_error (bad_argc);
-  
-  return (apply_internal (argv [0], argv [1], obj_T));
+  return (apply_internal (argv [0], argv [1], false));
 }

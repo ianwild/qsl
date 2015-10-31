@@ -7,13 +7,13 @@
 #include "obj.h"
 #include "symbols.h"
 
-obj eval_progn (obj o, obj res, obj env)
+obj eval_progn (obj o, obj res)
 {
   while (o != obj_NIL)
   {
     obj car, cdr;
     decons (o, &car, &cdr);
-    res = eval_internal (car, env);
+    res = eval_internal (car);
     o = cdr;
   }
   return (res);
@@ -30,7 +30,7 @@ obj fe_progn (obj args)
 {
   obj env;
   obj elist = split_args (args, &env);
-  return (eval_progn (elist, obj_NIL, env));
+  return (eval_progn (elist, obj_NIL));
 }
 
 obj fe_cond (obj args)
@@ -42,9 +42,9 @@ obj fe_cond (obj args)
     obj clause, car, cdr;
     decons (elist, &clause, &elist);
     decons (clause, &car, &cdr);
-    obj res = eval_internal (car, env);
+    obj res = eval_internal (car);
     if (res != obj_NIL)
-      return (eval_progn (cdr, res, env));
+      return (eval_progn (cdr, res));
   }
   return (obj_NIL);
 }
@@ -56,8 +56,8 @@ obj fe_while (obj args)
   obj elist = split_args (args, &env);
   obj car, cdr;
   decons (elist, &car, &cdr);
-  while (eval_internal (car, env) != obj_NIL)
-    eval_progn (cdr, obj_NIL, env);
+  while (eval_internal (car) != obj_NIL)
+    eval_progn (cdr, obj_NIL);
   return (obj_NIL);
 }
 
@@ -77,7 +77,7 @@ obj fe_setq (obj args)
   decons (cdr, &car, &cdr);
   if (cdr != obj_NIL)
     throw_error (bad_argc);
-  return (set_symbol_value (sym, env, eval_internal (car, env)));
+  return (set_symbol_value (sym, eval_internal (car)));
 }
 
 obj fe_defun (obj args)

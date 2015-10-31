@@ -47,7 +47,7 @@ int main (void)
     if (p)
       p -> flags |= gc_fixed;
     {
-      x = eval_internal (x, current_environment);
+      x = eval_internal (x);
     }
     if (p)
       p -> flags &= ~gc_fixed;

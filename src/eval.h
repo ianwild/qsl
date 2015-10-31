@@ -6,7 +6,7 @@
 obj fn_eval       (obj args);
 obj fn_apply      (obj args);
 
-obj eval_internal (obj expr, obj env);
+obj eval_internal (obj expr);
 
 extern obj current_environment;
 
