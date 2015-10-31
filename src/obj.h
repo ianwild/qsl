@@ -32,4 +32,6 @@ void               throw_error      (enum errcode e, char *file, int line);
 
 extern obj last_allocated_object;
 
+obj fn_dump (obj);
+
 #endif /* QSL_OBJ_H */

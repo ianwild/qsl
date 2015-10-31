@@ -6,6 +6,7 @@ OBJECTS += gc.o
 OBJECTS += integer.o
 OBJECTS += io.o
 OBJECTS += main.o
+OBJECTS += misc.o
 OBJECTS += obj.o
 OBJECTS += symbols.o
 
@@ -58,22 +59,24 @@ dep:
 
 
 ## AUTODEPS START ##
-cons.c:	cons.h gc.h obj.h
+cons.c:	cons.h gc.h io.h obj.h
 cons.h:	types.h
-eval.c:	cons.h eval.h obj.h
+eval.c:	cons.h eval.h fexprs.h io.h not-arduino.h obj.h symbols.h
 eval.h:	types.h
-fexprs.c:	cons.h eval.h fexprs.h obj.h
+fexprs.c:	cons.h eval.h fexprs.h io.h obj.h symbols.h
 fexprs.h:	types.h
-gc.c:	gc.h obj.h rom-symbols.h
+gc.c:	eval.h gc.h io.h obj.h rom-symbols.h
 gc.h:	obj.h
-integer.c:	integer.h obj.h
+hardware.h:	types.h
+integer.c:	integer.h io.h obj.h
 integer.h:	types.h
-io.c:	io.h obj.h
+io.c:	cons.h gc.h integer.h io.h not-arduino.h obj.h symbols.h
 io.h:	types.h
-main.c:	io.h not-arduino.h obj.h symbols.h
-obj.c:	cons.h eval.h fexprs.h gc.h integer.h io.h not-arduino.h obj.h rom-symbols.ci rom-symbols.h types.h
+main.c:	eval.h gc.h io.h not-arduino.h obj.h symbols.h
+misc.c:	misc.h obj.h
+misc.h:	types.h
+obj.c:	cons.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h not-arduino.h obj.h rom-symbols.ci rom-symbols.h types.h
 obj.h:	types.h
-rom-symbols.h:	types.h
-symbols.c:	not-arduino.h obj.h rom-symbols.h symbols.h
+symbols.c:	eval.h not-arduino.h obj.h rom-symbols.h symbols.h
 symbols.h:	types.h
 ## AUTODEPS END ##

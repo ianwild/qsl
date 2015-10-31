@@ -124,7 +124,7 @@ static obj make_fexpr_binding (obj params, obj args, obj env)
   return (obj_NIL);
 }
 
-static obj apply_internal (obj fn, obj args, bool evaluate)
+obj apply_internal (obj fn, obj args, bool evaluate)
 {
   switch (get_type (fn))
   {

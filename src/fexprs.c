@@ -102,3 +102,86 @@ obj fe_defun (obj args)
   get_header (sym) -> u.symbol_val.global_fn = closure;
   return (sym);
 }
+
+obj fe_and (obj args)
+{
+  obj res;
+  obj elist = split_args (args, &res);
+  res = obj_T;
+  while (elist && res != obj_NIL)
+  {
+    obj car;
+    decons (elist, &car, &elist);
+    res = eval_internal (car);
+  }
+  return (res);
+}
+
+obj fe_or (obj args)
+{
+  obj res;
+  obj elist = split_args (args, &res);
+  res = obj_NIL;
+  while (elist && res == obj_NIL)
+  {
+    obj car;
+    decons (elist, &car, &elist);
+    res = eval_internal (car);
+  }
+  return (res);
+}
+
+static obj let (obj args, bool star)
+{
+  obj bindings;
+  obj elist = split_args (args, &bindings);
+  decons (elist, &bindings, &elist);
+  uint16_t argc = internal_len (bindings);
+  if (argc == 0)
+    return (eval_progn (elist, obj_NIL));
+  obj new_env = new_extended_object (environment_type, 1 + 2 * argc);
+  objhdr *p = get_header (new_env);
+  p -> u.array_val [1] = current_environment;
+  if (star)
+    current_environment = new_env;
+  else
+    p -> flags |= gc_fixed;
+  uint16_t i = 2;
+  while (bindings)
+  {
+    obj one_binding;
+    decons (bindings, &one_binding, &bindings);
+    if (get_type (one_binding) == cons_type)
+    {
+      obj var, val;
+      decons (one_binding, &var, &one_binding);
+      decons (one_binding, &val, &one_binding);
+      val = eval_internal (val);
+      p -> u.array_val [i] = var;
+      p -> u.array_val [i + 1] = val;
+    }
+    else
+      p -> u.array_val [i] = one_binding;
+    i += 2;
+  }
+  if (! star)
+  {
+    current_environment = new_env;
+    p -> flags &= ~gc_fixed;
+  }
+  obj res = eval_progn (elist, obj_NIL);
+  current_environment = p -> u.array_val [1];
+
+  return (res);
+}
+
+obj fe_let (obj args)
+{
+  return (let (args, false));
+}
+
+obj fe_let_star (obj args)
+{
+  return (let (args, true));
+}
+

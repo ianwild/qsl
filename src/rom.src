@@ -36,6 +36,10 @@ cond		fe
 while		fe
 setq		fe
 defun		fe
+and		fe
+or		fe
+let		fe
+let*		fe_let_star
 
 eval		fn
 apply		fn
@@ -44,3 +48,16 @@ read		fn
 print		fn
 readchar	fn
 peekchar	fn
+
+not		fn
+eq		fn
+neq		fn
+
+?		fn_dump
+
+pin		fn
+on-tick		fn_on_tick
+on-serial	fn_on_serial
+wait-for-event	fn_wait_for_event
+do-events	fn_do_events
+

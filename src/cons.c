@@ -1,6 +1,8 @@
+#include <stdio.h>
 
 #include "cons.h"
 #include "gc.h"
+#include "io.h"
 #include "obj.h"
 
 static objhdr *get_cons_header (obj o)

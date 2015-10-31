@@ -7,6 +7,7 @@
 #endif
 
 #include "cons.h"
+#include "gc.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -121,7 +122,7 @@ static obj nreverse (obj x)
     prev = x;
     x = tmp;
   }
-  return (prev);
+  return (working_root = prev);
 }
 
 static obj read_list (void)
@@ -145,7 +146,6 @@ static obj read_list (void)
     }
     if (p)
       p -> flags &= ~gc_fixed;
-
   }
 }
 
@@ -216,6 +216,22 @@ void print1 (obj o)
       printc ('.');
       printc (' ');
       print1 (o);
+    }
+    printc (')');
+    break;
+  }
+
+  case array_type:
+  case environment_type:
+  {
+    printc ('#');
+    printc ('(');
+    obj *p = get_header (o) -> u.array_val;
+    uint16_t n = *p++;
+    while (n)
+    {
+      print1 (*p++);
+      n -= 1;
     }
     printc (')');
     break;

@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 #include "eval.h"
+#include "gc.h"
 #include "io.h"
 #include "obj.h"
 #include "symbols.h"
@@ -40,6 +41,7 @@ int main (void)
   for (;;)
   {
     printf ("\nqsl> ");
+    do_gc ();
     obj x = internal_read ();
     objhdr *p = (get_type (x) == cons_type) ? get_header (x) : NULL;
 

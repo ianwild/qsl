@@ -7,6 +7,9 @@
 
 static obj next_to_sweep;
 obj working_root;
+#if ! USE_LINUX
+obj tick_action, serial_action;
+#endif
 
 static void want_obj (obj o)
 {
@@ -24,19 +27,24 @@ static void mark_roots (void)
   for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
-    if ((p -> flags & gc_fixed) || (p -> xtype == global_binding_type))
+    if ((p -> flags & gc_fixed) ||
+	(p -> xtype == symbol_type && p -> u.symbol_val.global_fn) ||
+	(p -> xtype == global_binding_type))
       p -> flags |= gc_wanted;
   }
+  want_obj (working_root);
+  want_obj (current_environment);
+#if ! USE_LINUX
+  want_obj (tick_action);
+  want_obj (serial_action);
+#endif
 }
 
 void do_gc (void)
 {
-  printc ('.');
   next_to_sweep = LAST_ROM_OBJ + 1;
 
   mark_roots ();
-  want_obj (working_root);
-  want_obj (current_environment);
 
   while (next_to_sweep <= last_allocated_object)
   {
@@ -65,8 +73,7 @@ void do_gc (void)
       case environment_type:
       {
 	obj *q = p -> u.array_val;
-	uint16_t len = *q;
-	q -= len;
+	uint16_t len = *q++;
 	while (len--)
 	  want_obj (*q++);
 	break;
@@ -78,7 +85,7 @@ void do_gc (void)
   compact_string_space ();
 
   obj i;
-  obj high_water_mark = obj_NIL;
+  obj high_water_mark = LAST_ROM_OBJ;
 
   for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
@@ -88,8 +95,10 @@ void do_gc (void)
       p -> flags &= ~ (gc_wanted | gc_scanned);
       high_water_mark = i;
     }
-    else
+    else if (p -> xtype != unallocated_type)
+    {
       p -> xtype = unallocated_type;
+    }
   }
 
   last_allocated_object = high_water_mark;

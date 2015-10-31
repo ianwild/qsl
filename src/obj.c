@@ -12,7 +12,9 @@
 #include "eval.h"
 #include "fexprs.h"
 #include "gc.h"
+#include "hardware.h"
 #include "integer.h"
+#include "misc.h"
 #include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
@@ -20,13 +22,23 @@
 #include "types.h"
 
 static objhdr *headers;
-static uint8_t string_space [640];
+static uint8_t string_space [1280];
 static uint8_t *string_space_top = string_space;
 
 obj last_allocated_object = LAST_ROM_OBJ;
 
 #include "rom-symbols.ci"
 
+#if 0
+static void memstats (void)
+{
+  printf ("<%u|%u/%u>",
+	  string_space_top - string_space,
+	  (last_allocated_object - LAST_ROM_OBJ) * sizeof (objhdr),
+	  (last_allocated_object - LAST_ROM_OBJ));
+}
+#endif
+	  
 void init_memory (void)
 {
   headers = (objhdr *) (string_space + sizeof (string_space));
@@ -126,6 +138,18 @@ obj new_object (enum typecode type, objhdr **hdr)
   return (working_root = res);
 }
 
+obj fn_dump (obj args)
+{
+  obj i;
+  for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+  {
+    objhdr *p = get_header (i);
+    if (p -> xtype != unallocated_type)
+      printf ("0x%04x: %u\n", i, p -> xtype);
+  }
+  return (args);
+}
+
 obj new_extended_object (enum typecode type, uint16_t size)
 {
   int16_t true_size = size + 1;
@@ -178,10 +202,10 @@ uint8_t get_type (obj o)
     return (int_type);
   if (o >= FIRST_CHAR)
     return (char_type);
-  if (o > last_allocated_object)
-    return (unallocated_type);
   if (o <= LAST_ROM_OBJ)
     return (rom_symbol_type);
+  if (o > last_allocated_object)
+    return (unallocated_type);
   return ((headers - (o - LAST_ROM_OBJ)) -> xtype);
 }
 
@@ -219,5 +243,6 @@ void compact_string_space (void)
     }
     from += len;
   }
+
   string_space_top = to;
 }
