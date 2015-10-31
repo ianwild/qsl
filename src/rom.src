@@ -31,6 +31,7 @@ rplacd		fn
 =		fn_equals
 /=		fn_not_equals
 
+progn		fe
 cond		fe
 while		fe
 setq		fe

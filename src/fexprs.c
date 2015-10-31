@@ -1,6 +1,9 @@
+#include <stdio.h>
+
 #include "cons.h"
 #include "fexprs.h"
 #include "eval.h"
+#include "io.h"
 #include "obj.h"
 #include "symbols.h"
 
@@ -21,6 +24,13 @@ static obj split_args (obj args, obj *env)
   obj *argv = get_header (args) -> u.array_val;
   *env = argv [2];
   return (argv [1]);
+}
+
+obj fe_progn (obj args)
+{
+  obj env;
+  obj elist = split_args (args, &env);
+  return (eval_progn (elist, obj_NIL, env));
 }
 
 obj fe_cond (obj args)

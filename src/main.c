@@ -45,7 +45,10 @@ int main (void)
 
     obj x = new_extended_object (array_type, 1);
     obj tmp = fn_read (x);
+    objhdr *p = get_header (tmp);
+    p -> flags |= gc_fixed;
     tmp = eval_internal (tmp, current_environment);
+    p -> flags &= ~gc_fixed;
     get_header (x) -> u.array_val [1] = tmp;
     obj printer = find_symbol ((uint8_t *) "print", 5);
     built_in_fn f = (built_in_fn) pgm_read_word_near (&get_rom_header (printer) -> global_fn);
