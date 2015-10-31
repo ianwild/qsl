@@ -3,6 +3,7 @@
 
 #include "types.h"
 
+obj  eval_progn (obj o, obj res, obj env);
 
 obj  fe_progn   (obj args);
 obj  fe_cond    (obj args);

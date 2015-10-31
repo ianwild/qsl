@@ -8,6 +8,9 @@ uint8_t  readc           (void);
 void     pushbackc       (uint8_t ch);
 void     printc          (uint8_t ch);
 void     print1          (obj o);
+obj      internal_read   (void);
+
+extern bool slow_output;
 
 obj      fn_peekchar     (obj args);
 obj      fn_readchar     (obj args);

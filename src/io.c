@@ -12,8 +12,8 @@
 #include "obj.h"
 #include "symbols.h"
 
-static obj internal_read (void);
 
+bool slow_output;
 
 #if USE_LINUX
 uint8_t readc (void)
@@ -54,6 +54,7 @@ void (throw_error) (enum errcode e, char *file, int line)
     MSG (no_mem);
 #undef MSG
   }
+  slow_output = true;
   fprintf (stderr, "%s(%d): %s\n", file, line, msg);
   exit (1);
 }
@@ -135,15 +136,20 @@ static obj read_list (void)
 
     pushbackc (ch);
     objhdr *p = (res != obj_NIL) ? get_header (res) : NULL;
+
+    // protect res across the cons() call
     if (p)
       p -> flags |= gc_fixed;
-    res = cons (internal_read (), res);
+    {
+      res = cons (internal_read (), res);
+    }
     if (p)
       p -> flags &= ~gc_fixed;
+
   }
 }
 
-static obj internal_read (void)
+obj internal_read (void)
 {
   skip_blanks ();
   uint8_t ch1 = readc ();

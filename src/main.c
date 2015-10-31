@@ -39,20 +39,21 @@ int main (void)
 
   for (;;)
   {
-    printf ("t is 0x%04x\n", find_symbol ((uint8_t *) "t", 1));
-    printf ("xyzzy is 0x%04x\n", find_symbol ((uint8_t *) "xyzzy", 5));
-    printf ("plugh is 0x%04x\n", find_symbol ((uint8_t *) "plugh", 5));
+    printf ("\nqsl> ");
+    obj x = internal_read ();
+    objhdr *p = (get_type (x) == cons_type) ? get_header (x) : NULL;
 
-    obj x = new_extended_object (array_type, 1);
-    obj tmp = fn_read (x);
-    objhdr *p = get_header (tmp);
-    p -> flags |= gc_fixed;
-    tmp = eval_internal (tmp, current_environment);
-    p -> flags &= ~gc_fixed;
-    get_header (x) -> u.array_val [1] = tmp;
-    obj printer = find_symbol ((uint8_t *) "print", 5);
-    built_in_fn f = (built_in_fn) pgm_read_word_near (&get_rom_header (printer) -> global_fn);
-    f (x);
+    // protect x across the eval_internal() call
+    if (p)
+      p -> flags |= gc_fixed;
+    {
+      x = eval_internal (x, current_environment);
+    }
+    if (p)
+      p -> flags &= ~gc_fixed;
+
+    printf ("\n= ");
+    print1 (x);
   }
   return (0);
 }

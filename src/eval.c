@@ -7,6 +7,7 @@
 
 #include "cons.h"
 #include "eval.h"
+#include "fexprs.h"
 #include "io.h"
 #include "obj.h"
 #include "symbols.h"
@@ -44,17 +45,61 @@ static obj make_argv (obj args, obj env, bool is_fexpr)
     uint16_t argc = internal_len (args);
     obj res = new_extended_object (array_type, argc);
     objhdr *p = get_header (res);
+
+    // protect res across the eval_internal() calls
     p -> flags |= gc_fixed;
-    uint16_t i;
-    for (i = 1; i <= argc; i += 1)
     {
-      obj car;
-      decons (args, &car, &args);
-      p -> u.array_val [i] = eval_internal (car, env);
+      uint16_t i;
+      for (i = 1; i <= argc; i += 1)
+      {
+	obj car;
+	decons (args, &car, &args);
+	p -> u.array_val [i] = (env == obj_T) ? car : eval_internal (car, env);
+      }
     }
     p -> flags &= ~ gc_fixed;
+
     return (res);
   }
+}
+
+static obj make_lambda_binding (obj params, obj args, obj env)
+{
+  uint16_t len = internal_len (params);
+  if (len != internal_len (args))
+    throw_error (bad_argc);
+  if (len == 0)
+    return (obj_NIL);
+  obj res = new_extended_object (environment_type, 1 + 2 * len);
+  objhdr *p = get_header (res);
+
+  // protect res across the eval_internal() calls
+  p -> flags |= gc_fixed;
+  {
+    uint16_t i = 2;
+    while (params)
+    {
+      obj val;
+      decons (args, &val, &args);
+      if (env != obj_T)
+	val = eval_internal (val, env);
+      obj *bindings = p -> u.array_val;
+      decons (params, &bindings [i], &params);
+      bindings [i + 1] = val;
+      i += 2;
+    }
+  }
+  p -> flags &= ~ gc_fixed;
+
+  return (res);
+}
+
+static obj make_fexpr_binding (obj params, obj args, obj env)
+{
+  (void) params;
+  (void) args;
+  (void) env;
+  return (obj_NIL);
 }
 
 static obj apply_internal (obj fn, obj args, obj env)
@@ -71,6 +116,43 @@ static obj apply_internal (obj fn, obj args, obj env)
   }
 
   case symbol_type:
+  {
+    objhdr *fn_hdr = get_header (fn);
+    fn = fn_hdr -> u.symbol_val.global_fn;
+    if (! fn)
+      throw_error (no_fdefn);
+    // fall through to "apply closure"
+  }
+
+  case closure_type:
+  {
+    objhdr *fn_hdr = get_header (fn);
+    obj code = fn_hdr -> u.closure_val.code;
+    obj new_env;
+    {
+      obj type_sym, params;
+      decons (code, &type_sym, &code);
+      decons (code, &params, &code);
+      if (type_sym == obj_LAMBDA)
+	new_env = make_lambda_binding (params, args, env);
+      else
+	new_env = make_fexpr_binding (params, args, env);
+    }
+    objhdr *env_hdr = NULL;
+    if (new_env)
+    {
+      env_hdr = get_header (new_env);
+      env_hdr -> flags |= gc_fixed;
+      env_hdr -> u.array_val [1] = fn_hdr -> u.closure_val.environment;
+    }
+    else
+      new_env = fn_hdr -> u.closure_val.environment;
+    obj res = eval_progn (code, obj_NIL, new_env);
+    if (env_hdr)
+      env_hdr -> flags &= ~gc_fixed;
+    return (res);
+  }
+
   default:
     return (obj_NIL);
   }
@@ -106,5 +188,9 @@ obj eval_internal (obj expr, obj env)
 
 obj fn_apply (obj args)
 {
-  return (args);
+  obj *argv = get_header (args) -> u.array_val;
+  if (*argv++ != 2)
+    throw_error (bad_argc);
+  
+  return (apply_internal (argv [0], argv [1], obj_T));
 }

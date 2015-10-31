@@ -38,5 +38,7 @@ void pushbackc (uint8_t ch)
 void printc (uint8_t ch)
 {
   Serial.write (ch);
+  if (slow_output)
+    delay (10);
 }
 

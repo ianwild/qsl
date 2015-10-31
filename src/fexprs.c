@@ -7,7 +7,7 @@
 #include "obj.h"
 #include "symbols.h"
 
-static obj eval_progn (obj o, obj res, obj env)
+obj eval_progn (obj o, obj res, obj env)
 {
   while (o != obj_NIL)
   {
@@ -90,10 +90,15 @@ obj fe_defun (obj args)
     throw_error (bad_type);
   objhdr *p;
   obj closure = new_object (closure_type, &p);
+
+  // protect closure across the cons() call
   p -> flags |= gc_fixed;
-  p -> u.closure_val.environment = env;
-  p -> u.closure_val.code = cons (obj_LAMBDA, cdr);
+  {
+    p -> u.closure_val.environment = env;
+    p -> u.closure_val.code = cons (obj_LAMBDA, cdr);
+  }
   p -> flags &= ~ gc_fixed;
+
   get_header (sym) -> u.symbol_val.global_fn = closure;
   return (sym);
 }
