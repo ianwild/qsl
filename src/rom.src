@@ -53,11 +53,19 @@ not		fn
 eq		fn
 neq		fn
 
+make-string	fn
+make-array	fn
+length		fn
+aref		fn
+aset		fn
+char-code	fn
+code-char	fn
+
 ?		fn_dump
 
 pin		fn
-on-tick		fn_on_tick
-on-serial	fn_on_serial
-wait-for-event	fn_wait_for_event
-do-events	fn_do_events
+on-tick		fn
+on-serial	fn
+wait-for-event	fn
+do-events	fn
 

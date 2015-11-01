@@ -12,7 +12,10 @@ NF && ! /^#/ {
     lisp_name = $1;
     c_fn = $2;
     if (c_fn == "fn" || c_fn == "fe")
+    {
 	c_fn = c_fn "_" lisp_name;
+	gsub (/-/, "_", c_fn);
+    }
     else if (c_fn == "" || c_fn == "-")
 	c_fn = "NULL";
     symbol_table [next_sym] = lisp_name;

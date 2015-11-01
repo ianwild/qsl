@@ -46,6 +46,7 @@ void (throw_error) (enum errcode e, char *file, int line)
     MSG (bad_type);
     MSG (bad_obj);
     MSG (bad_argc);
+    MSG (bad_idx);
     MSG (div_by_zero);
     MSG (no_fdefn);
     MSG (no_mem);
@@ -67,6 +68,8 @@ static obj read_token (uint8_t ch1)
       break;
     if ((ch1 = readc ()) <= ' ' ||
 	ch1 == ';' ||
+	ch1 == '\'' ||
+	ch1 == '"' ||
 	ch1 == '(' ||
 	ch1 == ')')
     {
@@ -87,6 +90,27 @@ static obj read_token (uint8_t ch1)
   if (neg)
     tot = - tot;
   return (create_int (tot));
+}
+
+static obj read_string (void)
+{
+  uint8_t spelling [MAX_TOKEN];
+  uint16_t len = 0;
+  for (;;)
+  {
+    uint8_t ch = readc ();
+    if (ch == '"')
+      break;
+    else if (ch == '\\')
+      ch = readc ();
+    spelling [len] = ch;
+    if ((len += 1) == MAX_TOKEN)
+      break;
+  }
+  obj res = new_extended_object (string_type, len);
+  uint8_t *p = get_spelling (res, &len);
+  memcpy (p, spelling, len);
+  return (res);
 }
 
 static void skip_blanks (void)
@@ -149,13 +173,24 @@ obj internal_read (void)
 {
   skip_blanks ();
   uint8_t ch1 = readc ();
-  if (ch1 == '\'')
+
+  switch (ch1)
+  {
+  case '\'':
     return (cons (obj_QUOTE, cons (internal_read (), obj_NIL)));
 
-  if (ch1 == '(')
+  case '?':
+    return (FIRST_CHAR + readc ());
+
+  case '"':
+    return (read_string ());
+
+  case '(':
     return (read_list ());
 
-  return (read_token (ch1));
+  default:
+    return (read_token (ch1));
+  }
 }
 
 obj fn_read (obj args)
@@ -170,12 +205,25 @@ void print1 (obj o)
   switch (get_type (o))
   {
   case char_type:
-    printc ('#');
-    printc ('\\');
+    printc ('?');
     printc (o - FIRST_CHAR);
     break;
 
   case string_type:
+  {
+    uint16_t len;
+    uint8_t *p = get_spelling (o, &len);
+    printc ('"');
+    while (len--)
+    {
+      if (*p == '"' || *p == '\\')
+	printc ('\\');
+      printc (*p++);
+    }
+    printc ('"');
+    break;
+  }
+
   case symbol_type:
   {
     uint16_t len;
@@ -228,6 +276,8 @@ void print1 (obj o)
     {
       print1 (*p++);
       n -= 1;
+      if (n)
+	printc (' ');
     }
     printc (')');
     break;

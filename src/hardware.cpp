@@ -69,13 +69,13 @@ obj fn_do_events (obj args)
   {
     n += 1;
     last_time = millis ();
-    apply_internal (tick_action, obj_NIL, false);
+    apply_internal (tick_action, obj_NIL);
   }
 
   if (serial_action && Serial.available ())
   {
     n += 1;
-    apply_internal (serial_action, obj_NIL, false);
+    apply_internal (serial_action, obj_NIL);
   }
 
   return (create_int (n));

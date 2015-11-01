@@ -1,4 +1,5 @@
 OBJECTS =
+OBJECTS += arrays.o
 OBJECTS += cons.o
 OBJECTS += eval.o
 OBJECTS += fexprs.o
