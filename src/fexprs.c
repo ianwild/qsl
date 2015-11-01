@@ -183,3 +183,10 @@ obj fe_let_star (obj args)
   return (let (args, true));
 }
 
+obj fe_apply (obj args)
+{
+  obj env;
+  obj fn = split_args (args, &env);
+  decons (fn, &fn, &args);
+  return (apply_internal (eval_internal (fn), args));
+}

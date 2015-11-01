@@ -15,5 +15,6 @@ obj   fe_and           (obj args);
 obj   fe_or            (obj args);
 obj   fe_let           (obj args);
 obj   fe_let_star      (obj args);
+obj   fe_apply         (obj args);
 
 #endif /* QSL_FEXPRS_H */

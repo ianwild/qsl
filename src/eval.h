@@ -4,10 +4,9 @@
 #include "types.h"
 
 obj  fn_eval           (obj args);
-obj  fn_apply          (obj args);
 
 obj  eval_internal     (obj expr);
-obj  apply_internal    (obj fn, obj args, bool evaluate);
+obj  apply_internal    (obj fn, obj args);
 
 extern obj current_environment;
 

@@ -47,7 +47,7 @@ obj fn_eval (obj args)
 }
 
 
-static obj make_argv (obj args, bool evaluate, bool is_fexpr)
+static obj make_argv (obj args, bool is_fexpr)
 {
   if (is_fexpr)
   {
@@ -71,8 +71,7 @@ static obj make_argv (obj args, bool evaluate, bool is_fexpr)
       {
 	obj car;
 	decons (args, &car, &args);
-	if (evaluate)
-	  car = eval_internal (car);
+	car = eval_internal (car);
 	p -> u.array_val [i] = car;
       }
     }
@@ -82,7 +81,7 @@ static obj make_argv (obj args, bool evaluate, bool is_fexpr)
   }
 }
 
-static obj make_lambda_binding (obj params, obj args, bool evaluate)
+static obj make_lambda_binding (obj params, obj args)
 {
   uint16_t len = internal_len (params);
   if (len != internal_len (args))
@@ -100,8 +99,7 @@ static obj make_lambda_binding (obj params, obj args, bool evaluate)
     {
       obj val;
       decons (args, &val, &args);
-      if (evaluate)
-	val = eval_internal (val);
+      val = eval_internal (val);
       obj *bindings = p -> u.array_val;
       decons (params, &bindings [i], &params);
       bindings [i + 1] = val;
@@ -121,7 +119,7 @@ static obj make_fexpr_binding (obj params, obj args, obj env)
   return (obj_NIL);
 }
 
-obj apply_internal (obj fn, obj args, bool evaluate)
+obj apply_internal (obj fn, obj args)
 {
   switch (get_type (fn))
   {
@@ -131,7 +129,7 @@ obj apply_internal (obj fn, obj args, bool evaluate)
     built_in_fn f = (built_in_fn) pgm_read_word_near (&p -> global_fn);
     if (! f)
       throw_error (no_fdefn);
-    obj argv = make_argv (args, evaluate, pgm_read_byte_near (&p -> is_fexpr));
+    obj argv = make_argv (args, pgm_read_byte_near (&p -> is_fexpr));
     objhdr *argv_hdr = get_header (argv);
     argv_hdr -> flags |= gc_fixed;
     obj res = f (argv);
@@ -158,7 +156,7 @@ obj apply_internal (obj fn, obj args, bool evaluate)
       decons (code, &type_sym, &code);
       decons (code, &params, &code);
       if (type_sym == obj_LAMBDA)
-	new_env = make_lambda_binding (params, args, evaluate);
+	new_env = make_lambda_binding (params, args);
       else
 	new_env = make_fexpr_binding (params, args, current_environment);
     }
@@ -203,7 +201,7 @@ obj eval_internal (obj expr)
       p -> u.closure_val.code = expr;
       return (res);
     }
-    return (apply_internal (car, cdr, true));
+    return (apply_internal (car, cdr));
   }
 
   case symbol_type:
@@ -215,10 +213,3 @@ obj eval_internal (obj expr)
   }
 }
 
-obj fn_apply (obj args)
-{
-  obj *argv = get_header (args) -> u.array_val;
-  if (*argv++ != 2)
-    throw_error (bad_argc);
-  return (apply_internal (argv [0], argv [1], false));
-}
