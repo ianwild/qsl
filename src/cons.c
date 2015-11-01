@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "cons.h"
 #include "gc.h"
 #include "io.h"

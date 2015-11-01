@@ -1,9 +1,6 @@
+#include "target.h"
+
 #include <stdio.h>
-#if USE_LINUX
-#include "not-arduino.h"
-#else
-#include <Arduino.h>
-#endif
 
 #include "cons.h"
 #include "eval.h"

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "integer.h"
 #include "io.h"
 #include "obj.h"

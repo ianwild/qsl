@@ -1,10 +1,7 @@
+#include "target.h"
+
 #include <stdio.h>
-#if USE_LINUX
 #include <stdlib.h>
-#include "not-arduino.h"
-#else
-#include <Arduino.h>
-#endif
 
 #include "cons.h"
 #include "gc.h"
@@ -13,10 +10,9 @@
 #include "obj.h"
 #include "symbols.h"
 
-
 bool slow_output;
 
-#if USE_LINUX
+#if ! TARGET_ARDUINO
 uint8_t readc (void)
 {
   return (getchar ());

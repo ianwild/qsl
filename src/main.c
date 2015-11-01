@@ -1,10 +1,4 @@
 #include <stdio.h>
-#if USE_LINUX
-#include <stdlib.h>
-#include "not-arduino.h"
-#else
-#include <Arduino.h>
-#endif
 
 #if __cplusplus
 extern "C" {
@@ -15,12 +9,13 @@ extern "C" {
 #include "io.h"
 #include "obj.h"
 #include "symbols.h"
+#include "target.h"
 
 #ifdef __cplusplus
 }
 #endif
 
-#if ! USE_LINUX
+#if TARGET_ARDUINO
 static int stdout_write (char ch, FILE *dummy)
 {
   (void) dummy;
@@ -31,7 +26,7 @@ static int stdout_write (char ch, FILE *dummy)
 
 int main (void)
 {
-#if ! USE_LINUX
+#if TARGET_ARDUINO
   init ();
   Serial.begin (9600);
   stderr = stdout = fdevopen (stdout_write, 0);

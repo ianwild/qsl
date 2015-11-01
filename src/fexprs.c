@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "cons.h"
 #include "fexprs.h"
 #include "eval.h"

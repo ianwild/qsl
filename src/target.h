@@ -1,5 +1,11 @@
-#ifndef QSL_NOT_ARDUINO_H
-#define QSL_NOT_ARDUINO_H
+#ifndef QSL_TARGET_H
+#define QSL_TARGET_H
+
+#if TARGET_ARDUINO
+
+#include <Arduino.h>
+
+#else
 
 /*
 
@@ -22,4 +28,7 @@
 #define pgm_read_byte_near(x) (*(x))
 #define pgm_read_word_near(x) (*(x))
 
-#endif /* QSL_NOT_ARDUINO_H */
+
+#endif
+
+#endif /* QSL_TARGET_H */

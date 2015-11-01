@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "gc.h"
 #include "eval.h"
 #include "io.h"
@@ -7,7 +6,8 @@
 
 static obj next_to_sweep;
 obj working_root;
-#if ! USE_LINUX
+
+#if TARGET_ARDUINO
 obj tick_action, serial_action;
 #endif
 
@@ -34,7 +34,7 @@ static void mark_roots (void)
   }
   want_obj (working_root);
   want_obj (current_environment);
-#if ! USE_LINUX
+#if TARGET_ARDUINO
   want_obj (tick_action);
   want_obj (serial_action);
 #endif

@@ -17,7 +17,7 @@ GENERATED += rom-symbols.h
 
 OPTIMISER_FLAGS = -O6 -flto
 WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
-CFLAGS = $(OPTIMISER_FLAGS) -DUSE_LINUX $(WARNING_FLAGS)
+CFLAGS = $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
 LDFLAGS = $(OPTIMISER_FLAGS)
 
 qsl:	$(OBJECTS)
@@ -61,7 +61,7 @@ dep:
 ## AUTODEPS START ##
 cons.c:	cons.h gc.h io.h obj.h
 cons.h:	types.h
-eval.c:	cons.h eval.h fexprs.h io.h not-arduino.h obj.h symbols.h
+eval.c:	cons.h eval.h fexprs.h io.h obj.h symbols.h target.h
 eval.h:	types.h
 fexprs.c:	cons.h eval.h fexprs.h io.h obj.h symbols.h
 fexprs.h:	types.h
@@ -70,13 +70,14 @@ gc.h:	obj.h
 hardware.h:	types.h
 integer.c:	integer.h io.h obj.h
 integer.h:	types.h
-io.c:	cons.h gc.h integer.h io.h not-arduino.h obj.h symbols.h
+io.c:	cons.h gc.h integer.h io.h obj.h symbols.h target.h
 io.h:	types.h
-main.c:	eval.h gc.h io.h not-arduino.h obj.h symbols.h
+main.c:	eval.h gc.h io.h obj.h symbols.h target.h
 misc.c:	misc.h obj.h
 misc.h:	types.h
-obj.c:	cons.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h not-arduino.h obj.h rom-symbols.ci rom-symbols.h types.h
+obj.c:	cons.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h
 obj.h:	types.h
-symbols.c:	eval.h not-arduino.h obj.h rom-symbols.h symbols.h
+rom-symbols.h:	types.h
+symbols.c:	eval.h obj.h rom-symbols.h symbols.h target.h
 symbols.h:	types.h
 ## AUTODEPS END ##

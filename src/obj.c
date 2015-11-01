@@ -1,10 +1,6 @@
-#include <stdio.h>
-#if USE_LINUX
-#include "not-arduino.h"
-#else
-#include <Arduino.h>
-#endif
+#include "target.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,7 +13,6 @@
 #include "misc.h"
 #include "io.h"
 #include "obj.h"
-#include "rom-symbols.h"
 #include "rom-symbols.h"
 #include "types.h"
 

@@ -7,7 +7,7 @@ void do_gc (void);
 
 extern obj working_root;
 
-#if ! USE_LINUX
+#if TARGET_ARDUINO
 extern obj tick_action, serial_action;
 #endif
 

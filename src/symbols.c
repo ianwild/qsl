@@ -1,10 +1,7 @@
-#include <stdio.h>
-#if USE_LINUX
+#include "target.h"
+
+#include <stdlib.h>
 #include <string.h>
-#include "not-arduino.h"
-#else
-#include <Arduino.h>
-#endif
 
 #include "eval.h"
 #include "obj.h"
