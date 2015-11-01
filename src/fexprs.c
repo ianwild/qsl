@@ -78,7 +78,7 @@ obj fe_setq (obj args)
   return (set_symbol_value (sym, eval_internal (car)));
 }
 
-obj fe_defun (obj args)
+static obj defun_common (obj args, obj tag)
 {
   obj env;
   obj arglist = split_args (args, &env);
@@ -93,12 +93,22 @@ obj fe_defun (obj args)
   p -> flags |= gc_fixed;
   {
     p -> u.closure_val.environment = env;
-    p -> u.closure_val.code = cons (obj_LAMBDA, cdr);
+    p -> u.closure_val.code = cons (tag, cdr);
   }
   p -> flags &= ~ gc_fixed;
 
   get_header (sym) -> u.symbol_val.global_fn = closure;
   return (sym);
+}
+
+obj fe_defun (obj args)
+{
+  return (defun_common (args, obj_LAMBDA));
+}
+
+obj fe_fexpr (obj args)
+{
+  return (defun_common (args, obj_FEXPR));
 }
 
 obj fe_and (obj args)

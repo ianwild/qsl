@@ -10,7 +10,7 @@ nil		-
 t		-
 quote		fe
 lambda		-
-fexpr		-
+fexpr		fe
 
 car		fn
 cdr		fn

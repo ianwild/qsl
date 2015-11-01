@@ -111,12 +111,19 @@ static obj make_lambda_binding (obj params, obj args)
   return (res);
 }
 
-static obj make_fexpr_binding (obj params, obj args, obj env)
+static obj make_fexpr_binding (obj params, obj args)
 {
-  (void) params;
-  (void) args;
-  (void) env;
-  return (obj_NIL);
+  if (internal_len (params) != 2)
+    throw_error (bad_argc);
+  obj res = new_extended_object (environment_type, 1 + 2 * 2);
+  obj *p = get_header (res) -> u.array_val;
+
+  decons (params, &p [2], &params);
+  p [3] = args;
+  decons (params, &p [4], &params);
+  p [5] = current_environment;
+
+  return (res);
 }
 
 obj apply_internal (obj fn, obj args)
@@ -158,7 +165,7 @@ obj apply_internal (obj fn, obj args)
       if (type_sym == obj_LAMBDA)
 	new_env = make_lambda_binding (params, args);
       else
-	new_env = make_fexpr_binding (params, args, current_environment);
+	new_env = make_fexpr_binding (params, args);
     }
     if (new_env)
     {

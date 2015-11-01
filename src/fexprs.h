@@ -11,6 +11,7 @@ obj   fe_while         (obj args);
 obj   fe_quote         (obj args);
 obj   fe_setq          (obj args);
 obj   fe_defun         (obj args);
+obj   fe_fexpr         (obj args);
 obj   fe_and           (obj args);
 obj   fe_or            (obj args);
 obj   fe_let           (obj args);
