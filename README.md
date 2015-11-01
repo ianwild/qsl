@@ -2,7 +2,7 @@
 
 A little while ago (2015-10-13, apparently) I wondered
 
-> Is there sufficient space rocessing power on an Arduino Nano to run something that's recognisably an interactive Lisp environment?  And, if so, would the massive 2K of RAM be enough to do anything useful?  Or even enough to blink the LED on a timer?
+> Is there sufficient space and processing power on an Arduino Nano to run something that's recognisably an interactive Lisp environment?  And, if so, would the massive 2K of RAM be enough to do anything useful?  Or even enough to blink the LED on a timer?
 
 Thus was born QSL - a Quite Small Lisp.
 
