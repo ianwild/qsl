@@ -2,6 +2,8 @@
 #include "io.h"
 #include "obj.h"
 
+static const char PROGMEM this_file [] = __FILE__;
+
 int32_t get_int_val (obj o)
 {
   if (o >= FIRST_SMALL_INT)

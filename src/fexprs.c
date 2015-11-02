@@ -5,6 +5,8 @@
 #include "obj.h"
 #include "symbols.h"
 
+static const char PROGMEM this_file [] = __FILE__;
+
 obj eval_progn (obj o, obj res)
 {
   while (o != obj_NIL)

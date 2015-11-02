@@ -1,9 +1,3 @@
-#include <stdio.h>
-
-#if __cplusplus
-extern "C" {
-#endif
-
 #include "eval.h"
 #include "gc.h"
 #include "io.h"
@@ -11,11 +5,8 @@ extern "C" {
 #include "symbols.h"
 #include "target.h"
 
-#ifdef __cplusplus
-}
-#endif
 
-#if TARGET_ARDUINO
+#if 0 && TARGET_ARDUINO
 static int stdout_write (char ch, FILE *dummy)
 {
   (void) dummy;
@@ -29,13 +20,16 @@ int main (void)
 #if TARGET_ARDUINO
   init ();
   Serial.begin (9600);
-  stderr = stdout = fdevopen (stdout_write, 0);
+  // stderr = stdout = fdevopen (stdout_write, 0);
 #endif
   init_memory ();
 
   for (;;)
   {
-    printf ("\nqsl> ");
+    {
+      static const char PROGMEM prompt [] = "\nqsl> ";
+      print_rom_string (prompt);
+    }
     do_gc ();
     obj x = internal_read ();
     objhdr *p = (get_type (x) == cons_type) ? get_header (x) : NULL;
@@ -49,7 +43,10 @@ int main (void)
     if (p)
       p -> flags &= ~gc_fixed;
 
-    printf ("\n= ");
+    {
+      static const char PROGMEM prompt [] = "\n= ";
+      print_rom_string (prompt);
+    }
     print1 (x);
   }
   return (0);

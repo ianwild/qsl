@@ -1,7 +1,3 @@
-#include "target.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "arrays.h"
@@ -15,10 +11,13 @@
 #include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
+#include "target.h"
 #include "types.h"
 
+static const char PROGMEM this_file [] = __FILE__;
+
 static objhdr *headers;
-static uint8_t string_space [1024];
+static uint8_t string_space [1280];
 static uint8_t *string_space_top = string_space;
 
 obj last_allocated_object = LAST_ROM_OBJ;
@@ -28,10 +27,13 @@ obj last_allocated_object = LAST_ROM_OBJ;
 #if 0
 static void memstats (void)
 {
-  printf ("<%u|%u/%u>",
-	  string_space_top - string_space,
-	  (last_allocated_object - LAST_ROM_OBJ) * sizeof (objhdr),
-	  (last_allocated_object - LAST_ROM_OBJ));
+  printc ('<');
+  print_int (string_space_top - string_space);
+  printc ('|');
+  print_int ((last_allocated_object - LAST_ROM_OBJ) * sizeof (objhdr));
+  printc ('/');
+  print_int (last_allocated_object - LAST_ROM_OBJ);
+  printc ('>');
 }
 #endif
 	  
@@ -132,18 +134,6 @@ obj new_object (enum typecode type, objhdr **hdr)
   if (hdr)
     *hdr = p;
   return (working_root = res);
-}
-
-obj fn_dump (obj args)
-{
-  obj i;
-  for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
-  {
-    objhdr *p = get_header (i);
-    if (p -> xtype != unallocated_type)
-      printf ("0x%04x: %u\n", i, p -> xtype);
-  }
-  return (args);
 }
 
 obj new_extended_object (enum typecode type, uint16_t size)

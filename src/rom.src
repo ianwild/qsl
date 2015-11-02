@@ -61,8 +61,6 @@ aset		fn
 char-code	fn
 code-char	fn
 
-?		fn_dump
-
 pin		fn
 on-tick		fn
 on-serial	fn

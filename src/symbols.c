@@ -1,12 +1,12 @@
-#include "target.h"
-
-#include <stdlib.h>
 #include <string.h>
 
 #include "eval.h"
 #include "obj.h"
 #include "rom-symbols.h"
 #include "symbols.h"
+#include "target.h"
+
+static const char PROGMEM this_file [] = __FILE__;
 
 obj find_symbol (uint8_t *spelling, uint16_t len)
 {

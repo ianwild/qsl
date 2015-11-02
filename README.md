@@ -26,16 +26,19 @@ Getting that far turned out to be surprisingly easy, so I kept adding features u
     (pin 13 state)
     (setq state (not state))))
 
-(setq running t)
-
 (on-tick 500 blink)
 
-(on-serial (lambda () (setq running nil)))
+(on-serial
+ (lambda ()
+   (cond
+    ((>= (readchar) ? ) (setq running nil)))))
 
+(setq running t)
 (while running
   (wait-for-event)
   (do-events))
 ```
 to get the LED blinking at 1Hz, have the interpreter return to the prompt on a keystroke, _and_ with the processor spending most of its time in a `sleep` state.
 
-All round, not too shoddy for three weeks' work.
+Now all I need to do is document it.
+

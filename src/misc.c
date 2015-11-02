@@ -2,6 +2,7 @@
 #include "integer.h"
 #include "obj.h"
 
+static const char PROGMEM this_file [] = __FILE__;
 
 obj fn_not (obj args)
 {

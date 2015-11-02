@@ -1,8 +1,9 @@
-#include "target.h"
 #include "arrays.h"
 #include "cons.h"
 #include "integer.h"
 #include "obj.h"
+
+static const char PROGMEM this_file [] = __FILE__;
 
 static obj make_xxx (obj args, enum typecode t)
 {

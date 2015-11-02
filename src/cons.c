@@ -3,6 +3,8 @@
 #include "io.h"
 #include "obj.h"
 
+static const char PROGMEM this_file [] = __FILE__;
+
 static objhdr *get_cons_header (obj o)
 {
   if (get_type (o) != cons_type)

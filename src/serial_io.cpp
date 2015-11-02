@@ -1,8 +1,4 @@
-#include <Arduino.h>
-
-extern "C" {
 #include "io.h"
-}
 
 static int16_t latch = -1;
 

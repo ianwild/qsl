@@ -1,6 +1,7 @@
 #ifndef QSL_OBJ_H
 #define QSL_OBJ_H
 
+#include "target.h"
 #include "types.h"
 
 #define obj_NIL               OBJECT_C (0)
@@ -14,6 +15,7 @@
 #define FIRST_CHAR            OBJECT_C (0x7F00)
 #define LAST_POSSIBLE_OBJECT  OBJECT_C (0x7EFF)
 
+START_EXTERN_C
 
 void               init_memory          (void);
 
@@ -27,11 +29,11 @@ obj                new_object           (enum typecode type, objhdr **hdr);
 obj                new_extended_object  (enum typecode type, uint16_t size);
 void               compact_string_space (void);
 
-void               throw_error      (enum errcode e, char *file, int line);
-#define throw_error(e) throw_error (e, __FILE__, __LINE__)
+void               throw_error      (enum errcode e, const char *file, int line);
+#define throw_error(e) throw_error (e, this_file, __LINE__)
 
 extern obj last_allocated_object;
 
-obj fn_dump (obj);
+END_EXTERN_C
 
 #endif /* QSL_OBJ_H */

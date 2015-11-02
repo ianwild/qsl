@@ -1,7 +1,3 @@
-#include "target.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "cons.h"
@@ -10,6 +6,7 @@
 #include "io.h"
 #include "obj.h"
 #include "symbols.h"
+#include "target.h"
 
 bool slow_output;
 
@@ -35,14 +32,42 @@ void printc (uint8_t ch)
 {
   putchar (ch);
 }
+
 #endif
 
-void (throw_error) (enum errcode e, char *file, int line)
+void print_rom_string (const char *p)
 {
-  char *msg = "weird";
+  uint8_t ch;
+
+  while ((ch = (uint8_t) pgm_read_byte_near (p++)) != 0)
+    printc (ch);
+}
+
+void print_int (int32_t n0)
+{
+  bool neg = (n0 < 0);
+  uint32_t n = neg ? -n0 : n0;
+  uint8_t buf [10];
+  uint8_t *p = buf;
+  while (n >= 10)
+  {
+    *p++ = n % 10;
+    n /= 10;
+  }
+  *p++ = n;
+  if (neg)
+    printc ('-');
+  while (p > buf)
+    printc ('0' + *--p);
+}
+
+void (throw_error) (enum errcode e, const char *file, int line)
+{
+  static const char PROGMEM weird [] = "weird";
+  const char *msg = weird;
   switch (e)
   {
-#define MSG(x) case x: msg = #x; break
+#define MSG(x) case x: {static const char PROGMEM x [] = #x; msg = x;} break
     MSG (no_error);
     MSG (bad_type);
     MSG (bad_obj);
@@ -54,7 +79,15 @@ void (throw_error) (enum errcode e, char *file, int line)
 #undef MSG
   }
   slow_output = true;
-  fprintf (stderr, "%s(%d): %s\n", file, line, msg);
+  print_rom_string (file);
+  printc ('(');
+  print_int (line);
+  {
+    static const char PROGMEM close_bracket [] = "): ";
+    print_rom_string (close_bracket);
+  }
+  print_rom_string (msg);
+  printc ('\n');
   exit (1);
 }
 
@@ -285,12 +318,20 @@ void print1 (obj o)
   }
 
   case int_type:
-    printf ("%ld", (long)get_int_val (o));
+    print_int (get_int_val (o));
     break;
 
   default:
-    printf ("#<obj 0x%04x, type %d>", o, get_type (o));
+  {
+    static const char PROGMEM open_bracket [] = "#<obj ";
+    static const char PROGMEM comma [] = ", type ";
+    print_rom_string (open_bracket);
+    print_int (o);
+    print_rom_string (comma);
+    print_int (get_type (o));
+    printc ('>');
     break;
+  }
   }
 }
 

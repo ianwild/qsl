@@ -1,13 +1,12 @@
-#include "target.h"
-
-#include <stdio.h>
-
 #include "cons.h"
 #include "eval.h"
 #include "fexprs.h"
 #include "io.h"
 #include "obj.h"
 #include "symbols.h"
+#include "target.h"
+
+static const char PROGMEM this_file [] = __FILE__;
 
 obj current_environment;
 
