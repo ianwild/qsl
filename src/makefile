@@ -60,25 +60,26 @@ dep:
 
 
 ## AUTODEPS START ##
+arrays.c:	arrays.h cons.h integer.h obj.h
+arrays.h:	target.h types.h
 cons.c:	cons.h gc.h io.h obj.h
-cons.h:	types.h
+cons.h:	target.h types.h
 eval.c:	cons.h eval.h fexprs.h io.h obj.h symbols.h target.h
-eval.h:	types.h
+eval.h:	target.h types.h
 fexprs.c:	cons.h eval.h fexprs.h io.h obj.h symbols.h
-fexprs.h:	types.h
+fexprs.h:	target.h types.h
 gc.c:	eval.h gc.h io.h obj.h rom-symbols.h
-gc.h:	obj.h
-hardware.h:	types.h
+gc.h:	obj.h target.h
+hardware.h:	target.h types.h
 integer.c:	integer.h io.h obj.h
-integer.h:	types.h
+integer.h:	target.h types.h
 io.c:	cons.h gc.h integer.h io.h obj.h symbols.h target.h
-io.h:	types.h
+io.h:	target.h types.h
 main.c:	eval.h gc.h io.h obj.h symbols.h target.h
-misc.c:	misc.h obj.h
-misc.h:	types.h
-obj.c:	cons.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h
-obj.h:	types.h
-rom-symbols.h:	types.h
+misc.c:	integer.h misc.h obj.h
+misc.h:	target.h types.h
+obj.c:	arrays.h cons.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h
+obj.h:	target.h types.h
 symbols.c:	eval.h obj.h rom-symbols.h symbols.h target.h
-symbols.h:	types.h
+symbols.h:	target.h types.h
 ## AUTODEPS END ##
