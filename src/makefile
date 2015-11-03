@@ -40,7 +40,7 @@ arduino: clean rom-symbols.ci rom-symbols.h
 
 clean:
 	rm -fr arduino
-	rm -f $(OBJECTS) $(GENERATED) *~ *.bak *.s
+	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s
 
 tar:	clean
 	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`   \
