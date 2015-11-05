@@ -63,11 +63,10 @@ void print_int (int32_t n0)
 
 void (throw_error) (enum errcode e, const char *file, int line)
 {
-  static const char PROGMEM weird [] = "weird";
-  const char *msg = weird;
+  const char *msg = PSTR ("weird");
   switch (e)
   {
-#define MSG(x) case x: {static const char PROGMEM x [] = #x; msg = x;} break
+#define MSG(x) case x: msg = PSTR (#x); break
     MSG (no_error);
     MSG (bad_type);
     MSG (bad_obj);
@@ -82,10 +81,7 @@ void (throw_error) (enum errcode e, const char *file, int line)
   print_rom_string (file);
   printc ('(');
   print_int (line);
-  {
-    static const char PROGMEM close_bracket [] = "): ";
-    print_rom_string (close_bracket);
-  }
+  print_rom_string (PSTR ("): "));
   print_rom_string (msg);
   printc ('\n');
   exit (1);
@@ -323,11 +319,9 @@ void print1 (obj o)
 
   default:
   {
-    static const char PROGMEM open_bracket [] = "#<obj ";
-    static const char PROGMEM comma [] = ", type ";
-    print_rom_string (open_bracket);
+    print_rom_string (PSTR ("#<obj "));
     print_int (o);
-    print_rom_string (comma);
+    print_rom_string (PSTR (", type "));
     print_int (get_type (o));
     printc ('>');
     break;

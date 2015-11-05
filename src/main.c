@@ -26,10 +26,7 @@ int main (void)
 
   for (;;)
   {
-    {
-      static const char PROGMEM prompt [] = "\nqsl> ";
-      print_rom_string (prompt);
-    }
+    print_rom_string (PSTR ("\nqsl> "));
     do_gc ();
     obj x = internal_read ();
     objhdr *p = (get_type (x) == cons_type) ? get_header (x) : NULL;
@@ -43,10 +40,7 @@ int main (void)
     if (p)
       p -> flags &= ~gc_fixed;
 
-    {
-      static const char PROGMEM prompt [] = "\n= ";
-      print_rom_string (prompt);
-    }
+    print_rom_string (PSTR ("\n= "));
     print1 (x);
   }
   return (0);
