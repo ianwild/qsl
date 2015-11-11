@@ -6,11 +6,11 @@
 BOARD_TAG = nano328
 MONITOR_PORT = /dev/ttyUSB0
 
-OPTIMISER_FLAGS = -O6 -flto
-WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
+EXTRA_FLAGS = -Os -flto
+DEFS = -DTARGET_ARDUINO=1
 
-CFLAGS   += $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=1 $(WARNING_FLAGS)
-CXXFLAGS += -std=gnu++11 $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=1
-LDFLAGS  += $(OPTIMISER_FLAGS)
+CFLAGS   += $(DEFS) -W -Wall
+CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror
+CXXFLAGS += $(DEFS) -W -Wall -std=gnu++11
 
 include /usr/share/arduino/Arduino.mk
