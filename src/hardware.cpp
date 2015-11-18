@@ -48,6 +48,8 @@ static bool isReady (void)
 obj fn_wait_for_event (obj args)
 {
   (void) args;
+  sleep_enable ();
+  set_sleep_mode (SLEEP_MODE_IDLE);
   for (;;)
   {
     noInterrupts ();
