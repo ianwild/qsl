@@ -47,7 +47,7 @@ typedef uint16_t obj;
 
 #define MAX_TOKEN 16
 
-typedef obj (*built_in_fn) (obj args);
+typedef obj (*built_in_fn) (uint8_t argc);
 
 
 typedef struct rom_object

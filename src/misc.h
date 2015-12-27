@@ -6,15 +6,15 @@
 
 START_EXTERN_C
 
-obj       fn_not          (obj args);
-obj       fn_eq           (obj args);
-obj       fn_neq          (obj args);
-obj       fn_lt           (obj args);
-obj       fn_le           (obj args);
-obj       fn_gt           (obj args);
-obj       fn_ge           (obj args);
-obj       fn_equals       (obj args);
-obj       fn_not_equals   (obj args);
+obj       fn_not          (uint8_t argc);
+obj       fn_eq           (uint8_t argc);
+obj       fn_neq          (uint8_t argc);
+obj       fn_lt           (uint8_t argc);
+obj       fn_le           (uint8_t argc);
+obj       fn_gt           (uint8_t argc);
+obj       fn_ge           (uint8_t argc);
+obj       fn_equals       (uint8_t argc);
+obj       fn_not_equals   (uint8_t argc);
 
 END_EXTERN_C
 

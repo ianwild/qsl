@@ -6,13 +6,13 @@
 
 START_EXTERN_C
 
-obj   fn_make_string	(obj args);
-obj   fn_make_array	(obj args);
-obj   fn_length		(obj args);
-obj   fn_aref		(obj args);
-obj   fn_aset		(obj args);
-obj   fn_char_code	(obj args);
-obj   fn_code_char	(obj args);
+obj   fn_make_string	(uint8_t argc);
+obj   fn_make_array	(uint8_t argc);
+obj   fn_length		(uint8_t argc);
+obj   fn_aref		(uint8_t argc);
+obj   fn_aset		(uint8_t argc);
+obj   fn_char_code	(uint8_t argc);
+obj   fn_code_char	(uint8_t argc);
 
 END_EXTERN_C
 

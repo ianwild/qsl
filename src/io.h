@@ -17,10 +17,10 @@ void     print_int        (int32_t n0);
 
 extern bool slow_output;
 
-obj      fn_peekchar     (obj args);
-obj      fn_readchar     (obj args);
-obj      fn_read         (obj args);
-obj      fn_print        (obj args);
+obj      fn_peekchar     (uint8_t argc);
+obj      fn_readchar     (uint8_t argc);
+obj      fn_read         (uint8_t argc);
+obj      fn_print        (uint8_t argc);
 
 END_EXTERN_C
 

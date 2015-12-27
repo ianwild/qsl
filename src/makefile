@@ -21,6 +21,8 @@ WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
 CFLAGS = $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
 LDFLAGS = $(OPTIMISER_FLAGS)
 
+.PHONY: clean tar dep
+
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
 	strip $@

@@ -2,59 +2,60 @@
 #include "cons.h"
 #include "integer.h"
 #include "obj.h"
+#include "stack.h"
 
 static const char PROGMEM this_file [] = __FILE__;
 
-static obj make_xxx (obj args, enum typecode t)
+static obj make_xxx (uint8_t argc, enum typecode t)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 1)
+  if (argc != 1)
     throw_error (bad_argc);
-  int32_t len = get_int_val (argv [1]);
+  int32_t len = get_int_val (get_arg (0));
   if (len < 0 || len > 255)
     throw_error (no_mem);
   return (new_extended_object (t, len));
 }
 
 
-obj fn_make_string (obj args)
+obj fn_make_string (uint8_t argc)
 {
-  return (make_xxx (args, string_type));
+  return (make_xxx (argc, string_type));
 }
 
 
-obj fn_make_array (obj args)
+obj fn_make_array (uint8_t argc)
 {
-  return (make_xxx (args, array_type));
+  return (make_xxx (argc, array_type));
 }
 
 
-obj fn_length (obj args)
+obj fn_length (uint8_t argc)
 {
   obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 1)
+  if (argc != 1)
     throw_error (bad_argc);
 
   uint16_t len = 0;
+  obj arg = get_arg (0);
 
-  switch (get_type (argv [1]))
+  switch (get_type (arg))
   {
   case cons_type:
-    len = internal_len (argv [1]);
+    len = internal_len (arg);
     break;
 
   case symbol_type:
   case string_type:
-    get_spelling (argv [1], &len);
+    get_spelling (arg, &len);
     break;
 
   case array_type:
   case environment_type:
-    len = get_header (argv [1]) -> u.array_val [0];
+    len = get_header (arg) -> u.array_val [0];
     break;
 
   case rom_symbol_type:
-    get_rom_spelling (argv [1], &len);
+    get_rom_spelling (arg, &len);
     break;
 
   default:
@@ -65,23 +66,24 @@ obj fn_length (obj args)
 }
 
 
-obj fn_aref (obj args)
+obj fn_aref (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 2)
+  if (argc != 2)
     throw_error (bad_argc);
 
-  int32_t idx = get_int_val (argv [2]);
+  obj target = get_arg (1);
+  int32_t idx = get_int_val (get_arg (0));
+
   if (idx < 0)
     throw_error (bad_idx);
 
-  switch (get_type (argv [1]))
+  switch (get_type (target))
   {
   case symbol_type:
   case string_type:
   {
     uint16_t len;
-    uint8_t *p = get_spelling (argv [1], &len);
+    uint8_t *p = get_spelling (target, &len);
     if (idx >= len)
       throw_error (bad_idx);
     return (FIRST_CHAR + p [idx]);
@@ -90,7 +92,7 @@ obj fn_aref (obj args)
   case array_type:
   case environment_type:
   {
-    obj *p = get_header (argv [1]) -> u.array_val;
+    obj *p = get_header (target) -> u.array_val;
     if (idx >= p [0])
       throw_error (bad_idx);
     return (p [idx + 1]);
@@ -99,7 +101,7 @@ obj fn_aref (obj args)
   case rom_symbol_type:
   {
     uint16_t len;
-    const uint8_t *p = get_rom_spelling (argv [1], &len);
+    const uint8_t *p = get_rom_spelling (target, &len);
     if (idx >= len)
       throw_error (bad_idx);
     return (FIRST_CHAR + pgm_read_byte_near (p + idx));
@@ -112,19 +114,20 @@ obj fn_aref (obj args)
 }
 
 
-obj fn_aset (obj args)
+obj fn_aset (uint8_t argc)
 {
   obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 3)
+  if (argc != 3)
     throw_error (bad_argc);
 
-  int32_t idx = get_int_val (argv [2]);
-  obj new_val = argv [3];
+  obj target = get_arg (2);
+  int32_t idx = get_int_val (get_arg (1));
+  obj new_val = get_arg (0);
 
   if (idx < 0)
     throw_error (bad_idx);
 
-  switch (get_type (argv [1]))
+  switch (get_type (target))
   {
   case string_type:
   {
@@ -132,7 +135,7 @@ obj fn_aset (obj args)
       throw_error (bad_type);
 
     uint16_t len;
-    uint8_t *p = get_spelling (argv [1], &len);
+    uint8_t *p = get_spelling (target, &len);
     if (idx >= len)
       throw_error (bad_idx);
     p [idx] = new_val - FIRST_CHAR;
@@ -141,7 +144,7 @@ obj fn_aset (obj args)
 
   case array_type:
   {
-    obj *p = get_header (argv [1]) -> u.array_val;
+    obj *p = get_header (target) -> u.array_val;
     if (idx >= p [0])
       throw_error (bad_idx);
     p [idx + 1] = new_val;
@@ -155,23 +158,22 @@ obj fn_aset (obj args)
 }
 
 
-obj fn_char_code (obj args)
+obj fn_char_code (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 1)
+  if (argc != 1)
     throw_error (bad_argc);
-  if (get_type (argv [1]) != char_type)
+  obj arg = get_arg (0);
+  if (get_type (arg) != char_type)
     throw_error (bad_type);
-  return (create_int (argv [1] - FIRST_CHAR));
+  return (create_int (arg - FIRST_CHAR));
 }
 
 
-obj fn_code_char (obj args)
+obj fn_code_char (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 1)
+  if (argc != 1)
     throw_error (bad_argc);
-  int32_t c = get_int_val (argv [1]);
+  int32_t c = get_int_val (get_arg (0));
   if (c < 0 || c > 255)
     throw_error (bad_idx);
   return (FIRST_CHAR + c);

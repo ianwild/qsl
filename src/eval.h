@@ -36,7 +36,7 @@
 
 START_EXTERN_C
 
-obj  fn_eval           (obj args);
+obj  fn_eval           (uint8_t argc);
 
 obj  eval_internal     (obj expr);
 obj  apply_internal    (obj fn, obj args);

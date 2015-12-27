@@ -9,4 +9,8 @@
   These are the accessor functions for the stack.
 */
 
+void  stack_push   (obj o);
+void  stack_pop    (uint8_t n);
+obj   get_arg      (uint8_t idx);
+
 #endif /* QSL_STACK_H */

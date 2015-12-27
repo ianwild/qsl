@@ -2,6 +2,7 @@
 #include "gc.h"
 #include "io.h"
 #include "obj.h"
+#include "stack.h"
 
 static const char PROGMEM this_file [] = __FILE__;
 
@@ -42,67 +43,59 @@ uint16_t internal_len (obj o)
   return (res);
 }
 
-obj fn_car (obj args)
+obj fn_car (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 1)
+  if (argc != 1)
     throw_error (bad_argc);
-  obj cons_cell = argv [1];
+  obj cons_cell = get_arg (0);
   if (cons_cell == obj_NIL)
     return (obj_NIL);
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.car_cell);
 }
 
-obj fn_cdr (obj args)
+obj fn_cdr (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 1)
+  if (argc != 1)
     throw_error (bad_argc);
-  obj cons_cell = argv [1];
+  obj cons_cell = get_arg (0);
   if (cons_cell == obj_NIL)
     return (obj_NIL);
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.cdr_cell);
 }
 
-obj fn_cons (obj args)
+obj fn_cons (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 2)
+  if (argc != 2)
     throw_error (bad_argc);
-  return (cons (argv [1], argv [2]));
+  return (cons (get_arg (1), get_arg (0)));
 }
 
-obj fn_list (obj args)
+obj fn_list (uint8_t argc)
 {
-  uint16_t argc = get_header (args) -> u.array_val [0];
   obj res = obj_NIL;
-  while (argc)
-  {
-    res = cons (get_header (args) -> u.array_val [argc], res);
-    argc -= 1;
-  }
+  uint8_t i;
+  for (i = 0; i < argc; i += 1)
+    res = cons (get_arg (i), res);
   return (res);
 }
 
-obj fn_rplaca (obj args)
+obj fn_rplaca (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 2)
+  if (argc != 2)
     throw_error (bad_argc);
-  obj cons_cell = argv [1];
+  obj cons_cell = get_arg (1);
   objhdr *p = get_cons_header (cons_cell);
-  return (p -> u.cons_val.car_cell = argv [2]);
+  return (p -> u.cons_val.car_cell = get_arg (0));
 }
 
-obj fn_rplacd (obj args)
+obj fn_rplacd (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  if (argv [0] != 2)
+  if (argc != 2)
     throw_error (bad_argc);
-  obj cons_cell = argv [1];
+  obj cons_cell = get_arg (1);
   objhdr *p = get_cons_header (cons_cell);
-  return (p -> u.cons_val.cdr_cell = argv [2]);
+  return (p -> u.cons_val.cdr_cell = get_arg (0));
 }
 
