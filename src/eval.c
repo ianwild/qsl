@@ -219,3 +219,30 @@ obj eval_internal (obj expr)
   }
 }
 
+
+static void interpret_bytecodes (void)
+{
+  uint8_t *current_function;
+
+  for (;;)
+  {
+    uint8_t opcode = *current_function++;
+    if (opcode <= LAST_ROM_OBJ)
+    {
+      const rom_object *hdr = get_rom_header (opcode);
+      built_in_fn fn = hdr -> global_fn;
+      if (! fn || hdr -> is_fexpr)
+	throw_error (no_fdefn);
+      uint8_t argc = *current_function++;
+      bool void_context = (argc >= 128);
+      if (void_context)
+	argc -= 128;
+      obj res = fn (argc);
+      stack_pop (argc);
+      if (! void_context)
+	stack_push (res);
+    }
+
+  }
+}
+
