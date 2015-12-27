@@ -21,19 +21,18 @@ static bool save_env (void)
   return (true);
 }
 
-obj fn_eval (obj args)
+obj fn_eval (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
-  switch (*argv)
+  switch (argc)
   {
   case 1:
-    return (eval_internal (argv [1]));
+    return (eval_internal (get_arg (0)));
   case 2:
   {
     bool unprotect = save_env ();
     obj keep_env = current_environment;
-    current_environment = argv [2];
-    obj res = eval_internal (argv [1]);
+    current_environment = get_arg (0);
+    obj res = eval_internal (get_arg (1));
     current_environment = keep_env;
     if (unprotect)
       get_header (current_environment) -> flags &= ~gc_fixed;
@@ -274,6 +273,10 @@ static void interpret_bytecodes (void)
 	current_function += 1;
       break;
 
+    case opLOAD_LITERAL
+      stack_push (get_const (*current_function++));
+      break;
+
     case opLOAD_VAR:
       stack_push (symbol_value (get_const (*current_function++)));
       break;
@@ -286,8 +289,8 @@ static void interpret_bytecodes (void)
       if (opcode <= LAST_ROM_OBJ)
       {
 	const rom_object *hdr = get_rom_header (opcode);
-	built_in_fn fn = hdr -> global_fn;
-	if (! fn || hdr -> is_fexpr)
+	built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
+	if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
 	  throw_error (no_fdefn);
 	uint8_t argc = *current_function++;
 	bool void_context = (argc >= 128);

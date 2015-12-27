@@ -55,8 +55,12 @@ enum opcodes
   opJUMP_BACKWARD_ALWAYS,
   opJUMP_BACKWARD_IF_NIL,
   opJUMP_BACKWARD_UNLESS_NIL,
+  opLOAD_LITERAL,
   opLOAD_VAR,
   opSETQ,
+  opCREATE_CLOSURE,
+  opCALL,
+  opRETURN,
 };
 
 #endif /* QSL_EVAL_H */

@@ -5,6 +5,7 @@
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
+#include "stack.h"
 #include "symbols.h"
 #include "target.h"
 
@@ -224,9 +225,9 @@ obj internal_read (void)
   }
 }
 
-obj fn_read (obj args)
+obj fn_read (uint8_t argc)
 {
-  (void) args;
+  (void) argc;
   return (internal_read ());
 }
 
@@ -330,25 +331,23 @@ void print1 (obj o)
   }
 }
 
-obj fn_print (obj args)
+obj fn_print (uint8_t argc)
 {
-  obj *p = get_header (args) -> u.array_val;
-  uint16_t argc = *p++;
-  while (argc--)
-    print1 (*p++);
+  while (argc)
+    print1 (get_arg (argc -= 1));
   printc ('\n');
   return (obj_NIL);
 }
 
-obj fn_readchar (obj args)
+obj fn_readchar (uint8_t argc)
 {
-  (void) args;
+  (void) argc;
   return (FIRST_CHAR + readc ());
 }
 
-obj fn_peekchar (obj args)
+obj fn_peekchar (uint8_t argc)
 {
-  (void) args;
+  (void) argc;
   int ch = peekc ();
   if (ch >= 0)
     return (FIRST_CHAR + (ch & 0xFF));
