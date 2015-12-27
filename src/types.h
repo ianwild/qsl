@@ -38,7 +38,8 @@ enum errcode
   bad_idx,
   div_by_zero,
   no_fdefn,
-  no_mem
+  no_mem,
+  compiler_error
 };
 
 

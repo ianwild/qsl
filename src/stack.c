@@ -17,3 +17,8 @@ obj get_arg (uint8_t idx)
   return (* (stack - idx));
 }
 
+obj pop_arg (void)
+{
+  return (*--stack);
+}
+

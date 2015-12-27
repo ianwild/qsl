@@ -75,6 +75,7 @@ void (throw_error) (enum errcode e, const char *file, int line)
     MSG (div_by_zero);
     MSG (no_fdefn);
     MSG (no_mem);
+    MSG (compiler_error);
 #undef MSG
   }
   slow_output = true;

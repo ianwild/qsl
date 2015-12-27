@@ -219,6 +219,11 @@ obj eval_internal (obj expr)
   }
 }
 
+static obj *const_base;
+static obj get_const (uint8_t idx)
+{
+  const_base [idx];
+}
 
 static void interpret_bytecodes (void)
 {
@@ -227,22 +232,76 @@ static void interpret_bytecodes (void)
   for (;;)
   {
     uint8_t opcode = *current_function++;
-    if (opcode <= LAST_ROM_OBJ)
+    switch (opcode)
     {
-      const rom_object *hdr = get_rom_header (opcode);
-      built_in_fn fn = hdr -> global_fn;
-      if (! fn || hdr -> is_fexpr)
-	throw_error (no_fdefn);
-      uint8_t argc = *current_function++;
-      bool void_context = (argc >= 128);
-      if (void_context)
-	argc -= 128;
-      obj res = fn (argc);
-      stack_pop (argc);
-      if (! void_context)
-	stack_push (res);
-    }
+    case opDUP:
+      stack_push (get_arg (0));
+      break;
 
+    case opJUMP_FORWARD_ALWAYS:
+      current_function += *current_function + 1;
+      break;
+
+    case opJUMP_FORWARD_IF_NIL:
+      if (pop_arg () == obj_NIL)
+	current_function += *current_function + 1;
+      else
+	current_function += 1;
+      break;
+
+    case opJUMP_FORWARD_UNLESS_NIL:
+      if (pop_arg () != obj_NIL)
+	current_function += *current_function + 1;
+      else
+	current_function += 1;
+      break;
+
+    case opJUMP_BACKWARD_ALWAYS:
+      current_function -= *current_function + 1;
+      break;
+
+    case opJUMP_BACKWARD_IF_NIL:
+      if (pop_arg () == obj_NIL)
+	current_function -= *current_function + 1;
+      else
+	current_function += 1;
+      break;
+
+    case opJUMP_BACKWARD_UNLESS_NIL:
+      if (pop_arg () != obj_NIL)
+	current_function -= *current_function + 1;
+      else
+	current_function += 1;
+      break;
+
+    case opLOAD_VAR:
+      stack_push (symbol_value (get_const (*current_function++)));
+      break;
+
+    case opSETQ:
+      set_symbol_value (get_const (*current_function++), pop_arg ());
+      break;
+
+    default:
+      if (opcode <= LAST_ROM_OBJ)
+      {
+	const rom_object *hdr = get_rom_header (opcode);
+	built_in_fn fn = hdr -> global_fn;
+	if (! fn || hdr -> is_fexpr)
+	  throw_error (no_fdefn);
+	uint8_t argc = *current_function++;
+	bool void_context = (argc >= 128);
+	if (void_context)
+	  argc -= 128;
+	obj res = fn (argc);
+	stack_pop (argc);
+	if (! void_context)
+	  stack_push (res);
+      }
+      else
+	throw_error (compiler_error);
+      break;
+    }
   }
 }
 

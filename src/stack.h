@@ -12,5 +12,6 @@
 void  stack_push   (obj o);
 void  stack_pop    (uint8_t n);
 obj   get_arg      (uint8_t idx);
+obj   pop_arg      (void);
 
 #endif /* QSL_STACK_H */
