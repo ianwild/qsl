@@ -26,11 +26,15 @@ static obj split_args (obj args, obj *env)
   return (argv [1]);
 }
 
-obj fe_progn (obj args)
+obj fe_progn (uint8_t for_value)
 {
-  obj env;
-  obj elist = split_args (args, &env);
-  return (eval_progn (elist, obj_NIL));
+  obj expr_list = get_arg (0);
+  while (expr_list != obj_NIL)
+  {
+    obj car;
+    decons (expr_list, &car, &expr_list);
+    compile_expression (car, (expr_list == obj_NIL) && for_value);
+  }
 }
 
 obj fe_cond (obj args)
@@ -50,34 +54,52 @@ obj fe_cond (obj args)
 }
 
 
-obj fe_while (obj args)
+obj fe_while (uint8_t for_value)
 {
-  obj env;
-  obj elist = split_args (args, &env);
-  obj car, cdr;
-  decons (elist, &car, &cdr);
-  while (eval_internal (car) != obj_NIL)
-    eval_progn (cdr, obj_NIL);
+  obj test;
+  obj body;
+  decons (pop_arg (), &test, &body);
+  stack_push (body);
+  forward_jump to_test = declare_forward_jump ();
+  backward_jump loop_start = declare_backward_jump ();
+  compile_opcode (opJUMP_FORWARD_ALWAYS);
+  to_test = insert_forward_jump (to_test);
+  fe_progn (false);
+  resolve_forward_jump (to_test);
+  compile_expression (test, true);
+  compile_opcode (opJUMP_BACKWARD_UNLESS_NIL);
+  insert_backward_jump (loop_start);
+  if (for_value)
+  {
+    compile_opcode (opLOAD_LITERAL);
+    compile_constant (obj_NIL);
+  }
   return (obj_NIL);
 }
 
-obj fe_quote (obj args)
+obj fe_quote (uint8_t for_value)
 {
-  obj car, cdr;
-  decons (get_header (args) -> u.array_val [1], &car, &cdr);
-  return (car);
+  if (for_value)
+  {
+    obj car, cdr;
+    decons (get_arg (0), &car, &cdr);
+    compile_opcode (opLOAD_LITERAL);
+    compile_constant (car);
+  }
+  return (obj_NIL);
 }
 
-obj fe_setq (obj args)
+obj fe_setq (uint8_t for_value)
 {
-  obj env;
-  obj arglist = split_args (args, &env);
   obj sym, car, cdr;
-  decons (arglist, &sym, &cdr);
+  decons (get_arg (0), &sym, &cdr);
   decons (cdr, &car, &cdr);
-  if (cdr != obj_NIL)
-    throw_error (bad_argc);
-  return (set_symbol_value (sym, eval_internal (car)));
+  compile_expression (cdr, true);
+  if (for_value)
+    compile_opcode (opDUP);
+  compile_opcode (opSETQ);
+  compile_constant (sym);
+  return (obj_NIL);
 }
 
 static obj defun_common (obj args, obj tag)
@@ -113,32 +135,78 @@ obj fe_fexpr (obj args)
   return (defun_common (args, obj_FEXPR));
 }
 
-obj fe_and (obj args)
+obj fe_and (uint8_t for_value)
 {
-  obj res;
-  obj elist = split_args (args, &res);
-  res = obj_T;
-  while (elist && res != obj_NIL)
+  obj expr_list = get_arg (0);
+  if (expr_list == obj_NIL)
   {
-    obj car;
-    decons (elist, &car, &elist);
-    res = eval_internal (car);
+    if (for_value)
+    {
+      compile_opcode (opLOAD_LITERAL);
+      compile_constant (obj_T);
+    }
   }
-  return (res);
+  else
+  { 
+    forward_jump to_finish = declare_forward_jump ();
+   
+    while (expr_list != obj_NIL)
+    {
+      obj car;
+      decons (expr_list, &car, &expr_list);
+      if (expr_list == obj_NIL)
+      {
+	compile_expression (car, for_value);
+	resolve_forward_jump (to_finish);
+      }
+      else
+      {
+	compile_expression (car, true);
+	if (for_value)
+	  compile_opcode (opDUP_IF_NIL);
+	compile_opcode (opJUMP_FORWARD_IF_NIL);
+	insert_forward_jump (to_finish);
+      }
+    }
+  }
+  return (obj_NIL);
 }
 
-obj fe_or (obj args)
+obj fe_or (uint8_t for_value)
 {
-  obj res;
-  obj elist = split_args (args, &res);
-  res = obj_NIL;
-  while (elist && res == obj_NIL)
+  obj expr_list = get_arg (0);
+  if (expr_list == obj_NIL)
   {
-    obj car;
-    decons (elist, &car, &elist);
-    res = eval_internal (car);
+    if (for_value)
+    {
+      compile_opcode (opLOAD_LITERAL);
+      compile_constant (obj_NIL);
+    }
   }
-  return (res);
+  else
+  { 
+    forward_jump to_finish = declare_forward_jump ();
+   
+    while (expr_list != obj_NIL)
+    {
+      obj car;
+      decons (expr_list, &car, &expr_list);
+      if (expr_list == obj_NIL)
+      {
+	compile_expression (car, for_value);
+	resolve_forward_jump (to_finish);
+      }
+      else
+      {
+	compile_expression (car, true);
+	if (for_value)
+	  compile_opcode (opDUP_UNLESS_NIL);
+	compile_opcode (opJUMP_FORWARD_UNLESS_NIL);
+	insert_forward_jump (to_finish);
+      }
+    }
+  }
+  return (obj_NIL);
 }
 
 static obj let (obj args, bool star)

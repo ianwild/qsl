@@ -1,0 +1,148 @@
+#include "compiler.h"
+#include "stack.h"
+
+
+static uint8_t *prog;
+uint8_t prog_length;
+
+static obj *constants;
+uint8_t const_length;
+
+forward_jump declare_forward_jump (void)
+{
+#if TARGET_ARDUINO
+  return (0);
+#else
+  forward_jump jmp = {0};
+  return (jmp);
+#endif
+}
+
+
+forward_jump insert_forward_jump (forward_jump jmp)
+{
+  uint16_t here = prog_length;
+#if TARGET_ARDUINO
+  prog [prog_length++] = jmp;
+  return (here);
+#else
+  prog [prog_length++] = jmp.link;
+  jmp.link = here;
+  return (jmp);
+#endif
+}
+
+
+void resolve_forward_jump (forward_jump jmp)
+{
+#if TARGET_ARDUINO
+  uint16_t link = jmp;
+#else
+  uint16_t link = jmp.link;
+#endif
+  while (link)
+  {
+    uint8_t next = prog [link];
+    prog [link] = prog_length - link - 1;
+    link = next;
+  }
+}
+
+
+backward_jump declare_backward_jump (void)
+{
+#if TARGET_ARDUINO
+  return (prog_length);
+#else
+  backward_jump jmp = {prog_length};
+  return jmp;
+#endif
+}
+
+
+void insert_backward_jump (backward_jump jmp)
+{
+#if TARGET_ARDUINO
+  uint8_t delta = prog_length - jmp - 1;
+#else
+  uint8_t delta = prog_length - jmp.dest - 1;
+#endif
+  prog [prog_length++] = delta;
+}
+
+
+void compile_expression (obj expr, bool value_context)
+{
+  switch (get_type (expr))
+  {
+  case symbol_type:
+  case rom_symbol_type:
+    compile_opcode (opLOAD_VAR);
+    compile_constant (expr);
+    return;
+
+  case cons_type:
+  {
+    obj fn;
+    obj args;
+    decons (expr, &fn, &args);
+
+    if (get_type (fn) == rom_symbol_type)
+    {
+      const rom_object *hdr = get_rom_header (fn);
+      if (pgm_read_byte_near (&hdr -> is_fexpr))
+      {
+	built_in_fn f = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
+	stack_push (args);
+	f (value_context);
+	stack_pop (1);
+	return;
+      }
+    }
+    uint8_t n = 0;
+    while (args)
+    {
+      obj arg1;
+      decons (args, &arg1, &args);
+      compile_expression (arg1, true);
+      n += 1;
+    }
+    if (get_type (fn) == rom_symbol_type)
+      compile_opcode (fn);
+    else
+    {
+      compile_opcode (opCALL);
+      compile_constant (fn);
+    }
+    if (! value_context)
+      n |= 0x80;
+    compile_opcode (n);
+    return;
+  }
+
+  default:
+    compile_opcode (opLOAD_LITERAL);
+    compile_constant (expr);
+    return;
+  }
+}
+
+void compile_constant (obj o)
+{
+  uint8_t i = 0;
+  for (i = 0; i < const_length; i += 1)
+    if (constants [i] == o)
+    {
+      prog [prog_length++] = i;
+      return;
+    }
+
+  prog [prog_length++] = const_length;
+  constants [const_length++] = o;
+}
+
+void compile_opcode (uint8_t op)
+{
+  prog [prog_length++] = op;
+}
+

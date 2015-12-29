@@ -237,6 +237,16 @@ static void interpret_bytecodes (void)
       stack_push (get_arg (0));
       break;
 
+    case opDUP_IF_NIL:
+      if (get_arg (0) == obj_NIL)
+	stack_push (get_arg (0));
+      break;
+
+    case opDUP_UNLESS_NIL:
+      if (get_arg (0) != obj_NIL)
+	stack_push (get_arg (0));
+      break;
+
     case opJUMP_FORWARD_ALWAYS:
       current_function += *current_function + 1;
       break;

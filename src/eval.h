@@ -45,22 +45,4 @@ extern obj current_environment;
 
 END_EXTERN_C
 
-enum opcodes
-{
-  opNOP = LAST_ROM_OBJ,
-  opDUP,
-  opJUMP_FORWARD_ALWAYS,
-  opJUMP_FORWARD_IF_NIL,
-  opJUMP_FORWARD_UNLESS_NIL,
-  opJUMP_BACKWARD_ALWAYS,
-  opJUMP_BACKWARD_IF_NIL,
-  opJUMP_BACKWARD_UNLESS_NIL,
-  opLOAD_LITERAL,
-  opLOAD_VAR,
-  opSETQ,
-  opCREATE_CLOSURE,
-  opCALL,
-  opRETURN,
-};
-
 #endif /* QSL_EVAL_H */
