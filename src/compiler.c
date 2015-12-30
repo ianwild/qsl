@@ -1,4 +1,6 @@
 #include "compiler.h"
+#include "cons.h"
+#include "obj.h"
 #include "stack.h"
 
 

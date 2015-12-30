@@ -24,7 +24,7 @@
 // need this, so get rid of the compiler attribute:
 
 #define PROGMEM
-
+#define PSTR(x) x
 
 // But once the tables are in flash, the ATmega's Harvard architecture
 // means we need special code to get things back.  The Linux version

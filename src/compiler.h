@@ -1,6 +1,7 @@
 #ifndef QSL_COMPILER_H
 #define QSL_COMPILER_H
 
+#include "rom-symbols.h"
 #include "target.h"
 #include "types.h"
 
@@ -20,6 +21,8 @@ typedef struct
 {
   int dest;
 } backward_jump;
+
+#endif /* TARGET_ARDUINO */
 
 enum opcodes
 {

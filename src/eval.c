@@ -3,6 +3,7 @@
 #include "fexprs.h"
 #include "io.h"
 #include "obj.h"
+#include "stack.h"
 #include "symbols.h"
 #include "target.h"
 
@@ -218,6 +219,7 @@ obj eval_internal (obj expr)
   }
 }
 
+#if 0
 static obj *const_base;
 static obj get_const (uint8_t idx)
 {
@@ -318,3 +320,4 @@ static void interpret_bytecodes (void)
   }
 }
 
+#endif

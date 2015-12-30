@@ -1,8 +1,10 @@
+#include "compiler.h"
 #include "cons.h"
 #include "fexprs.h"
 #include "eval.h"
 #include "io.h"
 #include "obj.h"
+#include "stack.h"
 #include "symbols.h"
 
 static const char PROGMEM this_file [] = __FILE__;
@@ -19,12 +21,14 @@ obj eval_progn (obj o, obj res)
   return (res);
 }
 
+#if 0
 static obj split_args (obj args, obj *env)
 {
   obj *argv = get_header (args) -> u.array_val;
   *env = argv [2];
   return (argv [1]);
 }
+#endif
 
 obj fe_progn (uint8_t for_value)
 {
@@ -35,10 +39,12 @@ obj fe_progn (uint8_t for_value)
     decons (expr_list, &car, &expr_list);
     compile_expression (car, (expr_list == obj_NIL) && for_value);
   }
+  return (obj_NIL);
 }
 
-obj fe_cond (obj args)
+obj fe_cond (uint8_t for_value)
 {
+#if 0
   obj env;
   obj elist = split_args (args, &env);
   while (elist != obj_NIL)
@@ -50,6 +56,8 @@ obj fe_cond (obj args)
     if (res != obj_NIL)
       return (eval_progn (cdr, res));
   }
+#endif
+  (void) for_value;
   return (obj_NIL);
 }
 
@@ -102,8 +110,9 @@ obj fe_setq (uint8_t for_value)
   return (obj_NIL);
 }
 
-static obj defun_common (obj args, obj tag)
+static obj defun_common (obj tag, uint8_t for_value)
 {
+#if 0
   obj env;
   obj arglist = split_args (args, &env);
   obj sym, cdr;
@@ -123,16 +132,20 @@ static obj defun_common (obj args, obj tag)
 
   get_header (sym) -> u.symbol_val.global_fn = closure;
   return (sym);
+#endif
+  (void) tag;
+  (void) for_value;
+  return (obj_NIL);
 }
 
-obj fe_defun (obj args)
+obj fe_defun (uint8_t for_value)
 {
-  return (defun_common (args, obj_LAMBDA));
+  return (defun_common (obj_LAMBDA, for_value));
 }
 
-obj fe_fexpr (obj args)
+obj fe_fexpr (uint8_t for_value)
 {
-  return (defun_common (args, obj_FEXPR));
+  return (defun_common (obj_FEXPR, for_value));
 }
 
 obj fe_and (uint8_t for_value)
@@ -209,8 +222,9 @@ obj fe_or (uint8_t for_value)
   return (obj_NIL);
 }
 
-static obj let (obj args, bool star)
+static obj let (bool star, uint8_t for_value)
 {
+#if 0
   obj bindings;
   obj elist = split_args (args, &bindings);
   decons (elist, &bindings, &elist);
@@ -251,22 +265,30 @@ static obj let (obj args, bool star)
   current_environment = p -> u.array_val [1];
 
   return (res);
+#endif
+  (void) star;
+  (void) for_value;
+  return (obj_NIL);
 }
 
-obj fe_let (obj args)
+obj fe_let (uint8_t for_value)
 {
-  return (let (args, false));
+  return (let (false, for_value));
 }
 
-obj fe_let_star (obj args)
+obj fe_let_star (uint8_t for_value)
 {
-  return (let (args, true));
+  return (let (true, for_value));
 }
 
-obj fe_apply (obj args)
+obj fe_apply (uint8_t for_value)
 {
+#if 0
   obj env;
   obj fn = split_args (args, &env);
   decons (fn, &fn, &args);
   return (apply_internal (eval_internal (fn), args));
+#endif
+  (void) for_value;
+  return (obj_NIL);
 }

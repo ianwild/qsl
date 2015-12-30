@@ -11,6 +11,7 @@
 */
 
 #include "target.h"
+#include "types.h"
 
 START_EXTERN_C
 

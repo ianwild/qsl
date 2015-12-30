@@ -31,7 +31,6 @@ obj fn_make_array (uint8_t argc)
 
 obj fn_length (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
   if (argc != 1)
     throw_error (bad_argc);
 
@@ -109,14 +108,13 @@ obj fn_aref (uint8_t argc)
 
   default:
     throw_error (bad_type);
-    return (args);
+    return (obj_NIL);
   }
 }
 
 
 obj fn_aset (uint8_t argc)
 {
-  obj *argv = get_header (args) -> u.array_val;
   if (argc != 3)
     throw_error (bad_argc);
 
