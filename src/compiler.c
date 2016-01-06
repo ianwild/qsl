@@ -110,8 +110,11 @@ void compile_expression (obj expr, bool value_context)
   {
   case symbol_type:
   case rom_symbol_type:
-    compile_opcode (opLOAD_VAR);
-    compile_constant (expr);
+    if (value_context)
+    {
+      compile_opcode (opLOAD_VAR);
+      compile_constant (expr);
+    }
     return;
 
   case cons_type:
@@ -154,8 +157,11 @@ void compile_expression (obj expr, bool value_context)
   }
 
   default:
-    compile_opcode (opLOAD_LITERAL);
-    compile_constant (expr);
+    if (value_context)
+    {
+      compile_opcode (opLOAD_LITERAL);
+      compile_constant (expr);
+    }
     return;
   }
 }
