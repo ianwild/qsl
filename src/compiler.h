@@ -57,6 +57,9 @@ void          compile_expression    (obj expr, bool value_context);
 void          compile_constant      (obj o);
 void          compile_opcode        (uint8_t);
 
+void compiler_init (void);
+void compiler_report (void);
+
 END_EXTERN_C
 
 

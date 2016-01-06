@@ -1,5 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "compiler.h"
 #include "cons.h"
+#include "io.h"
 #include "obj.h"
 #include "stack.h"
 
@@ -9,6 +13,33 @@ uint8_t prog_length;
 
 static obj *constants;
 uint8_t const_length;
+
+void compiler_init (void)
+{
+  if (! prog)
+    prog = malloc (1024 * sizeof (uint8_t));
+  if (! constants)
+    constants = malloc (1024 * sizeof (obj));
+  prog_length = 0;
+  const_length = 0;
+}
+
+void compiler_report (void)
+{
+  printf ("Constants:\n");
+  unsigned i;
+  for (i = 0; i < const_length; i += 1)
+  {
+    printf ("  %3u: %04x ", i, constants [i]);
+    print1 (constants [i]);
+    printf ("\n");
+  }
+
+  printf ("Opcodes:\n");
+  for (i = 0; i < prog_length; i += 1)
+    printf (" %02x", prog [i]);
+  printf ("\n");
+}
 
 forward_jump declare_forward_jump (void)
 {

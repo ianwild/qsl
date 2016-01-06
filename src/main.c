@@ -1,3 +1,4 @@
+#include "compiler.h"
 #include "eval.h"
 #include "gc.h"
 #include "io.h"
@@ -35,7 +36,16 @@ int main (void)
     if (p)
       p -> flags |= gc_fixed;
     {
+#if 0
       x = eval_internal (x);
+#else
+      compiler_init ();
+      compile_expression (x, true);
+      compiler_report ();
+      compiler_init ();
+      compile_expression (x, false);
+      compiler_report ();
+#endif
     }
     if (p)
       p -> flags &= ~gc_fixed;

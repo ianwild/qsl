@@ -102,7 +102,7 @@ obj fe_setq (uint8_t for_value)
   obj sym, car, cdr;
   decons (get_arg (0), &sym, &cdr);
   decons (cdr, &car, &cdr);
-  compile_expression (cdr, true);
+  compile_expression (car, true);
   if (for_value)
     compile_opcode (opDUP);
   compile_opcode (opSETQ);
