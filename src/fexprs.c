@@ -178,7 +178,7 @@ obj fe_and (uint8_t for_value)
 	if (for_value)
 	  compile_opcode (opDUP_IF_NIL);
 	compile_opcode (opJUMP_FORWARD_IF_NIL);
-	insert_forward_jump (to_finish);
+	to_finish = insert_forward_jump (to_finish);
       }
     }
   }
@@ -215,7 +215,7 @@ obj fe_or (uint8_t for_value)
 	if (for_value)
 	  compile_opcode (opDUP_UNLESS_NIL);
 	compile_opcode (opJUMP_FORWARD_UNLESS_NIL);
-	insert_forward_jump (to_finish);
+	to_finish = insert_forward_jump (to_finish);
       }
     }
   }
