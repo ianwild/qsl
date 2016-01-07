@@ -41,6 +41,16 @@ void compiler_report (void)
   printf ("\n");
 }
 
+obj get_const (uint8_t idx)
+{
+  return (constants [idx]);
+}
+
+uint8_t *get_opcodes (void)
+{
+  return (prog);
+}
+
 forward_jump declare_forward_jump (void)
 {
 #if TARGET_ARDUINO

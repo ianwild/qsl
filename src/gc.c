@@ -81,7 +81,7 @@ void do_gc (void)
       }
     }
   }
-
+#if 0
   compact_string_space ();
 
   obj i;
@@ -102,5 +102,6 @@ void do_gc (void)
   }
 
   last_allocated_object = high_water_mark;
+#endif
 }
 

@@ -3,6 +3,7 @@
 #include "gc.h"
 #include "io.h"
 #include "obj.h"
+#include "stack.h"
 #include "symbols.h"
 #include "target.h"
 
@@ -41,10 +42,10 @@ int main (void)
 #else
       compiler_init ();
       compile_expression (x, true);
+      compile_opcode (opRETURN);
       compiler_report ();
-      compiler_init ();
-      compile_expression (x, false);
-      compiler_report ();
+      interpret_bytecodes ();
+      x = pop_arg ();
 #endif
     }
     if (p)

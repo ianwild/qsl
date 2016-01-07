@@ -1,3 +1,4 @@
+#include "compiler.h"
 #include "cons.h"
 #include "eval.h"
 #include "fexprs.h"
@@ -219,55 +220,58 @@ obj eval_internal (obj expr)
   }
 }
 
-#if 0
-static obj *const_base;
-static obj get_const (uint8_t idx)
-{
-  const_base [idx];
-}
+#define TRACE(x) printf x
 
-static void interpret_bytecodes (void)
+void interpret_bytecodes (void)
 {
-  uint8_t *current_function;
-  uint8_t *function_base;
+  uint8_t *function_base = get_opcodes ();
+  uint8_t *current_function = function_base;
 
   for (;;)
   {
+    TRACE (("%4d:\t", current_function - function_base));
     uint8_t opcode = *current_function++;
     switch (opcode)
     {
     case opDROP:
+      TRACE (("DROP\n"));
       stack_pop (1);
       break;
 
     case opSWAP:
-    {
-      obj tos = pop_arg ();
-      obj nos = pop_arg ();
-      stack_push (tos);
-      stack_push (nos);
+      TRACE (("SWAP\n"));
+      {
+	obj tos = pop_arg ();
+	obj nos = pop_arg ();
+	stack_push (tos);
+	stack_push (nos);
+      }
       break;
-    }
 
     case opDUP:
+      TRACE (("DUP\n"));
       stack_push (get_arg (0));
       break;
 
     case opDUP_IF_NIL:
+      TRACE (("DUP_IF_NIL\n"));
       if (get_arg (0) == obj_NIL)
 	stack_push (get_arg (0));
       break;
 
     case opDUP_UNLESS_NIL:
+      TRACE (("DUP_UNLESS_NIL\n"));
       if (get_arg (0) != obj_NIL)
 	stack_push (get_arg (0));
       break;
 
     case opJUMP_ALWAYS:
+      TRACE (("JUMP_ALWAYS %d\n", *current_function));
       current_function = function_base + *current_function;
       break;
 
     case opJUMP_IF_NIL:
+      TRACE (("JUMP_IF_NIL (%04x) %d\n", get_arg (0), *current_function));
       if (pop_arg () == obj_NIL)
 	current_function = function_base + *current_function;
       else
@@ -275,74 +279,91 @@ static void interpret_bytecodes (void)
       break;
 
     case opJUMP_UNLESS_NIL:
+      TRACE (("JUMP_UNLESS_NIL (%04x) %d\n", get_arg (0), *current_function));
       if (pop_arg () != obj_NIL)
 	current_function = function_base + *current_function;
       else
 	current_function += 1;
       break;
 
-    case opLOAD_LITERAL
+    case opLOAD_LITERAL:
+      TRACE (("LOAD_LITERAL %04x\n", get_const (*current_function)));
       stack_push (get_const (*current_function++));
       break;
 
     case opLOAD_NIL:
+      TRACE (("LOAD_NIL\n"));
       stack_push (obj_NIL);
       break;
 
     case opLOAD_T:
+      TRACE (("LOAD_T\n"));
       stack_push (obj_T);
       break;
 
     case opLOAD_ZERO:
+      TRACE (("LOAD_ZERO\n"));
       stack_push (obj_ZERO);
       break;
 
     case opLOAD_ONE:
+      TRACE (("LOAD_ONE\n"));
       stack_push (obj_ZERO + 1);
       break;
 
     case opLOAD_VAR:
+      TRACE (("LOAD_VAR %04x\n", get_const (*current_function)));
       stack_push (symbol_value (get_const (*current_function++)));
       break;
 
     case opSETQ:
+      TRACE (("SETQ %04x %04x\n", get_const (*current_function), get_arg (0)));
       set_symbol_value (get_const (*current_function++), pop_arg ());
       break;
 
     case opCREATE_CONTEXT_BLOCK:
-    {
-      uint8_t size = *current_function++;
-      obj new_env = new_extended_object (environment_type, 1 + 2 * size);
-      objhdr *p = get_header (new_env);
-      p -> u.array_val [1] = current_environment;
-      stack_push (new_env);
+      TRACE (("CREATE_CONTEXT_BLOCK %d\n", *current_function));
+      {
+	uint8_t size = *current_function++;
+	obj new_env = new_extended_object (environment_type, 1 + 2 * size);
+	objhdr *p = get_header (new_env);
+	p -> u.array_val [1] = current_environment;
+	stack_push (new_env);
+      }
       break;
-    }
 
     case opINSERT_BINDING:
-    {
-      uint8_t idx = 1 + 2 * *current_function++;
-      obj sym = get_const (*current_function++);
-      objhdr *p = get_header (get_arg (1));
-      p -> u.array_val [idx] = sym;
-      p -> u.array_val [idx + 1] = pop_arg ();
+      TRACE (("INSERT_BINDING %d (%04x: %04x)\n", *current_function, get_arg (1), get_arg (0)));
+      {
+	uint8_t idx = 2 + 2 * *current_function++;
+	obj sym = get_const (*current_function++);
+	objhdr *p = get_header (get_arg (1));
+	p -> u.array_val [idx] = sym;
+	p -> u.array_val [idx + 1] = pop_arg ();
+      }
       break;
-    }
 
     case opPUSH_CONTEXT:
+      TRACE (("PUSH_CONTEXT\n"));
       current_environment = pop_arg ();
       break;
 
     case opPOP_CONTEXT:
-    {
-      objhdr *p = get_header (get_arg (1));
-      current_environment = p -> u.array_val [1];
+      TRACE (("POP_CONTEXT\n"));
+      {
+	objhdr *p = get_header (current_environment);
+	current_environment = p -> u.array_val [1];
+      }
       break;
-    }
+
+    case opRETURN:
+      TRACE (("RETURN\n"));
+      return;
 
     default:
       if (opcode <= LAST_ROM_OBJ)
       {
+	TRACE (("call builtin with %d args\n", *current_function));
 	const rom_object *hdr = get_rom_header (opcode);
 	built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
 	if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
@@ -363,4 +384,3 @@ static void interpret_bytecodes (void)
   }
 }
 
-#endif

@@ -17,7 +17,7 @@
 static const char PROGMEM this_file [] = __FILE__;
 
 static objhdr *headers;
-static uint8_t string_space [1280];
+static uint8_t string_space [12800];
 static uint8_t *string_space_top = string_space;
 
 obj last_allocated_object = LAST_ROM_OBJ;
