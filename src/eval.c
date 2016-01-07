@@ -229,12 +229,26 @@ static obj get_const (uint8_t idx)
 static void interpret_bytecodes (void)
 {
   uint8_t *current_function;
+  uint8_t *function_base;
 
   for (;;)
   {
     uint8_t opcode = *current_function++;
     switch (opcode)
     {
+    case opDROP:
+      stack_pop (1);
+      break;
+
+    case opSWAP:
+    {
+      obj tos = pop_arg ();
+      obj nos = pop_arg ();
+      stack_push (tos);
+      stack_push (nos);
+      break;
+    }
+
     case opDUP:
       stack_push (get_arg (0));
       break;
@@ -249,44 +263,42 @@ static void interpret_bytecodes (void)
 	stack_push (get_arg (0));
       break;
 
-    case opJUMP_FORWARD_ALWAYS:
-      current_function += *current_function + 1;
+    case opJUMP_ALWAYS:
+      current_function = function_base + *current_function;
       break;
 
-    case opJUMP_FORWARD_IF_NIL:
+    case opJUMP_IF_NIL:
       if (pop_arg () == obj_NIL)
-	current_function += *current_function + 1;
+	current_function = function_base + *current_function;
       else
 	current_function += 1;
       break;
 
-    case opJUMP_FORWARD_UNLESS_NIL:
+    case opJUMP_UNLESS_NIL:
       if (pop_arg () != obj_NIL)
-	current_function += *current_function + 1;
-      else
-	current_function += 1;
-      break;
-
-    case opJUMP_BACKWARD_ALWAYS:
-      current_function -= *current_function + 1;
-      break;
-
-    case opJUMP_BACKWARD_IF_NIL:
-      if (pop_arg () == obj_NIL)
-	current_function -= *current_function + 1;
-      else
-	current_function += 1;
-      break;
-
-    case opJUMP_BACKWARD_UNLESS_NIL:
-      if (pop_arg () != obj_NIL)
-	current_function -= *current_function + 1;
+	current_function = function_base + *current_function;
       else
 	current_function += 1;
       break;
 
     case opLOAD_LITERAL
       stack_push (get_const (*current_function++));
+      break;
+
+    case opLOAD_NIL:
+      stack_push (obj_NIL);
+      break;
+
+    case opLOAD_T:
+      stack_push (obj_T);
+      break;
+
+    case opLOAD_ZERO:
+      stack_push (obj_ZERO);
+      break;
+
+    case opLOAD_ONE:
+      stack_push (obj_ZERO + 1);
       break;
 
     case opLOAD_VAR:

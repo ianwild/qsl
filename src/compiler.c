@@ -54,7 +54,7 @@ forward_jump declare_forward_jump (void)
 
 forward_jump insert_forward_jump (forward_jump jmp)
 {
-  uint16_t here = prog_length;
+  uint8_t here = prog_length;
 #if TARGET_ARDUINO
   prog [prog_length++] = jmp;
   return (here);
@@ -69,14 +69,14 @@ forward_jump insert_forward_jump (forward_jump jmp)
 void resolve_forward_jump (forward_jump jmp)
 {
 #if TARGET_ARDUINO
-  uint16_t link = jmp;
+  uint8_t link = jmp;
 #else
-  uint16_t link = jmp.link;
+  uint8_t link = jmp.link;
 #endif
   while (link)
   {
     uint8_t next = prog [link];
-    prog [link] = prog_length - link - 1;
+    prog [link] = prog_length;
     link = next;
   }
 }
@@ -96,11 +96,10 @@ backward_jump declare_backward_jump (void)
 void insert_backward_jump (backward_jump jmp)
 {
 #if TARGET_ARDUINO
-  uint8_t delta = prog_length - jmp - 1;
+  prog [prog_length++] = jmp;
 #else
-  uint8_t delta = prog_length - jmp.dest - 1;
+  prog [prog_length++] = jmp.dest;
 #endif
-  prog [prog_length++] = delta;
 }
 
 
@@ -158,10 +157,18 @@ void compile_expression (obj expr, bool value_context)
 
   default:
     if (value_context)
-    {
-      compile_opcode (opLOAD_LITERAL);
-      compile_constant (expr);
-    }
+      switch (expr)
+      {
+      case obj_NIL:      compile_opcode (opLOAD_NIL);  break;
+      case obj_T:        compile_opcode (opLOAD_T);    break;
+      case obj_ZERO:     compile_opcode (opLOAD_ZERO); break;
+      case obj_ZERO + 1: compile_opcode (opLOAD_ONE);  break;
+
+      default:
+	compile_opcode (opLOAD_LITERAL);
+	compile_constant (expr);
+	break;
+      }
     return;
   }
 }

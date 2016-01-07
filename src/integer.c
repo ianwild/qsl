@@ -8,7 +8,7 @@ static const char PROGMEM this_file [] = __FILE__;
 int32_t get_int_val (obj o)
 {
   if (o >= FIRST_SMALL_INT)
-    return ((int32_t) o - (int32_t) OBJ_ZERO);
+    return ((int32_t) o - (int32_t) obj_ZERO);
   if (get_type (o) != int_type)
     throw_error (bad_type);
   return (get_header (o) -> u.int_val);
@@ -16,7 +16,7 @@ int32_t get_int_val (obj o)
 
 obj create_int (int32_t val)
 {
-  uint32_t xval = (uint32_t) val + OBJ_ZERO;
+  uint32_t xval = (uint32_t) val + obj_ZERO;
   if (xval >= FIRST_SMALL_INT && xval <= UINT16_MAX)
     return ((obj) xval);
   objhdr *p;

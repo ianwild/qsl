@@ -11,7 +11,7 @@
 #define obj_FEXPR             OBJECT_C (4)
 
 #define FIRST_SMALL_INT       OBJECT_C (0x8000)
-#define OBJ_ZERO              OBJECT_C (0xC000)
+#define obj_ZERO              OBJECT_C (0xC000)
 #define FIRST_CHAR            OBJECT_C (0x7F00)
 #define LAST_POSSIBLE_OBJECT  OBJECT_C (0x7EFF)
 
