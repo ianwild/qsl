@@ -309,6 +309,37 @@ static void interpret_bytecodes (void)
       set_symbol_value (get_const (*current_function++), pop_arg ());
       break;
 
+    case opCREATE_CONTEXT_BLOCK:
+    {
+      uint8_t size = *current_function++;
+      obj new_env = new_extended_object (environment_type, 1 + 2 * size);
+      objhdr *p = get_header (new_env);
+      p -> u.array_val [1] = current_environment;
+      stack_push (new_env);
+      break;
+    }
+
+    case opINSERT_BINDING:
+    {
+      uint8_t idx = 1 + 2 * *current_function++;
+      obj sym = get_const (*current_function++);
+      objhdr *p = get_header (get_arg (1));
+      p -> u.array_val [idx] = sym;
+      p -> u.array_val [idx + 1] = pop_arg ();
+      break;
+    }
+
+    case opPUSH_CONTEXT:
+      current_environment = pop_arg ();
+      break;
+
+    case opPOP_CONTEXT:
+    {
+      objhdr *p = get_header (get_arg (1));
+      current_environment = p -> u.array_val [1];
+      break;
+    }
+
     default:
       if (opcode <= LAST_ROM_OBJ)
       {

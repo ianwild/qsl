@@ -111,8 +111,16 @@ void compile_expression (obj expr, bool value_context)
   case rom_symbol_type:
     if (value_context)
     {
-      compile_opcode (opLOAD_VAR);
-      compile_constant (expr);
+      switch (expr)
+      {
+      case obj_NIL:      compile_opcode (opLOAD_NIL);  break;
+      case obj_T:        compile_opcode (opLOAD_T);    break;
+
+      default:
+	compile_opcode (opLOAD_VAR);
+	compile_constant (expr);
+	break;
+      }
     }
     return;
 

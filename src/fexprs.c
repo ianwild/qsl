@@ -259,50 +259,50 @@ obj fe_or (uint8_t for_value)
 
 static obj let (bool star, uint8_t for_value)
 {
-#if 0
+  obj body = get_arg (0);
   obj bindings;
-  obj elist = split_args (args, &bindings);
-  decons (elist, &bindings, &elist);
-  uint16_t argc = internal_len (bindings);
-  if (argc == 0)
-    return (eval_progn (elist, obj_NIL));
-  obj new_env = new_extended_object (environment_type, 1 + 2 * argc);
-  objhdr *p = get_header (new_env);
-  p -> u.array_val [1] = current_environment;
+  decons (body, &bindings, &body);
+  uint16_t n = internal_len (bindings);
+  if (n == 0)
+  {
+    compile_progn (body, for_value);
+    return (obj_NIL);
+  }
+
+  compile_opcode (opCREATE_CONTEXT_BLOCK);
+  compile_opcode (n);
+
   if (star)
-    current_environment = new_env;
-  else
-    p -> flags |= gc_fixed;
-  uint16_t i = 2;
-  while (bindings)
+  {
+    compile_opcode (opDUP);
+    compile_opcode (opPUSH_CONTEXT);
+  }
+
+  uint16_t i;
+  for (i = 0; i < n; i += 1)
   {
     obj one_binding;
     decons (bindings, &one_binding, &bindings);
     if (get_type (one_binding) == cons_type)
     {
-      obj var, val;
-      decons (one_binding, &var, &one_binding);
+      obj sym, val;
+      decons (one_binding, &sym, &one_binding);
       decons (one_binding, &val, &one_binding);
-      val = eval_internal (val);
-      p -> u.array_val [i] = var;
-      p -> u.array_val [i + 1] = val;
+      compile_expression (val, true);
+      one_binding = sym;
     }
     else
-      p -> u.array_val [i] = one_binding;
-    i += 2;
+      compile_opcode (opLOAD_NIL);
+    compile_opcode (opINSERT_BINDING);
+    compile_opcode (i);
+    compile_constant (one_binding);
   }
-  if (! star)
-  {
-    current_environment = new_env;
-    p -> flags &= ~gc_fixed;
-  }
-  obj res = eval_progn (elist, obj_NIL);
-  current_environment = p -> u.array_val [1];
 
-  return (res);
-#endif
-  (void) star;
-  (void) for_value;
+  if (! star)
+    compile_opcode (opPUSH_CONTEXT);
+
+  compile_progn (body, for_value);
+  compile_opcode (opPOP_CONTEXT);
   return (obj_NIL);
 }
 
