@@ -223,7 +223,7 @@ void compact_string_space (void)
     len += sizeof (obj);
     if ((p -> flags & gc_wanted) && (back_ptr == from + sizeof (obj)))
     {
-      memcpy (to, from, len);
+      memmove (to, from, len);
       p -> u.string_val = to + sizeof (obj);
       to += len;
     }

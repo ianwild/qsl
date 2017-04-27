@@ -81,7 +81,7 @@ void do_gc (void)
       }
     }
   }
-#if 0
+#if NOT_YET_CONVERTED
   compact_string_space ();
 
   obj i;

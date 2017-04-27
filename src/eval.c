@@ -220,7 +220,22 @@ obj eval_internal (obj expr)
   }
 }
 
+#if TARGET_ARDUINO
+#define TRACE(x)
+#else
 #define TRACE(x) printf x
+static char *symname (uint8_t opcode)
+{
+  static char buf [128];
+  uint16_t n;
+  const uint8_t *p = get_rom_spelling (opcode, &n);
+  char *q = buf;
+  while (n--)
+    *q++ = *p++;
+  *q = '\0';
+  return (buf);
+}
+#endif
 
 void interpret_bytecodes (void)
 {
@@ -229,7 +244,7 @@ void interpret_bytecodes (void)
 
   for (;;)
   {
-    TRACE (("%4d:\t", current_function - function_base));
+    TRACE (("%4zd:\t", current_function - function_base));
     uint8_t opcode = *current_function++;
     switch (opcode)
     {
@@ -363,7 +378,7 @@ void interpret_bytecodes (void)
     default:
       if (opcode <= LAST_ROM_OBJ)
       {
-	TRACE (("call builtin with %d args\n", *current_function));
+	TRACE (("call builtin |%s| with %d args\n", symname (opcode), *current_function));
 	const rom_object *hdr = get_rom_header (opcode);
 	built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
 	if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
@@ -378,7 +393,10 @@ void interpret_bytecodes (void)
 	  stack_push (res);
       }
       else
+      {
+        printf ("opcode is %u = 0x%04x\n", opcode, opcode);
 	throw_error (compiler_error);
+      }
       break;
     }
   }

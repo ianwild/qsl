@@ -21,7 +21,7 @@ obj eval_progn (obj o, obj res)
   return (res);
 }
 
-#if 0
+#if NOT_YET_CONVERTED
 static obj split_args (obj args, obj *env)
 {
   obj *argv = get_header (args) -> u.array_val;
@@ -153,7 +153,7 @@ obj fe_setq (uint8_t for_value)
 
 static obj defun_common (obj tag, uint8_t for_value)
 {
-#if 0
+#if NOT_YET_CONVERTED
   obj env;
   obj arglist = split_args (args, &env);
   obj sym, cdr;
@@ -318,7 +318,7 @@ obj fe_let_star (uint8_t for_value)
 
 obj fe_apply (uint8_t for_value)
 {
-#if 0
+#if NOT_YET_CONVERTED
   obj env;
   obj fn = split_args (args, &env);
   decons (fn, &fn, &args);

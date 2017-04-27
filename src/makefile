@@ -18,12 +18,12 @@ GENERATED += qsl
 GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 
-OPTIMISER_FLAGS = -O6 -flto
+OPTIMISER_FLAGS = -O3 -flto
 WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
 CFLAGS = $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
 LDFLAGS = $(OPTIMISER_FLAGS)
 
-.PHONY: clean tar dep
+.PHONY: clean tar dep tags
 
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
@@ -48,8 +48,11 @@ clean:
 
 tar:	clean
 	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`   \
-		--exclude CVS                   \
 		.
+
+tags:
+	find . -name '*.[ch]' -o -name '*.cpp' | etags -
+
 ## generic rules
 
 
