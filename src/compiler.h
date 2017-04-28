@@ -26,8 +26,7 @@ typedef struct
 
 enum opcodes
 {
-  opNOP = LAST_ROM_OBJ,
-  opDROP,
+  opDROP = LAST_ROM_OBJ + 1,
   opSWAP,
   opDUP,
   opDUP_IF_NIL,
