@@ -394,7 +394,9 @@ void interpret_bytecodes (void)
       }
       else
       {
+        #if ! TARGET_ARDUINO
         printf ("opcode is %u = 0x%04x\n", opcode, opcode);
+        #endif
 	throw_error (compiler_error);
       }
       break;
