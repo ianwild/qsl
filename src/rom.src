@@ -6,64 +6,64 @@
 #    else        : use the name given
 # (Note: if the C name starts "fe_", it's actually a fexpr, not a function)
 
-nil		-
-t		-
-quote		fe
-lambda		-
-fexpr		fe
+nil             -
+t               -
+quote           fe
+lambda          -
+fexpr           fe
 
-car		fn
-cdr		fn
-cons		fn
-list		fn
-rplaca		fn
-rplacd		fn
+car             fn
+cdr             fn
+cons            fn
+list            fn
+rplaca          fn
+rplacd          fn
 
-+		fn_plus
--		fn_minus
-*		fn_times
-/		fn_divide
++               fn_plus
+-               fn_minus
+*               fn_times
+/               fn_divide
 
-<		fn_lt
-<=		fn_le
->		fn_gt
->=		fn_ge
-=		fn_equals
-/=		fn_not_equals
+<               fn_lt
+<=              fn_le
+>               fn_gt
+>=              fn_ge
+=               fn_equals
+/=              fn_not_equals
 
-progn		fe
-cond		fe
-while		fe
-setq		fe
-defun		fe
-and		fe
-or		fe
-let		fe
-let*		fe_let_star
+progn           fe
+cond            fe
+while           fe
+setq            fe
+defun           fe
+and             fe
+or              fe
+let             fe
+let*            fe_let_star
 
-eval		fn
-apply		fe
+eval            fn
+apply           fe
 
-read		fn
-print		fn
-readchar	fn
-peekchar	fn
+read            fn
+print           fn
+readchar        fn
+peekchar        fn
 
-not		fn
-eq		fn
-neq		fn
+not             fn
+eq              fn
+neq             fn
 
-make-string	fn
-make-array	fn
-length		fn
-aref		fn
-aset		fn
-char-code	fn
-code-char	fn
+make-string     fn
+make-array      fn
+length          fn
+aref            fn
+aset            fn
+char-code       fn
+code-char       fn
 
-pin		fn
-on-tick		fn
-on-serial	fn
-wait-for-event	fn
-do-events	fn
+pin             fn
+on-tick         fn
+on-serial       fn
+wait-for-event  fn
+do-events       fn
 

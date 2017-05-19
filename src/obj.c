@@ -36,7 +36,7 @@ static void memstats (void)
   printc ('>');
 }
 #endif
-	  
+          
 void init_memory (void)
 {
   headers = (objhdr *) (string_space + sizeof (string_space));
@@ -101,7 +101,7 @@ static obj check_available_space (int16_t string_space_needed)
     while (i <= last_allocated_object)
     {
       if (p -> xtype == unallocated_type)
-	break;
+        break;
       i += 1;
       p -= 1;
     }
@@ -113,7 +113,7 @@ static obj check_available_space (int16_t string_space_needed)
       new_last += 1;
     }
     if (string_space_top + really_needed <
-	(uint8_t *) (headers - (last_allocated_object - LAST_ROM_OBJ)))
+        (uint8_t *) (headers - (last_allocated_object - LAST_ROM_OBJ)))
     {
       last_allocated_object = new_last;
       return (i);

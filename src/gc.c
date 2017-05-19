@@ -28,8 +28,8 @@ static void mark_roots (void)
   {
     objhdr *p = get_header (i);
     if ((p -> flags & gc_fixed) ||
-	(p -> xtype == symbol_type && p -> u.symbol_val.global_fn) ||
-	(p -> xtype == global_binding_type))
+        (p -> xtype == symbol_type && p -> u.symbol_val.global_fn) ||
+        (p -> xtype == global_binding_type))
       p -> flags |= gc_wanted;
   }
   want_obj (working_root);
@@ -72,11 +72,11 @@ void do_gc (void)
       case array_type:
       case environment_type:
       {
-	obj *q = p -> u.array_val;
-	uint16_t len = *q++;
-	while (len--)
-	  want_obj (*q++);
-	break;
+        obj *q = p -> u.array_val;
+        uint16_t len = *q++;
+        while (len--)
+          want_obj (*q++);
+        break;
       }
       }
     }

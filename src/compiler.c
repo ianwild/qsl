@@ -127,9 +127,9 @@ void compile_expression (obj expr, bool value_context)
       case obj_T:        compile_opcode (opLOAD_T);    break;
 
       default:
-	compile_opcode (opLOAD_VAR);
-	compile_constant (expr);
-	break;
+        compile_opcode (opLOAD_VAR);
+        compile_constant (expr);
+        break;
       }
     }
     return;
@@ -145,11 +145,11 @@ void compile_expression (obj expr, bool value_context)
       const rom_object *hdr = get_rom_header (fn);
       if (pgm_read_byte_near (&hdr -> is_fexpr))
       {
-	built_in_fn f = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
-	stack_push (args);
-	f (value_context);
-	stack_pop (1);
-	return;
+        built_in_fn f = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
+        stack_push (args);
+        f (value_context);
+        stack_pop (1);
+        return;
       }
     }
     uint8_t n = 0;
@@ -183,9 +183,9 @@ void compile_expression (obj expr, bool value_context)
       case obj_ZERO + 1: compile_opcode (opLOAD_ONE);  break;
 
       default:
-	compile_opcode (opLOAD_LITERAL);
-	compile_constant (expr);
-	break;
+        compile_opcode (opLOAD_LITERAL);
+        compile_constant (expr);
+        break;
       }
     return;
   }

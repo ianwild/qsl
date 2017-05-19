@@ -20,12 +20,12 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
       uint8_t *new_spelling = spelling;
       while (rom_len)
       {
-	if (pgm_read_byte_near (rom_spelling++) != *new_spelling++)
-	  break;
-	rom_len -= 1;
+        if (pgm_read_byte_near (rom_spelling++) != *new_spelling++)
+          break;
+        rom_len -= 1;
       }
       if (rom_len == 0)
-	return (sym);
+        return (sym);
     }
   }
 
@@ -36,8 +36,8 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
       uint16_t ram_len;
       const uint8_t *ram_spelling = get_spelling (sym, &ram_len);
       if (ram_len == len &&
-	  memcmp (spelling, ram_spelling, len) == 0)
-	return (sym);
+          memcmp (spelling, ram_spelling, len) == 0)
+        return (sym);
     }
   }
 
@@ -55,11 +55,11 @@ static obj *find_lexical_binding (obj sym)
   {
     obj *p = get_header (env) -> u.array_val;
     uint16_t len = (uint16_t) *p++ - 1;
-    env = *p++;			// parent environment
+    env = *p++;                 // parent environment
     while (len)
     {
       if (*p == sym)
-	return (p + 1);
+        return (p + 1);
       p += 2;
       len -= 2;
     }
@@ -75,7 +75,7 @@ static objhdr *find_global_binding (obj sym)
     {
       objhdr *p = get_header (res);
       if (p -> u.cons_val.car_cell == sym)
-	return (p);
+        return (p);
     }
   return (NULL);
 }
@@ -113,9 +113,9 @@ obj set_symbol_value (obj sym, obj val)
     if (p)
     {
       if (sym == val)
-	p -> xtype = unallocated_type;
+        p -> xtype = unallocated_type;
       else
-	p -> u.cons_val.cdr_cell = val;
+        p -> u.cons_val.cdr_cell = val;
       return (val);
     }
   }

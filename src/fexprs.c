@@ -66,40 +66,40 @@ obj fe_cond (uint8_t for_value)
       decons (clause, &test, &clause);
       if (expr_list == obj_NIL)
       {
-	// last clause
-	if (clause == obj_NIL)
-	  compile_expression (test, for_value);
-	else
-	{
-	  compile_expression (test, true);
-	  if (for_value)
-	    compile_opcode (opDUP_IF_NIL);
-	  compile_opcode (opJUMP_IF_NIL);
-	  to_finish = insert_forward_jump (to_finish);
-	  compile_progn (clause, for_value);
-	}
+        // last clause
+        if (clause == obj_NIL)
+          compile_expression (test, for_value);
+        else
+        {
+          compile_expression (test, true);
+          if (for_value)
+            compile_opcode (opDUP_IF_NIL);
+          compile_opcode (opJUMP_IF_NIL);
+          to_finish = insert_forward_jump (to_finish);
+          compile_progn (clause, for_value);
+        }
       }
       else
       {
-	// not last clause
-	compile_expression (test, true);
-	if (for_value)
-	  compile_opcode (opDUP_UNLESS_NIL);
-	if (clause == obj_NIL)
-	{
-	  compile_opcode (opJUMP_UNLESS_NIL);
-	  to_finish = insert_forward_jump (to_finish);
-	}
-	else
-	{
-	  forward_jump to_next = declare_forward_jump ();
-	  compile_opcode (opJUMP_IF_NIL);
-	  to_next = insert_forward_jump (to_next);
-	  compile_progn (clause, for_value);
-	  compile_opcode (opJUMP_ALWAYS);
-	  to_finish = insert_forward_jump (to_finish);
-	  resolve_forward_jump (to_next);
-	}
+        // not last clause
+        compile_expression (test, true);
+        if (for_value)
+          compile_opcode (opDUP_UNLESS_NIL);
+        if (clause == obj_NIL)
+        {
+          compile_opcode (opJUMP_UNLESS_NIL);
+          to_finish = insert_forward_jump (to_finish);
+        }
+        else
+        {
+          forward_jump to_next = declare_forward_jump ();
+          compile_opcode (opJUMP_IF_NIL);
+          to_next = insert_forward_jump (to_next);
+          compile_progn (clause, for_value);
+          compile_opcode (opJUMP_ALWAYS);
+          to_finish = insert_forward_jump (to_finish);
+          resolve_forward_jump (to_next);
+        }
       }
     }
     resolve_forward_jump (to_finish);
@@ -207,16 +207,16 @@ obj fe_and (uint8_t for_value)
       decons (expr_list, &car, &expr_list);
       if (expr_list == obj_NIL)
       {
-	compile_expression (car, for_value);
-	resolve_forward_jump (to_finish);
+        compile_expression (car, for_value);
+        resolve_forward_jump (to_finish);
       }
       else
       {
-	compile_expression (car, true);
-	if (for_value)
-	  compile_opcode (opDUP_IF_NIL);
-	compile_opcode (opJUMP_IF_NIL);
-	to_finish = insert_forward_jump (to_finish);
+        compile_expression (car, true);
+        if (for_value)
+          compile_opcode (opDUP_IF_NIL);
+        compile_opcode (opJUMP_IF_NIL);
+        to_finish = insert_forward_jump (to_finish);
       }
     }
   }
@@ -241,16 +241,16 @@ obj fe_or (uint8_t for_value)
       decons (expr_list, &car, &expr_list);
       if (expr_list == obj_NIL)
       {
-	compile_expression (car, for_value);
-	resolve_forward_jump (to_finish);
+        compile_expression (car, for_value);
+        resolve_forward_jump (to_finish);
       }
       else
       {
-	compile_expression (car, true);
-	if (for_value)
-	  compile_opcode (opDUP_UNLESS_NIL);
-	compile_opcode (opJUMP_UNLESS_NIL);
-	to_finish = insert_forward_jump (to_finish);
+        compile_expression (car, true);
+        if (for_value)
+          compile_opcode (opDUP_UNLESS_NIL);
+        compile_opcode (opJUMP_UNLESS_NIL);
+        to_finish = insert_forward_jump (to_finish);
       }
     }
   }

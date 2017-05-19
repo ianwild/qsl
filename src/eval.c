@@ -69,10 +69,10 @@ static obj make_argv (obj args, bool is_fexpr)
       uint16_t i;
       for (i = 1; i <= argc; i += 1)
       {
-	obj car;
-	decons (args, &car, &args);
-	car = eval_internal (car);
-	p -> u.array_val [i] = car;
+        obj car;
+        decons (args, &car, &args);
+        car = eval_internal (car);
+        p -> u.array_val [i] = car;
       }
     }
     p -> flags &= ~ gc_fixed;
@@ -163,9 +163,9 @@ obj apply_internal (obj fn, obj args)
       decons (code, &type_sym, &code);
       decons (code, &params, &code);
       if (type_sym == obj_LAMBDA)
-	new_env = make_lambda_binding (params, args);
+        new_env = make_lambda_binding (params, args);
       else
-	new_env = make_fexpr_binding (params, args);
+        new_env = make_fexpr_binding (params, args);
     }
     if (new_env)
     {
@@ -256,10 +256,10 @@ void interpret_bytecodes (void)
     case opSWAP:
       TRACE (("SWAP\n"));
       {
-	obj tos = pop_arg ();
-	obj nos = pop_arg ();
-	stack_push (tos);
-	stack_push (nos);
+        obj tos = pop_arg ();
+        obj nos = pop_arg ();
+        stack_push (tos);
+        stack_push (nos);
       }
       break;
 
@@ -271,13 +271,13 @@ void interpret_bytecodes (void)
     case opDUP_IF_NIL:
       TRACE (("DUP_IF_NIL\n"));
       if (get_arg (0) == obj_NIL)
-	stack_push (get_arg (0));
+        stack_push (get_arg (0));
       break;
 
     case opDUP_UNLESS_NIL:
       TRACE (("DUP_UNLESS_NIL\n"));
       if (get_arg (0) != obj_NIL)
-	stack_push (get_arg (0));
+        stack_push (get_arg (0));
       break;
 
     case opJUMP_ALWAYS:
@@ -288,17 +288,17 @@ void interpret_bytecodes (void)
     case opJUMP_IF_NIL:
       TRACE (("JUMP_IF_NIL (%04x) %d\n", get_arg (0), *current_function));
       if (pop_arg () == obj_NIL)
-	current_function = function_base + *current_function;
+        current_function = function_base + *current_function;
       else
-	current_function += 1;
+        current_function += 1;
       break;
 
     case opJUMP_UNLESS_NIL:
       TRACE (("JUMP_UNLESS_NIL (%04x) %d\n", get_arg (0), *current_function));
       if (pop_arg () != obj_NIL)
-	current_function = function_base + *current_function;
+        current_function = function_base + *current_function;
       else
-	current_function += 1;
+        current_function += 1;
       break;
 
     case opLOAD_LITERAL:
@@ -339,22 +339,22 @@ void interpret_bytecodes (void)
     case opCREATE_CONTEXT_BLOCK:
       TRACE (("CREATE_CONTEXT_BLOCK %d\n", *current_function));
       {
-	uint8_t size = *current_function++;
-	obj new_env = new_extended_object (environment_type, 1 + 2 * size);
-	objhdr *p = get_header (new_env);
-	p -> u.array_val [1] = current_environment;
-	stack_push (new_env);
+        uint8_t size = *current_function++;
+        obj new_env = new_extended_object (environment_type, 1 + 2 * size);
+        objhdr *p = get_header (new_env);
+        p -> u.array_val [1] = current_environment;
+        stack_push (new_env);
       }
       break;
 
     case opINSERT_BINDING:
       TRACE (("INSERT_BINDING %d (%04x: %04x)\n", *current_function, get_arg (1), get_arg (0)));
       {
-	uint8_t idx = 2 + 2 * *current_function++;
-	obj sym = get_const (*current_function++);
-	objhdr *p = get_header (get_arg (1));
-	p -> u.array_val [idx] = sym;
-	p -> u.array_val [idx + 1] = pop_arg ();
+        uint8_t idx = 2 + 2 * *current_function++;
+        obj sym = get_const (*current_function++);
+        objhdr *p = get_header (get_arg (1));
+        p -> u.array_val [idx] = sym;
+        p -> u.array_val [idx + 1] = pop_arg ();
       }
       break;
 
@@ -366,8 +366,8 @@ void interpret_bytecodes (void)
     case opPOP_CONTEXT:
       TRACE (("POP_CONTEXT\n"));
       {
-	objhdr *p = get_header (current_environment);
-	current_environment = p -> u.array_val [1];
+        objhdr *p = get_header (current_environment);
+        current_environment = p -> u.array_val [1];
       }
       break;
 
@@ -378,24 +378,24 @@ void interpret_bytecodes (void)
     default:
       if (opcode <= LAST_ROM_OBJ)
       {
-	TRACE (("call builtin |%s| with %d args\n", symname (opcode), *current_function));
-	const rom_object *hdr = get_rom_header (opcode);
-	built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
-	if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
-	  throw_error (no_fdefn);
-	uint8_t argc = *current_function++;
-	bool void_context = (argc >= 128);
-	if (void_context)
-	  argc -= 128;
-	obj res = fn (argc);
-	stack_pop (argc);
-	if (! void_context)
-	  stack_push (res);
+        TRACE (("call builtin |%s| with %d args\n", symname (opcode), *current_function));
+        const rom_object *hdr = get_rom_header (opcode);
+        built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
+        if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
+          throw_error (no_fdefn);
+        uint8_t argc = *current_function++;
+        bool void_context = (argc >= 128);
+        if (void_context)
+          argc -= 128;
+        obj res = fn (argc);
+        stack_pop (argc);
+        if (! void_context)
+          stack_push (res);
       }
       else
       {
         TRACE (("opcode is %u = 0x%04x\n", opcode, opcode));
-	throw_error (compiler_error);
+        throw_error (compiler_error);
       }
       break;
     }

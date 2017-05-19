@@ -99,11 +99,11 @@ static obj read_token (uint8_t ch1)
     if ((len += 1) == MAX_TOKEN)
       break;
     if ((ch1 = readc ()) <= ' ' ||
-	ch1 == ';' ||
-	ch1 == '\'' ||
-	ch1 == '"' ||
-	ch1 == '(' ||
-	ch1 == ')')
+        ch1 == ';' ||
+        ch1 == '\'' ||
+        ch1 == '"' ||
+        ch1 == '(' ||
+        ch1 == ')')
     {
       pushbackc (ch1);
       break;
@@ -153,7 +153,7 @@ static void skip_blanks (void)
     if (ch1 == ';')
     {
       while ((ch1 = readc ()) != '\r' && ch1 != '\n')
-	;
+        ;
     }
     else if (ch1 > ' ')
     {
@@ -249,7 +249,7 @@ void print1 (obj o)
     while (len--)
     {
       if (*p == '"' || *p == '\\')
-	printc ('\\');
+        printc ('\\');
       printc (*p++);
     }
     printc ('"');
@@ -285,7 +285,7 @@ void print1 (obj o)
       decons (o, &car, &o);
       print1 (car);
       if (o != obj_NIL)
-	printc (' ');
+        printc (' ');
     }
     if (o != obj_NIL)
     {
@@ -309,7 +309,7 @@ void print1 (obj o)
       print1 (*p++);
       n -= 1;
       if (n)
-	printc (' ');
+        printc (' ');
     }
     printc (')');
     break;
