@@ -18,7 +18,7 @@ GENERATED += qsl
 GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 
-OPTIMISER_FLAGS = -O3 -flto
+OPTIMISER_FLAGS = -Os -flto
 WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
 CFLAGS = $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
 LDFLAGS = $(OPTIMISER_FLAGS)

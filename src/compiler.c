@@ -7,6 +7,7 @@
 #include "obj.h"
 #include "stack.h"
 
+#include <assert.h>
 
 static uint8_t *prog;
 uint8_t prog_length;
@@ -16,6 +17,7 @@ uint8_t const_length;
 
 void compiler_init (void)
 {
+  assert (opLAST_OPCODE <= UINT8_MAX + 1);
   if (! prog)
     prog = malloc (1024 * sizeof (uint8_t));
   if (! constants)

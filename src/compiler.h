@@ -48,26 +48,29 @@ enum opcodes
   opCREATE_CLOSURE,
   opCALL,
   opRETURN,
+
+  opLAST_OPCODE
 };
 
 
 START_EXTERN_C
 
-forward_jump  declare_forward_jump  (void);
-forward_jump  insert_forward_jump   (forward_jump jmp);
-void          resolve_forward_jump  (forward_jump jmp);
-backward_jump declare_backward_jump (void);
-void          insert_backward_jump  (backward_jump jmp);
+forward_jump   declare_forward_jump   (void);
+forward_jump   insert_forward_jump    (forward_jump jmp);
+void           resolve_forward_jump   (forward_jump jmp);
+backward_jump  declare_backward_jump  (void);
+void           insert_backward_jump   (backward_jump jmp);
 
-void          compile_expression    (obj expr, bool value_context);
-void          compile_constant      (obj o);
-void          compile_opcode        (uint8_t);
+void           compile_expression     (obj expr, bool value_context);
+void           compile_constant       (obj o);
+void           compile_opcode         (uint8_t);
 
-void compiler_init (void);
-void compiler_report (void);
+void           compiler_init          (void);
+void           compiler_report        (void);
 
-obj get_const (uint8_t idx);
-uint8_t *get_opcodes (void);
+obj            get_const              (uint8_t idx);
+uint8_t       *get_opcodes            (void);
+
 END_EXTERN_C
 
 

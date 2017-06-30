@@ -6,9 +6,9 @@
 
 START_EXTERN_C
 
-obj find_symbol        (uint8_t *spelling, uint16_t len);
-obj symbol_value       (obj sym);
-obj set_symbol_value   (obj sym, obj val);
+obj  find_symbol        (uint8_t *spelling, uint16_t len);
+obj  symbol_value       (obj sym);
+obj  set_symbol_value   (obj sym, obj val);
 
 END_EXTERN_C
 

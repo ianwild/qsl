@@ -36,7 +36,7 @@ static void memstats (void)
   printc ('>');
 }
 #endif
-          
+
 void init_memory (void)
 {
   headers = (objhdr *) (string_space + sizeof (string_space));

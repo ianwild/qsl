@@ -29,19 +29,19 @@
   without recursing in the compiler.
 
 */
-  
+
 
 #include "target.h"
 #include "types.h"
 
 START_EXTERN_C
 
-obj  fn_eval           (uint8_t argc);
+obj    fn_eval              (uint8_t argc);
 
-obj  eval_internal     (obj expr);
-obj  apply_internal    (obj fn, obj args);
+obj    eval_internal        (obj expr);
+obj    apply_internal       (obj fn, obj args);
 
-void interpret_bytecodes (void);
+void   interpret_bytecodes  (void);
 
 extern obj current_environment;
 

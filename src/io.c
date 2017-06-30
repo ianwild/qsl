@@ -112,7 +112,7 @@ static obj read_token (uint8_t ch1)
   bool neg = (len > 1) && (spelling [0] == '-');
   uint8_t i = neg;
   int32_t tot = 0;
- 
+
   for (; i < len; i += 1)
   {
     if ((ch1 = spelling [i] - '0') > 9)

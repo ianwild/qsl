@@ -55,7 +55,7 @@ obj fe_cond (uint8_t for_value)
       compile_opcode (opLOAD_NIL);
   }
   else
-  { 
+  {
     forward_jump to_finish = declare_forward_jump ();
 
     while (expr_list != obj_NIL)
@@ -198,9 +198,9 @@ obj fe_and (uint8_t for_value)
       compile_opcode (opLOAD_T);
   }
   else
-  { 
+  {
     forward_jump to_finish = declare_forward_jump ();
-   
+
     while (expr_list != obj_NIL)
     {
       obj car;
@@ -232,9 +232,9 @@ obj fe_or (uint8_t for_value)
       compile_opcode (opLOAD_NIL);
   }
   else
-  { 
+  {
     forward_jump to_finish = declare_forward_jump ();
-   
+
     while (expr_list != obj_NIL)
     {
       obj car;
