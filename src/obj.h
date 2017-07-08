@@ -35,6 +35,8 @@ void               throw_error          (enum errcode e,
 
 extern obj last_allocated_object;
 
+void               memstats             (void);
+
 END_EXTERN_C
 
 #endif /* QSL_OBJ_H */

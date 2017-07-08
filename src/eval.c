@@ -1,5 +1,6 @@
 #include "compiler.h"
 #include "cons.h"
+#include "dbg.h"
 #include "eval.h"
 #include "fexprs.h"
 #include "io.h"
@@ -220,10 +221,7 @@ obj eval_internal (obj expr)
   }
 }
 
-#if TARGET_ARDUINO
-#define TRACE(x)
-#else
-#define TRACE(x) printf x
+#if ! TARGET_ARDUINO
 static char *symname (uint8_t opcode)
 {
   static char buf [128];

@@ -42,6 +42,7 @@ static void mark_roots (void)
 
 void do_gc (void)
 {
+  memstats ();
   next_to_sweep = LAST_ROM_OBJ + 1;
 
   mark_roots ();
@@ -81,7 +82,6 @@ void do_gc (void)
       }
     }
   }
-#if NOT_YET_CONVERTED
   compact_string_space ();
 
   obj i;
@@ -95,13 +95,11 @@ void do_gc (void)
       p -> flags &= ~ (gc_wanted | gc_scanned);
       high_water_mark = i;
     }
-    else if (p -> xtype != unallocated_type)
-    {
+    else
       p -> xtype = unallocated_type;
-    }
   }
 
   last_allocated_object = high_water_mark;
-#endif
-}
+}(setq x nil)
+
 

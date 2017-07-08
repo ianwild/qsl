@@ -2,6 +2,7 @@
 
 #include "arrays.h"
 #include "cons.h"
+#include "dbg.h"
 #include "eval.h"
 #include "fexprs.h"
 #include "gc.h"
@@ -24,8 +25,7 @@ obj last_allocated_object = LAST_ROM_OBJ;
 
 #include "rom-symbols.ci"
 
-#if 0
-static void memstats (void)
+void memstats (void)
 {
   printc ('<');
   print_int (string_space_top - string_space);
@@ -35,7 +35,6 @@ static void memstats (void)
   print_int (last_allocated_object - LAST_ROM_OBJ);
   printc ('>');
 }
-#endif
 
 void init_memory (void)
 {
@@ -197,6 +196,7 @@ uint8_t get_type (obj o)
 
 void compact_string_space (void)
 {
+#if NOT_YET_CONVERTED
   uint8_t *from = string_space;
   uint8_t *to = string_space;
 
@@ -223,7 +223,10 @@ void compact_string_space (void)
     len += sizeof (obj);
     if ((p -> flags & gc_wanted) && (back_ptr == from + sizeof (obj)))
     {
-      memmove (to, from, len);
+      if (to == from)
+        TRACE (("didn't move %u bytes\n", len));
+      else
+        memmove (to, from, len);
       p -> u.string_val = to + sizeof (obj);
       to += len;
     }
@@ -231,4 +234,5 @@ void compact_string_space (void)
   }
 
   string_space_top = to;
+#endif
 }
