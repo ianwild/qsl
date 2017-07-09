@@ -6,13 +6,10 @@
 
 START_EXTERN_C
 
-void do_gc (void);
+void    do_gc       (void);
+void    want_obj    (obj o);
 
 extern obj working_root;
-
-#if TARGET_ARDUINO
-extern obj tick_action, serial_action;
-#endif
 
 END_EXTERN_C
 

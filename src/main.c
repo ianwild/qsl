@@ -1,4 +1,5 @@
 #include "compiler.h"
+#include "embedded.h"
 #include "eval.h"
 #include "gc.h"
 #include "io.h"
@@ -8,21 +9,10 @@
 #include "target.h"
 
 
-#if 0 && TARGET_ARDUINO
-static int stdout_write (char ch, FILE *dummy)
-{
-  (void) dummy;
-  printc (ch);
-  return (1);
-}
-#endif
-
 int main (void)
 {
 #if TARGET_ARDUINO
-  init ();
-  Serial.begin (9600);
-  // stderr = stdout = fdevopen (stdout_write, 0);
+  embed_init ();
 #endif
 
   for (;;)

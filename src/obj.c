@@ -37,14 +37,15 @@ obj last_allocated_object = LAST_ROM_OBJ;
                                            |       |
      string_space                       -> ---------  low memory
 
-  Every real object has a header in the (negatively indexed) `headers`
-  array.  The `headers` array therefore growns downwards through
+  Every real object has a header in the `headers` array.  The
+  `headers` array is negatively indexed, and growns downwards through
   memory.  Extended objects (strings, arrays, and their close
-  relatives) also have a body in the low-memory section, which grows
+  relatives) also have a "body" in the low-memory section, which grows
   upwards.  Free memory is the gap between the two.
 
   The garbage collector can compact the string_space area, but doesn't
-  move the `header` contents.
+  move the `headers` contents, except that unused elements might get
+  disappeared.
 
   The free memory area can be used as temporary storage by the `read`
   and `compile` primitives.

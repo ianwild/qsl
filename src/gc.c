@@ -1,4 +1,5 @@
 #include "gc.h"
+#include "embedded.h"
 #include "eval.h"
 #include "io.h"
 #include "obj.h"
@@ -7,11 +8,7 @@
 static obj next_to_sweep;
 obj working_root;
 
-#if TARGET_ARDUINO
-obj tick_action, serial_action;
-#endif
-
-static void want_obj (obj o)
+void want_obj (obj o)
 {
   if (o <= LAST_ROM_OBJ || o > last_allocated_object)
     return;
@@ -35,8 +32,7 @@ static void mark_roots (void)
   want_obj (working_root);
   want_obj (current_environment);
 #if TARGET_ARDUINO
-  want_obj (tick_action);
-  want_obj (serial_action);
+  embed_mark_roots ();
 #endif
 }
 

@@ -73,18 +73,19 @@ compiler.c:	compiler.h cons.h io.h obj.h stack.h
 compiler.h:	rom-symbols.h target.h types.h
 cons.c:	cons.h gc.h io.h obj.h stack.h
 cons.h:	target.h types.h
+embedded.h:	obj.h target.h
 eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h io.h obj.h stack.h symbols.h target.h
 eval.h:	target.h types.h
 fexprs.c:	compiler.h cons.h eval.h fexprs.h io.h obj.h stack.h symbols.h
 fexprs.h:	target.h types.h
-gc.c:	eval.h gc.h io.h obj.h rom-symbols.h
+gc.c:	embedded.h eval.h gc.h io.h obj.h rom-symbols.h
 gc.h:	obj.h target.h
 hardware.h:	target.h types.h
 integer.c:	integer.h io.h obj.h stack.h
 integer.h:	target.h types.h
 io.c:	cons.h gc.h integer.h io.h obj.h stack.h symbols.h target.h
 io.h:	target.h types.h
-main.c:	compiler.h eval.h gc.h io.h obj.h stack.h symbols.h target.h
+main.c:	compiler.h embedded.h eval.h gc.h io.h obj.h stack.h symbols.h target.h
 misc.c:	integer.h misc.h obj.h stack.h
 misc.h:	target.h types.h
 obj.c:	arrays.h cons.h dbg.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h

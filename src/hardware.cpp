@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <avr/sleep.h>
 
+#include "embedded.h"
 #include "eval.h"
 #include "gc.h"
 #include "hardware.h"
@@ -10,6 +11,22 @@
 
 static uint32_t timeout;
 static int32_t last_time;
+
+static obj tick_action;
+static obj serial_action;
+
+void embed_init (void)
+{
+  init ();
+  Serial.begin (9600);
+}
+
+void embed_mark_roots (void)
+{
+  want_obj (tick_action);
+  want_obj (serial_action);
+}
+
 
 obj fn_pin (uint8_t argc)
 {
