@@ -341,14 +341,16 @@ void interpret_bytecodes (void)
         obj new_env = new_extended_object (environment_type, 1 + 2 * size);
         objhdr *p = get_header (new_env);
         p -> u.array_val [1] = current_environment;
+        stack_push (obj_ZERO);
         stack_push (new_env);
       }
       break;
 
     case opINSERT_BINDING:
-      TRACE (("INSERT_BINDING %d (%04x: %04x)\n", *current_function, get_arg (1), get_arg (0)));
+      TRACE (("INSERT_BINDING (%04x[%d]: %04x)\n",
+              get_arg (1), get_arg (2) - obj_ZERO, get_arg (0)));
       {
-        uint8_t idx = 2 + 2 * *current_function++;
+        uint8_t idx = 2 + 2 * get_and_incr_arg (2);
         obj sym = get_const (*current_function++);
         objhdr *p = get_header (get_arg (1));
         p -> u.array_val [idx] = sym;

@@ -90,8 +90,8 @@ misc.h:	target.h types.h
 obj.c:	arrays.h cons.h dbg.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h
 obj.h:	target.h types.h
 rom-symbols.h:	types.h
-stack.c:	stack.h
+stack.c:	obj.h stack.h
 stack.h:	target.h types.h
-symbols.c:	eval.h obj.h rom-symbols.h symbols.h target.h
+symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h target.h
 symbols.h:	target.h types.h
 ## AUTODEPS END ##

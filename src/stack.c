@@ -1,3 +1,4 @@
+#include "obj.h"
 #include "stack.h"
 
 static obj xyzzy [1024];
@@ -16,6 +17,14 @@ void stack_pop (uint8_t n)
 obj get_arg (uint8_t idx)
 {
   return (* (stack - idx - 1));
+}
+
+uint16_t get_and_incr_arg (uint8_t idx)
+{
+  obj *addr = stack - idx - 1;
+  obj res = *addr;
+  *addr = res + 1;
+  return (res - obj_ZERO);
 }
 
 obj pop_arg (void)

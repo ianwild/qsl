@@ -15,10 +15,11 @@
 
 START_EXTERN_C
 
-void  stack_push   (obj o);
-void  stack_pop    (uint8_t n);
-obj   get_arg      (uint8_t idx);
-obj   pop_arg      (void);
+void       stack_push            (obj o);
+void       stack_pop             (uint8_t n);
+obj        get_arg               (uint8_t idx);
+uint16_t   get_and_incr_arg      (uint8_t idx);
+obj        pop_arg               (void);
 
 END_EXTERN_C
 

@@ -125,7 +125,7 @@ obj set_symbol_value (obj sym, obj val)
     objhdr *p;
     new_object (global_binding_type, &p);
     p -> u.cons_val.car_cell = sym;
-    return (p -> u.cons_val.cdr_cell = val);
+    p -> u.cons_val.cdr_cell = val;
   }
   return (val);
 }

@@ -294,12 +294,12 @@ static obj let (bool star, uint8_t for_value)
     else
       compile_opcode (opLOAD_NIL);
     compile_opcode (opINSERT_BINDING);
-    compile_opcode (i);
+    //compile_opcode (i);
     compile_constant (one_binding);
   }
 
-  if (! star)
-    compile_opcode (opPUSH_CONTEXT);
+  compile_opcode (star ? opDROP : opPUSH_CONTEXT);
+  compile_opcode (opDROP);
 
   compile_progn (body, for_value);
   compile_opcode (opPOP_CONTEXT);
