@@ -17,8 +17,6 @@
 
 START_EXTERN_C
 
-void               init_memory          (void);
-
 uint8_t            get_flags            (obj o);
 uint8_t            get_type             (obj o);
 objhdr            *get_header           (obj o);

@@ -100,6 +100,4 @@ void do_gc (void)
   }
 
   last_allocated_object = high_water_mark;
-}(setq x nil)
-
-
+}

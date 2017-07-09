@@ -17,11 +17,39 @@
 
 static const char PROGMEM this_file [] = __FILE__;
 
-static objhdr *headers;
 static uint8_t string_space [12800];
 static uint8_t *string_space_top = string_space;
+static objhdr *const headers =
+  (objhdr *) (string_space + sizeof (string_space));
 
 obj last_allocated_object = LAST_ROM_OBJ;
+
+/*
+  Working memory looks like this:
+
+     headers                            -> ---------  high memory
+                                           |       |
+     get_header(last_allocated_object)  -> |~ v v ~|
+                                           |       |
+                                           |       |  (gap)
+                                           |       |
+     string_space_top                   -> |~ ^ ^ ~|
+                                           |       |
+     string_space                       -> ---------  low memory
+
+  Every real object has a header in the (negatively indexed) `headers`
+  array.  The `headers` array therefore growns downwards through
+  memory.  Extended objects (strings, arrays, and their close
+  relatives) also have a body in the low-memory section, which grows
+  upwards.  Free memory is the gap between the two.
+
+  The garbage collector can compact the string_space area, but doesn't
+  move the `header` contents.
+
+  The free memory area can be used as temporary storage by the `read`
+  and `compile` primitives.
+
+*/
 
 #include "rom-symbols.ci"
 
@@ -34,11 +62,6 @@ void memstats (void)
   printc ('/');
   print_int (last_allocated_object - LAST_ROM_OBJ);
   printc ('>');
-}
-
-void init_memory (void)
-{
-  headers = (objhdr *) (string_space + sizeof (string_space));
 }
 
 objhdr *get_header (obj o)
@@ -58,9 +81,7 @@ const rom_object *get_rom_header (obj o)
 
 uint8_t *get_spelling (obj o, uint16_t *len)
 {
-  if (o <= LAST_ROM_OBJ || o > last_allocated_object)
-    throw_error (bad_obj);
-  objhdr *hdr = headers - (o - LAST_ROM_OBJ);
+  objhdr *hdr = get_header (o);
   uint8_t *p;
 
   switch (hdr -> xtype)
@@ -196,7 +217,6 @@ uint8_t get_type (obj o)
 
 void compact_string_space (void)
 {
-#if NOT_YET_CONVERTED
   uint8_t *from = string_space;
   uint8_t *to = string_space;
 
@@ -223,9 +243,7 @@ void compact_string_space (void)
     len += sizeof (obj);
     if ((p -> flags & gc_wanted) && (back_ptr == from + sizeof (obj)))
     {
-      if (to == from)
-        TRACE (("didn't move %u bytes\n", len));
-      else
+      if (to != from)
         memmove (to, from, len);
       p -> u.string_val = to + sizeof (obj);
       to += len;
@@ -234,5 +252,4 @@ void compact_string_space (void)
   }
 
   string_space_top = to;
-#endif
 }

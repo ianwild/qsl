@@ -24,7 +24,6 @@ int main (void)
   Serial.begin (9600);
   // stderr = stdout = fdevopen (stdout_write, 0);
 #endif
-  init_memory ();
 
   for (;;)
   {
