@@ -388,7 +388,8 @@ void interpret_bytecodes (void)
         uint8_t argc = *current_function++;
         objhdr *p = get_header (fn);
         obj lambda = p -> u.symbol_val.global_fn;
-
+        (void) lambda;
+        (void) argc;
         TRACE (("lambda is %04x/%d\n", lambda, argc));
       }
 
