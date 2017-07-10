@@ -21,6 +21,8 @@ obj        get_arg               (uint8_t idx);
 uint16_t   get_and_incr_arg      (uint8_t idx);
 obj        pop_arg               (void);
 
+uint16_t   get_stack_depth       (void);
+
 END_EXTERN_C
 
 #endif /* QSL_STACK_H */

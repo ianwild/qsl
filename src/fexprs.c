@@ -165,7 +165,7 @@ static obj defun_common (obj tag, uint8_t for_value)
   p -> flags |= gc_fixed;
   {
     p -> u.closure_val.environment = obj_T;
-    p -> u.closure_val.code = cons (tag, cdr);
+    p -> u.closure_val.lambda_obj = cons (tag, cdr);
   }
   p -> flags &= ~ gc_fixed;
   compile_opcode (opLOAD_LITERAL);

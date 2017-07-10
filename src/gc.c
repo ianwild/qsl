@@ -54,7 +54,12 @@ void do_gc (void)
       {
       case closure_type:
         want_obj (p -> u.closure_val.environment);
-        want_obj (p -> u.closure_val.code);
+        want_obj (p -> u.closure_val.lambda_obj);
+        break;
+
+      case lambda_type:
+        want_obj (p -> u.lambda_body.opcodes);
+        want_obj (p -> u.lambda_body.constants);
         break;
 
       case symbol_type:

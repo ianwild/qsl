@@ -157,7 +157,7 @@ obj apply_internal (obj fn, obj args)
   case closure_type:
   {
     objhdr *fn_hdr = get_header (fn);
-    obj code = fn_hdr -> u.closure_val.code;
+    obj code = fn_hdr -> u.closure_val.lambda_obj;
     obj new_env;
     {
       obj type_sym, params;
@@ -206,7 +206,7 @@ obj eval_internal (obj expr)
       objhdr *p;
       obj res = new_object (closure_type, &p);
       p -> u.closure_val.environment = current_environment;
-      p -> u.closure_val.code = expr;
+      p -> u.closure_val.lambda_obj = expr;
       return (res);
     }
     return (apply_internal (car, cdr));

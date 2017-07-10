@@ -4,6 +4,11 @@
 static obj xyzzy [1024];
 static obj *stack = xyzzy;
 
+uint16_t get_stack_depth (void)
+{
+  return (stack - xyzzy);
+}
+
 void stack_push (obj o)
 {
   *stack++ = o;

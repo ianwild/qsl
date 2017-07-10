@@ -48,7 +48,10 @@ obj last_allocated_object = LAST_ROM_OBJ;
   disappeared.
 
   The free memory area can be used as temporary storage by the `read`
-  and `compile` primitives.
+  and `compile` primitives.  Alternatively, adding a `resize_object()`
+  function would allow these temporary storage areas to live in the
+  `string_space`.  (I think this might be how the stack gets
+  implemented.)
 
 */
 
@@ -134,7 +137,7 @@ static obj check_available_space (int16_t string_space_needed)
       new_last += 1;
     }
     if (string_space_top + really_needed <
-        (uint8_t *) (headers - (last_allocated_object - LAST_ROM_OBJ)))
+        (uint8_t *) (headers - (new_last - LAST_ROM_OBJ)))
     {
       last_allocated_object = new_last;
       return (i);

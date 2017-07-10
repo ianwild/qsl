@@ -8,6 +8,7 @@ enum typecode
 {
   unallocated_type,
   closure_type,
+  lambda_type,
   symbol_type,
   cons_type,
   global_binding_type,
@@ -71,8 +72,15 @@ typedef struct objhdr
     struct
     {
       obj environment;
-      obj code;
+      obj lambda_obj;
     } closure_val;
+
+    // case lambda_type:
+    struct
+    {
+      obj opcodes;
+      obj constants;
+    } lambda_body;
 
     // case symbol_type:
     struct
