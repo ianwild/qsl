@@ -26,7 +26,8 @@ static void mark_roots (void)
     objhdr *p = get_header (i);
     if ((p -> flags & gc_fixed) ||
         (p -> xtype == symbol_type && p -> u.symbol_val.global_fn) ||
-        (p -> xtype == global_binding_type))
+        (p -> xtype == global_binding_type) ||
+        (p -> xtype == closure_type && p -> u.closure_val.environment == obj_T))
       p -> flags |= gc_wanted;
   }
   want_obj (working_root);

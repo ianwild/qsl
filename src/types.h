@@ -46,7 +46,7 @@ enum errcode
 typedef uint16_t obj;
 #define OBJECT_C(x) UINT16_C(x)
 
-#define MAX_TOKEN 16
+#define MAX_TOKEN 255
 
 typedef obj (*built_in_fn) (uint8_t argc);
 

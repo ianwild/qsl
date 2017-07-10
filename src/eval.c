@@ -334,6 +334,16 @@ void interpret_bytecodes (void)
       set_symbol_value (get_const (*current_function++), pop_arg ());
       break;
 
+    case opSET_FDEFN:
+      TRACE (("SET_FDEFN %04x %04x\n", get_arg (1), get_arg (0)));
+      {
+        obj fn = pop_arg ();
+        obj sym = pop_arg ();
+        objhdr *p = get_header (sym);
+        p -> u.symbol_val.global_fn = fn;
+      }
+      break;
+
     case opCREATE_CONTEXT_BLOCK:
       TRACE (("CREATE_CONTEXT_BLOCK %d\n", *current_function));
       {
@@ -371,6 +381,17 @@ void interpret_bytecodes (void)
       }
       break;
 
+    case opCALL:
+      TRACE (("CALL %04x/%d\n", get_const (*current_function), current_function [1]));
+      {
+        obj fn = get_const (*current_function++);
+        uint8_t argc = *current_function++;
+        objhdr *p = get_header (fn);
+        obj lambda = p -> u.symbol_val.global_fn;
+
+        TRACE (("lambda is %04x/%d\n", lambda, argc));
+      }
+
     case opRETURN:
       TRACE (("RETURN\n"));
       return;
@@ -401,4 +422,3 @@ void interpret_bytecodes (void)
     }
   }
 }
-

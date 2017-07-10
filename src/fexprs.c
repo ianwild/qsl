@@ -153,6 +153,29 @@ obj fe_setq (uint8_t for_value)
 
 static obj defun_common (obj tag, uint8_t for_value)
 {
+  obj body = get_arg (0);
+  print1 (body);
+  obj sym, cdr;
+  decons (body, &sym, &cdr);
+  if (get_type (sym) != symbol_type)
+    throw_error (bad_type);
+  objhdr *p;
+  obj closure = new_object (closure_type, &p);
+  // protect closure across the cons() call
+  p -> flags |= gc_fixed;
+  {
+    p -> u.closure_val.environment = obj_T;
+    p -> u.closure_val.code = cons (tag, cdr);
+  }
+  p -> flags &= ~ gc_fixed;
+  compile_opcode (opLOAD_LITERAL);
+  compile_constant (sym);
+  if (for_value)
+    compile_opcode (opDUP);
+  compile_opcode (opLOAD_LITERAL);
+  compile_constant (closure);
+  compile_opcode (opSET_FDEFN);
+
 #if NOT_YET_CONVERTED
   obj env;
   obj arglist = split_args (args, &env);
@@ -174,8 +197,6 @@ static obj defun_common (obj tag, uint8_t for_value)
   get_header (sym) -> u.symbol_val.global_fn = closure;
   return (sym);
 #endif
-  (void) tag;
-  (void) for_value;
   return (obj_NIL);
 }
 

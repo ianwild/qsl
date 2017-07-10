@@ -41,6 +41,7 @@ enum opcodes
   opLOAD_ONE,
   opLOAD_VAR,
   opSETQ,
+  opSET_FDEFN,
   opCREATE_CONTEXT_BLOCK,
   opINSERT_BINDING,
   opPUSH_CONTEXT,

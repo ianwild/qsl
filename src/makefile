@@ -20,7 +20,7 @@ GENERATED += rom-symbols.h
 
 OPTIMISER_FLAGS = -Os -flto
 WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
-CFLAGS = $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
+CFLAGS = --std=c11 $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
 LDFLAGS = $(OPTIMISER_FLAGS)
 
 .PHONY: clean tar dep tags

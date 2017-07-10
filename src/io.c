@@ -91,7 +91,10 @@ void (throw_error) (enum errcode e, const char *file, int line)
 
 static obj read_token (uint8_t ch1)
 {
-  uint8_t spelling [MAX_TOKEN];
+  static uint8_t *spelling;
+  if (! spelling)
+    spelling = malloc (MAX_TOKEN);
+
   uint8_t len = 0;
   for (;;)
   {
