@@ -30,12 +30,12 @@ END {
         lisp_name = symbol_table [i];
         len = length(lisp_name);
         name_offset [lisp_name] = idx;
-        printf ("  /* %3d */  %d, ", idx, len);
+        printf ("  /* %3d */  %d,", idx, len);
         for (j = 1; j <= len; j += 1) {
             ch = substr (lisp_name, j, 1);
             if (ch == "\\" || ch == "'")
                 ch = "\\" ch;
-            printf ("'%s', ", ch);
+            printf (" '%s',", ch);
         }
         idx += len + 1;
         printf ("\n");
