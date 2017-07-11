@@ -17,7 +17,6 @@
 
 START_EXTERN_C
 
-uint8_t            get_flags            (obj o);
 uint8_t            get_type             (obj o);
 objhdr            *get_header           (obj o);
 uint8_t           *get_spelling         (obj o, uint16_t *len);

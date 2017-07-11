@@ -14,6 +14,7 @@ void     print1           (obj o);
 obj      internal_read    (void);
 void     print_rom_string (const char *p);
 void     print_int        (int32_t n0);
+void     free_io_buffers  (void);
 
 extern bool slow_output;
 

@@ -41,7 +41,7 @@ void do_gc (void)
 {
   memstats ();
   next_to_sweep = LAST_ROM_OBJ + 1;
-
+  free_io_buffers ();
   mark_roots ();
 
   while (next_to_sweep <= last_allocated_object)

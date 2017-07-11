@@ -68,11 +68,17 @@ void memstats (void)
   printc ('>');
 }
 
+static objhdr *GET_HEADER (obj o)
+{
+  // just like get_header(), but with less checking
+  return (headers - (o - LAST_ROM_OBJ));
+}
+
 objhdr *get_header (obj o)
 {
   if (o <= LAST_ROM_OBJ || o > last_allocated_object)
     throw_error (bad_obj);
-  return (headers - (o - LAST_ROM_OBJ));
+  return (GET_HEADER (o));
 }
 
 const rom_object *get_rom_header (obj o)
@@ -102,7 +108,8 @@ uint8_t *get_spelling (obj o, uint16_t *len)
     throw_error (bad_obj);
     p = NULL;
   }
-  *len = *p;
+  if (len)
+    *len = *p;
   return (p + 1);
 }
 
@@ -136,8 +143,7 @@ static obj check_available_space (int16_t string_space_needed)
       really_needed += sizeof (*p);
       new_last += 1;
     }
-    if (string_space_top + really_needed <
-        (uint8_t *) (headers - (new_last - LAST_ROM_OBJ)))
+    if (string_space_top + really_needed < (uint8_t *) GET_HEADER (new_last))
     {
       last_allocated_object = new_last;
       return (i);
@@ -152,7 +158,7 @@ static obj check_available_space (int16_t string_space_needed)
 obj new_object (enum typecode type, objhdr **hdr)
 {
   obj res = check_available_space (0);
-  objhdr *p = headers - (res - LAST_ROM_OBJ);
+  objhdr *p = GET_HEADER (res);
   memset (p, 0, sizeof (*p));
   p -> xtype = type;
   if (hdr)
@@ -178,7 +184,7 @@ obj new_extended_object (enum typecode type, uint16_t size)
   }
 
   obj res = check_available_space (true_size);
-  objhdr *p = headers - (res - LAST_ROM_OBJ);
+  objhdr *p = GET_HEADER (res);
   memset (p, 0, sizeof (*p));
   *(obj *) string_space_top = res;
   string_space_top += sizeof (obj);
@@ -216,7 +222,7 @@ uint8_t get_type (obj o)
     return (rom_symbol_type);
   if (o > last_allocated_object)
     return (unallocated_type);
-  return ((headers - (o - LAST_ROM_OBJ)) -> xtype);
+  return (GET_HEADER (o) -> xtype);
 }
 
 void compact_string_space (void)

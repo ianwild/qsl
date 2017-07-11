@@ -24,7 +24,7 @@ typedef struct
 
 #endif /* TARGET_ARDUINO */
 
-enum opcodes
+enum __attribute__ ((packed)) opcodes
 {
   opDROP = LAST_ROM_OBJ + 1,
   opSWAP,

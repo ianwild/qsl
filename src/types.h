@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-enum typecode
+enum __attribute__ ((packed)) typecode
 {
   unallocated_type,
   closure_type,
@@ -21,7 +21,7 @@ enum typecode
   rom_symbol_type,
 };
 
-enum flag_bits
+enum __attribute__ ((packed)) flag_bits
 {
   gc_wanted  = 0x01,
   gc_scanned = 0x02,
@@ -30,7 +30,7 @@ enum flag_bits
   fexpr      = 0x80
 };
 
-enum errcode
+enum __attribute__ ((packed)) errcode
 {
   no_error,
   bad_type,
@@ -52,7 +52,7 @@ typedef uint16_t obj;
 typedef obj (*built_in_fn) (uint8_t argc);
 
 
-typedef struct rom_object
+typedef struct __attribute__ ((packed)) rom_object
 {
   const uint8_t     *name;
   const built_in_fn  global_fn;
@@ -60,7 +60,7 @@ typedef struct rom_object
 } rom_object;
 
 
-typedef struct objhdr
+typedef struct __attribute__ ((packed)) objhdr
 {
   uint8_t flags;
   uint8_t xtype;

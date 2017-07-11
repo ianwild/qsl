@@ -3,11 +3,10 @@
 
 #include "compiler.h"
 #include "cons.h"
+#include "dbg.h"
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
-
-#include <assert.h>
 
 static uint8_t *prog;
 uint8_t prog_length;
@@ -15,9 +14,6 @@ uint8_t prog_length;
 static obj *constants;
 uint8_t const_length;
 
-#if ! defined (static_assert)
-  #define static_assert(e,m) _Static_assert((e),m)
-#endif
 static_assert (opLAST_OPCODE <= UINT8_MAX + 1, "opcodes too big for a byte");
 
 void compiler_init (void)

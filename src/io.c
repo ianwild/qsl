@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "cons.h"
+#include "dbg.h"
 #include "gc.h"
 #include "integer.h"
 #include "io.h"
@@ -89,12 +90,30 @@ void (throw_error) (enum errcode e, const char *file, int line)
   exit (1);
 }
 
+static obj io_buffer;
+static uint8_t *spelling;
+
+void free_io_buffers (void)
+{
+  TRACE (("free %d (%p)\n", io_buffer, spelling));
+  io_buffer = obj_NIL;
+  spelling = NULL;
+}
+
+static void allocate_io_buffers (void)
+{
+  if (! spelling)
+  {
+    io_buffer = new_extended_object (string_type, MAX_TOKEN);
+    spelling = get_spelling (io_buffer, NULL);
+    TRACE (("allocated %d (%p)\n", io_buffer, spelling));
+  }
+
+}
+
 static obj read_token (uint8_t ch1)
 {
-  static uint8_t *spelling;
-  if (! spelling)
-    spelling = malloc (MAX_TOKEN);
-
+  allocate_io_buffers ();
   uint8_t len = 0;
   for (;;)
   {
@@ -127,14 +146,14 @@ static obj read_token (uint8_t ch1)
   return (create_int (tot));
 }
 
-static obj read_string (void)
+static obj read_string (uint8_t quote)
 {
-  uint8_t spelling [MAX_TOKEN];
+  allocate_io_buffers ();
   uint16_t len = 0;
   for (;;)
   {
     uint8_t ch = readc ();
-    if (ch == '"')
+    if (ch == quote)
       break;
     else if (ch == '\\')
       ch = readc ();
@@ -142,8 +161,9 @@ static obj read_string (void)
     if ((len += 1) == MAX_TOKEN)
       break;
   }
-  obj res = new_extended_object (string_type, len);
-  uint8_t *p = get_spelling (res, &len);
+  obj res = new_extended_object ((quote == '"' ? string_type : symbol_type),
+                                 len);
+  uint8_t *p = get_spelling (res, NULL);
   memcpy (p, spelling, len);
   return (res);
 }
@@ -166,9 +186,8 @@ static void skip_blanks (void)
   }
 }
 
-static obj nreverse (obj x)
+static obj nreverse (obj x, obj prev)
 {
-  obj prev = obj_NIL;
   while (x != obj_NIL)
   {
     objhdr *p = get_header (x);
@@ -183,13 +202,26 @@ static obj nreverse (obj x)
 static obj read_list (void)
 {
   obj res = obj_NIL;
+
   for (;;)
   {
     skip_blanks ();
     uint8_t ch;
-    if ((ch = readc ()) == ')')
-      return (nreverse (res));
+    switch (ch = readc ())
+    {
+    case ')':
+      return (nreverse (res, obj_NIL));
 
+    case '.':
+    {
+      obj last = internal_read ();
+      skip_blanks ();
+      if ((ch = readc ()) != ')')
+        pushbackc (ch);
+      return (nreverse (res, last));
+    }
+    }
+    
     pushbackc (ch);
     objhdr *p = (res != obj_NIL) ? get_header (res) : NULL;
 
@@ -218,7 +250,8 @@ obj internal_read (void)
     return (FIRST_CHAR + readc ());
 
   case '"':
-    return (read_string ());
+  case '|':
+    return (read_string (ch1));
 
   case '(':
     return (read_list ());
@@ -323,14 +356,12 @@ void print1 (obj o)
     break;
 
   default:
-  {
     print_rom_string (PSTR ("#<obj "));
     print_int (o);
     print_rom_string (PSTR (", type "));
     print_int (get_type (o));
     printc ('>');
     break;
-  }
   }
 }
 
