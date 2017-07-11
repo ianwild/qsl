@@ -45,10 +45,14 @@ arduino: clean rom-symbols.ci rom-symbols.h
 clean:
 	rm -fr arduino
 	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s
+	rm -f ../doc/*~ ../doc/*#
 
 tar:	clean
 	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`   \
-		.
+		--exclude .git                  \
+		--exclude .gitignore            \
+		--exclude TAGS                  \
+		..
 
 tags:
 	find . -name '*.[ch]' -o -name '*.cpp' | etags -
