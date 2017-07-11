@@ -5,32 +5,28 @@
 
 static const char PROGMEM this_file [] = __FILE__;
 
-obj fn_not (uint8_t argc)
+obj fn_not (uint8_t *argc)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
   return (get_arg (0) == obj_NIL ? obj_T : obj_NIL);
 }
 
-obj fn_eq (uint8_t argc)
+obj fn_eq (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
   return (get_arg (0) == get_arg (1) ? obj_T : obj_NIL);
 }
 
-obj fn_neq (uint8_t argc)
+obj fn_neq (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
   return (get_arg (0) != get_arg (1) ? obj_T : obj_NIL);
 }
 
 
-static int32_t compare_two_args (uint8_t argc)
+static int32_t compare_two_args (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
   obj left = get_arg (1);
   obj right = get_arg (0);
   enum typecode t = get_type (left);
@@ -44,32 +40,32 @@ static int32_t compare_two_args (uint8_t argc)
   return (a - b);
 }
 
-obj fn_lt (uint8_t argc)
+obj fn_lt (uint8_t *argc)
 {
   return ((compare_two_args (argc) < 0) ? obj_T : obj_NIL);
 }
 
-obj fn_le (uint8_t argc)
+obj fn_le (uint8_t *argc)
 {
   return ((compare_two_args (argc) <= 0) ? obj_T : obj_NIL);
 }
 
-obj fn_gt (uint8_t argc)
+obj fn_gt (uint8_t *argc)
 {
   return ((compare_two_args (argc) > 0) ? obj_T : obj_NIL);
 }
 
-obj fn_ge (uint8_t argc)
+obj fn_ge (uint8_t *argc)
 {
   return ((compare_two_args (argc) >= 0) ? obj_T : obj_NIL);
 }
 
-obj fn_equals (uint8_t argc)
+obj fn_equals (uint8_t *argc)
 {
   return ((compare_two_args (argc) == 0) ? obj_T : obj_NIL);
 }
 
-obj fn_not_equals (uint8_t argc)
+obj fn_not_equals (uint8_t *argc)
 {
   return ((compare_two_args (argc) != 0) ? obj_T : obj_NIL);
 }

@@ -10,7 +10,7 @@ nil             -
 t               -
 quote           fe
 lambda          -
-fexpr           fe
+#fexpr           fe
 
 car             fn
 cdr             fn
@@ -42,7 +42,7 @@ let             fe
 let*            fe_let_star
 
 eval            fn
-apply           fe
+apply           fn
 
 read            fn
 print           fn

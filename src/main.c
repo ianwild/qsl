@@ -1,4 +1,5 @@
 #include "compiler.h"
+#include "dbg.h"
 #include "embedded.h"
 #include "eval.h"
 #include "gc.h"

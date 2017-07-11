@@ -30,7 +30,7 @@ static obj split_args (obj args, obj *env)
 }
 #endif
 
-static void compile_progn (obj expr_list, uint8_t for_value)
+static void compile_progn (obj expr_list, uint8_t *for_value)
 {
   while (expr_list != obj_NIL)
   {
@@ -40,13 +40,13 @@ static void compile_progn (obj expr_list, uint8_t for_value)
   }
 }
 
-obj fe_progn (uint8_t for_value)
+obj fe_progn (uint8_t *for_value)
 {
   compile_progn (get_arg (0), for_value);
   return (obj_NIL);
 }
 
-obj fe_cond (uint8_t for_value)
+obj fe_cond (uint8_t *for_value)
 {
   obj expr_list = get_arg (0);
   if (expr_list == obj_NIL)
@@ -107,7 +107,7 @@ obj fe_cond (uint8_t for_value)
   return (obj_NIL);
 }
 
-obj fe_while (uint8_t for_value)
+obj fe_while (uint8_t *for_value)
 {
   obj test;
   obj body;
@@ -126,7 +126,7 @@ obj fe_while (uint8_t for_value)
   return (obj_NIL);
 }
 
-obj fe_quote (uint8_t for_value)
+obj fe_quote (uint8_t *for_value)
 {
   if (for_value)
   {
@@ -138,7 +138,7 @@ obj fe_quote (uint8_t for_value)
   return (obj_NIL);
 }
 
-obj fe_setq (uint8_t for_value)
+obj fe_setq (uint8_t *for_value)
 {
   obj sym, car, cdr;
   decons (get_arg (0), &sym, &cdr);
@@ -151,7 +151,7 @@ obj fe_setq (uint8_t for_value)
   return (obj_NIL);
 }
 
-static obj defun_common (obj tag, uint8_t for_value)
+static obj defun_common (obj tag, uint8_t *for_value)
 {
   obj body = get_arg (0);
   print1 (body);
@@ -200,17 +200,17 @@ static obj defun_common (obj tag, uint8_t for_value)
   return (obj_NIL);
 }
 
-obj fe_defun (uint8_t for_value)
+obj fe_defun (uint8_t *for_value)
 {
   return (defun_common (obj_LAMBDA, for_value));
 }
 
-obj fe_fexpr (uint8_t for_value)
+obj fe_fexpr (uint8_t *for_value)
 {
   return (defun_common (obj_FEXPR, for_value));
 }
 
-obj fe_and (uint8_t for_value)
+obj fe_and (uint8_t *for_value)
 {
   obj expr_list = get_arg (0);
   if (expr_list == obj_NIL)
@@ -244,7 +244,7 @@ obj fe_and (uint8_t for_value)
   return (obj_NIL);
 }
 
-obj fe_or (uint8_t for_value)
+obj fe_or (uint8_t *for_value)
 {
   obj expr_list = get_arg (0);
   if (expr_list == obj_NIL)
@@ -278,7 +278,7 @@ obj fe_or (uint8_t for_value)
   return (obj_NIL);
 }
 
-static obj let (bool star, uint8_t for_value)
+static obj let (bool star, uint8_t *for_value)
 {
   obj body = get_arg (0);
   obj bindings;
@@ -327,24 +327,13 @@ static obj let (bool star, uint8_t for_value)
   return (obj_NIL);
 }
 
-obj fe_let (uint8_t for_value)
+obj fe_let (uint8_t *for_value)
 {
   return (let (false, for_value));
 }
 
-obj fe_let_star (uint8_t for_value)
+obj fe_let_star (uint8_t *for_value)
 {
   return (let (true, for_value));
 }
 
-obj fe_apply (uint8_t for_value)
-{
-#if NOT_YET_CONVERTED
-  obj env;
-  obj fn = split_args (args, &env);
-  decons (fn, &fn, &args);
-  return (apply_internal (eval_internal (fn), args));
-#endif
-  (void) for_value;
-  return (obj_NIL);
-}

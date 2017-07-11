@@ -43,10 +43,9 @@ uint16_t internal_len (obj o)
   return (res);
 }
 
-obj fn_car (uint8_t argc)
+obj fn_car (uint8_t *argc)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
   obj cons_cell = get_arg (0);
   if (cons_cell == obj_NIL)
     return (obj_NIL);
@@ -54,10 +53,9 @@ obj fn_car (uint8_t argc)
   return (p -> u.cons_val.car_cell);
 }
 
-obj fn_cdr (uint8_t argc)
+obj fn_cdr (uint8_t *argc)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
   obj cons_cell = get_arg (0);
   if (cons_cell == obj_NIL)
     return (obj_NIL);
@@ -65,35 +63,34 @@ obj fn_cdr (uint8_t argc)
   return (p -> u.cons_val.cdr_cell);
 }
 
-obj fn_cons (uint8_t argc)
+obj fn_cons (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
   return (cons (get_arg (1), get_arg (0)));
 }
 
-obj fn_list (uint8_t argc)
+obj fn_list (uint8_t *argc)
 {
   obj res = obj_NIL;
-  uint8_t i;
-  for (i = 0; i < argc; i += 1)
-    res = cons (get_arg (i), res);
+  while (*argc)
+  {
+    *argc -= 1;
+    res = cons (pop_arg (), res);
+  }
   return (res);
 }
 
-obj fn_rplaca (uint8_t argc)
+obj fn_rplaca (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
   obj cons_cell = get_arg (1);
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.car_cell = get_arg (0));
 }
 
-obj fn_rplacd (uint8_t argc)
+obj fn_rplacd (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
   obj cons_cell = get_arg (1);
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.cdr_cell = get_arg (0));

@@ -18,10 +18,10 @@ void     free_io_buffers  (void);
 
 extern bool slow_output;
 
-obj      fn_peekchar      (uint8_t argc);
-obj      fn_readchar      (uint8_t argc);
-obj      fn_read          (uint8_t argc);
-obj      fn_print         (uint8_t argc);
+obj      fn_peekchar      (uint8_t *argc);
+obj      fn_readchar      (uint8_t *argc);
+obj      fn_read          (uint8_t *argc);
+obj      fn_print         (uint8_t *argc);
 
 END_EXTERN_C
 

@@ -261,7 +261,7 @@ obj internal_read (void)
   }
 }
 
-obj fn_read (uint8_t argc)
+obj fn_read (uint8_t *argc)
 {
   (void) argc;
   return (internal_read ());
@@ -365,21 +365,22 @@ void print1 (obj o)
   }
 }
 
-obj fn_print (uint8_t argc)
+obj fn_print (uint8_t *argc)
 {
-  while (argc)
-    print1 (get_arg (argc -= 1));
+  uint8_t n = *argc;
+  while (n)
+    print1 (get_arg (n -= 1));
   printc ('\n');
   return (obj_NIL);
 }
 
-obj fn_readchar (uint8_t argc)
+obj fn_readchar (uint8_t *argc)
 {
   (void) argc;
   return (FIRST_CHAR + readc ());
 }
 
-obj fn_peekchar (uint8_t argc)
+obj fn_peekchar (uint8_t *argc)
 {
   (void) argc;
   int ch = peekc ();

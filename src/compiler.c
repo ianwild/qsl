@@ -149,7 +149,7 @@ void compile_expression (obj expr, bool value_context)
       {
         built_in_fn f = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
         stack_push (args);
-        f (value_context);
+        f (value_context ? (uint8_t *) "y" : NULL);
         stack_pop (1);
         return;
       }

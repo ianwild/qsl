@@ -8,18 +8,17 @@ START_EXTERN_C
 
 obj   eval_progn       (obj o, obj res);
 
-obj   fe_progn         (uint8_t argc);
-obj   fe_cond          (uint8_t argc);
-obj   fe_while         (uint8_t argc);
-obj   fe_quote         (uint8_t argc);
-obj   fe_setq          (uint8_t argc);
-obj   fe_defun         (uint8_t argc);
-obj   fe_fexpr         (uint8_t argc);
-obj   fe_and           (uint8_t argc);
-obj   fe_or            (uint8_t argc);
-obj   fe_let           (uint8_t argc);
-obj   fe_let_star      (uint8_t argc);
-obj   fe_apply         (uint8_t argc);
+obj   fe_progn         (uint8_t *argc);
+obj   fe_cond          (uint8_t *argc);
+obj   fe_while         (uint8_t *argc);
+obj   fe_quote         (uint8_t *argc);
+obj   fe_setq          (uint8_t *argc);
+obj   fe_defun         (uint8_t *argc);
+obj   fe_fexpr         (uint8_t *argc);
+obj   fe_and           (uint8_t *argc);
+obj   fe_or            (uint8_t *argc);
+obj   fe_let           (uint8_t *argc);
+obj   fe_let_star      (uint8_t *argc);
 
 END_EXTERN_C
 

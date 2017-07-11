@@ -28,23 +28,26 @@ void embed_mark_roots (void)
 }
 
 
-obj fn_pin (uint8_t argc)
+obj fn_pin (uint8_t *argc)
 {
+  adjust_argc (argc, 2);
   uint32_t pin = get_int_val (get_arg (0));
   uint8_t val = (get_arg (1) == obj_NIL) ? LOW : HIGH;
   digitalWrite (pin, val);
   return (get_arg (1));
 }
 
-obj fn_on_tick (uint8_t argc)
+obj fn_on_tick (uint8_t *argc)
 {
+  adjust_argc (argc, 2);
   timeout = get_int_val (get_arg (1));
   tick_action = get_arg (0);
   return (tick_action);
 }
 
-obj fn_on_serial (uint8_t argc)
+obj fn_on_serial (uint8_t *argc)
 {
+  adjust_argc (argc, 1);
   serial_action = get_arg (0);
   return (serial_action);
 }
@@ -58,7 +61,7 @@ static bool isReady (void)
   return (false);
 }
 
-obj fn_wait_for_event (uint8_t argc)
+obj fn_wait_for_event (uint8_t *argc)
 {
   (void) argc;
   for (;;)
@@ -73,7 +76,7 @@ obj fn_wait_for_event (uint8_t argc)
   return (obj_NIL);
 }
 
-obj fn_do_events (uint8_t argc)
+obj fn_do_events (uint8_t *argc)
 {
   (void) argc;
   uint8_t n = 0;

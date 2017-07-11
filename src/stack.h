@@ -20,6 +20,7 @@ void       stack_pop             (uint8_t n);
 obj        get_arg               (uint8_t idx);
 uint16_t   get_and_incr_arg      (uint8_t idx);
 obj        pop_arg               (void);
+void       adjust_argc           (uint8_t *argc, uint8_t wanted);
 
 uint16_t   get_stack_depth       (void);
 

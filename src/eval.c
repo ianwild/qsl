@@ -24,14 +24,19 @@ static bool save_env (void)
   return (true);
 }
 
-obj fn_eval (uint8_t argc)
+obj fn_eval (uint8_t *argc)
 {
-  switch (argc)
+  switch (*argc)
   {
+  case 0:
+    return (obj_NIL);
+    
   case 1:
     return (eval_internal (get_arg (0)));
-  case 2:
+
+  default:
   {
+    adjust_argc (argc, 2);
     bool unprotect = save_env ();
     obj keep_env = current_environment;
     current_environment = get_arg (0);
@@ -41,13 +46,10 @@ obj fn_eval (uint8_t argc)
       get_header (current_environment) -> flags &= ~gc_fixed;
     return (res);
   }
-  default:
-    throw_error (bad_argc);
-    return (obj_NIL);
   }
 }
 
-
+#if NOT_YET_CONVERTED
 static obj make_argv (obj args, bool is_fexpr)
 {
   if (is_fexpr)
@@ -81,6 +83,7 @@ static obj make_argv (obj args, bool is_fexpr)
     return (res);
   }
 }
+#endif
 
 static obj make_lambda_binding (obj params, obj args)
 {
@@ -131,6 +134,7 @@ obj apply_internal (obj fn, obj args)
 {
   switch (get_type (fn))
   {
+#if NOT_YET_CONVERTED
   case rom_symbol_type:
   {
     const rom_object *p = get_rom_header (fn);
@@ -144,7 +148,8 @@ obj apply_internal (obj fn, obj args)
     argv_hdr -> flags &= ~ gc_fixed;
     return (res);
   }
-
+#endif
+  
   case symbol_type:
   {
     objhdr *fn_hdr = get_header (fn);
@@ -409,7 +414,7 @@ void interpret_bytecodes (void)
         bool void_context = (argc >= 128);
         if (void_context)
           argc -= 128;
-        obj res = fn (argc);
+        obj res = fn (&argc);
         stack_pop (argc);
         if (! void_context)
           stack_push (res);
@@ -422,4 +427,16 @@ void interpret_bytecodes (void)
       break;
     }
   }
+}
+
+obj fn_apply (uint8_t *argc)
+{
+#if NOT_YET_CONVERTED
+  obj env;
+  obj fn = split_args (args, &env);
+  decons (fn, &fn, &args);
+  return (apply_internal (eval_internal (fn), args));
+#endif
+  (void) argc;
+  return (obj_NIL);
 }

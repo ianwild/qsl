@@ -6,10 +6,9 @@
 
 static const char PROGMEM this_file [] = __FILE__;
 
-static obj make_xxx (uint8_t argc, enum typecode t)
+static obj make_xxx (uint8_t *argc, enum typecode t)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
   int32_t len = get_int_val (get_arg (0));
   if (len < 0 || len > 255)
     throw_error (no_mem);
@@ -17,22 +16,21 @@ static obj make_xxx (uint8_t argc, enum typecode t)
 }
 
 
-obj fn_make_string (uint8_t argc)
+obj fn_make_string (uint8_t *argc)
 {
   return (make_xxx (argc, string_type));
 }
 
 
-obj fn_make_array (uint8_t argc)
+obj fn_make_array (uint8_t *argc)
 {
   return (make_xxx (argc, array_type));
 }
 
 
-obj fn_length (uint8_t argc)
+obj fn_length (uint8_t *argc)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
 
   uint16_t len = 0;
   obj arg = get_arg (0);
@@ -65,10 +63,9 @@ obj fn_length (uint8_t argc)
 }
 
 
-obj fn_aref (uint8_t argc)
+obj fn_aref (uint8_t *argc)
 {
-  if (argc != 2)
-    throw_error (bad_argc);
+  adjust_argc (argc, 2);
 
   obj target = get_arg (1);
   int32_t idx = get_int_val (get_arg (0));
@@ -113,10 +110,9 @@ obj fn_aref (uint8_t argc)
 }
 
 
-obj fn_aset (uint8_t argc)
+obj fn_aset (uint8_t *argc)
 {
-  if (argc != 3)
-    throw_error (bad_argc);
+  adjust_argc (argc, 3);
 
   obj target = get_arg (2);
   int32_t idx = get_int_val (get_arg (1));
@@ -156,10 +152,9 @@ obj fn_aset (uint8_t argc)
 }
 
 
-obj fn_char_code (uint8_t argc)
+obj fn_char_code (uint8_t *argc)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
   obj arg = get_arg (0);
   if (get_type (arg) != char_type)
     throw_error (bad_type);
@@ -167,10 +162,9 @@ obj fn_char_code (uint8_t argc)
 }
 
 
-obj fn_code_char (uint8_t argc)
+obj fn_code_char (uint8_t *argc)
 {
-  if (argc != 1)
-    throw_error (bad_argc);
+  adjust_argc (argc, 1);
   int32_t c = get_int_val (get_arg (0));
   if (c < 0 || c > 255)
     throw_error (bad_idx);

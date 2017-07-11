@@ -37,3 +37,16 @@ obj pop_arg (void)
   return (*--stack);
 }
 
+void adjust_argc (uint8_t *argc, uint8_t wanted)
+{
+  uint8_t n = *argc;
+  if (n > wanted)
+    stack_pop (n - wanted);
+  else
+    while (n < wanted)
+    {
+      stack_push (obj_NIL);
+      n += 1;
+    }
+  *argc = n;
+}

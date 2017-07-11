@@ -1,5 +1,3 @@
-#! /usr/bin/awk -f
-
 # create "rom-symbols.ci", which contains a pair of arrays:
 #   bytes[] is just the (len,spelling) pairs for the symbols in ROM,
 #   rom_symbols[] is a list of rom_object structures.

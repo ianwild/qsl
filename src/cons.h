@@ -6,12 +6,12 @@
 
 START_EXTERN_C
 
-obj  fn_car      (uint8_t argc);
-obj  fn_cdr      (uint8_t argc);
-obj  fn_cons     (uint8_t argc);
-obj  fn_list     (uint8_t argc);
-obj  fn_rplaca   (uint8_t argc);
-obj  fn_rplacd   (uint8_t argc);
+obj  fn_car      (uint8_t *argc);
+obj  fn_cdr      (uint8_t *argc);
+obj  fn_cons     (uint8_t *argc);
+obj  fn_list     (uint8_t *argc);
+obj  fn_rplaca   (uint8_t *argc);
+obj  fn_rplacd   (uint8_t *argc);
 
 obj      cons           (obj car, obj cdr);
 void     decons         (obj cons, obj *car, obj *cdr);
