@@ -1,32 +1,41 @@
+#include "dbg.h"
+#include "gc.h"
 #include "obj.h"
 #include "stack.h"
 
-static obj xyzzy [1024];
-static obj *stack = xyzzy;
+#define STACK_MAX 128
 
-uint16_t get_stack_depth (void)
+static obj stack_obj;
+static obj *base;
+static uint8_t depth;
+
+static uint8_t deepest;
+
+void print_stack_depth (void)
 {
-  return (stack - xyzzy);
+  TRACE (("stack depth %d/%d\n", depth, deepest));
 }
 
 void stack_push (obj o)
 {
-  *stack++ = o;
+  base [depth++] = o;
+  if (depth > deepest)
+    deepest = depth;
 }
 
 void stack_pop (uint8_t n)
 {
-  stack -= n;
+  depth -= n;
 }
 
 obj get_arg (uint8_t idx)
 {
-  return (* (stack - idx - 1));
+  return (base [depth - idx - 1]);
 }
 
 uint16_t get_and_incr_arg (uint8_t idx)
 {
-  obj *addr = stack - idx - 1;
+  obj *addr = &base [depth - idx - 1];
   obj res = *addr;
   *addr = res + 1;
   return (res - obj_ZERO);
@@ -34,7 +43,7 @@ uint16_t get_and_incr_arg (uint8_t idx)
 
 obj pop_arg (void)
 {
-  return (*--stack);
+  return (base [--depth]);
 }
 
 void adjust_argc (uint8_t *argc, uint8_t wanted)
@@ -49,4 +58,19 @@ void adjust_argc (uint8_t *argc, uint8_t wanted)
       n += 1;
     }
   *argc = n;
+}
+
+void mark_stack (void)
+{
+  for (uint8_t n = depth; n < STACK_MAX; n += 1)
+    base [n] = obj_NIL;
+  want_obj (stack_obj);
+  base = NULL;
+}
+
+void stack_reinit (void)
+{
+  if (! stack_obj)
+    stack_obj = new_extended_object (array_type, STACK_MAX);
+  base = get_header (stack_obj) -> u.array_val + 1;
 }

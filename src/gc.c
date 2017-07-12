@@ -4,6 +4,7 @@
 #include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
+#include "stack.h"
 
 static obj next_to_sweep;
 obj working_root;
@@ -20,8 +21,7 @@ void want_obj (obj o)
 
 static void mark_roots (void)
 {
-  obj i;
-  for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+  for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
     if ((p -> flags & gc_fixed) ||
@@ -35,6 +35,7 @@ static void mark_roots (void)
 #if TARGET_ARDUINO
   embed_mark_roots ();
 #endif
+  mark_stack ();
 }
 
 void do_gc (void)
@@ -84,7 +85,9 @@ void do_gc (void)
       }
     }
   }
+
   compact_string_space ();
+  stack_reinit ();
 
   obj i;
   obj high_water_mark = LAST_ROM_OBJ;

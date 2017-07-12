@@ -12,6 +12,8 @@
 
 int main (void)
 {
+  stack_reinit ();
+
 #if TARGET_ARDUINO
   embed_init ();
 #endif
@@ -34,7 +36,7 @@ int main (void)
       compile_expression (x, true);
       compile_opcode (opRETURN);
       compiler_report ();
-      printf ("stack depth: %u\n", get_stack_depth ());
+      print_stack_depth ();
       interpret_bytecodes ();
       x = pop_arg ();
 #endif
@@ -44,8 +46,7 @@ int main (void)
 
     print_rom_string (PSTR ("\n= "));
     print1 (x);
-    printf ("stack depth: %u\n", get_stack_depth ());
+    print_stack_depth ();
   }
   return (0);
 }
-

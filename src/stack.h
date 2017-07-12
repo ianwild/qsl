@@ -22,7 +22,9 @@ uint16_t   get_and_incr_arg      (uint8_t idx);
 obj        pop_arg               (void);
 void       adjust_argc           (uint8_t *argc, uint8_t wanted);
 
-uint16_t   get_stack_depth       (void);
+void       mark_stack            (void);
+void       stack_reinit          (void);
+void       print_stack_depth     (void);
 
 END_EXTERN_C
 

@@ -221,7 +221,7 @@ static obj read_list (void)
       return (nreverse (res, last));
     }
     }
-    
+
     pushbackc (ch);
     objhdr *p = (res != obj_NIL) ? get_header (res) : NULL;
 

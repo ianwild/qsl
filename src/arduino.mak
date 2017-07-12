@@ -9,7 +9,7 @@ MONITOR_PORT = /dev/ttyUSB0
 EXTRA_FLAGS = -Os -flto
 DEFS = -DTARGET_ARDUINO=1
 
-CFLAGS   += $(DEFS) -W -Wall
+CFLAGS   += $(DEFS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror
 CXXFLAGS += $(DEFS) -W -Wall -std=gnu++11
 

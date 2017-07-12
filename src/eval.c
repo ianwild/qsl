@@ -30,7 +30,7 @@ obj fn_eval (uint8_t *argc)
   {
   case 0:
     return (obj_NIL);
-    
+
   case 1:
     return (eval_internal (get_arg (0)));
 
@@ -149,7 +149,7 @@ obj apply_internal (obj fn, obj args)
     return (res);
   }
 #endif
-  
+
   case symbol_type:
   {
     objhdr *fn_hdr = get_header (fn);
