@@ -299,8 +299,7 @@ static obj let (bool star, uint8_t *for_value)
     compile_opcode (opPUSH_CONTEXT);
   }
 
-  uint16_t i;
-  for (i = 0; i < n; i += 1)
+  for (uint16_t i = 0; i < n; i += 1)
   {
     obj one_binding;
     decons (bindings, &one_binding, &bindings);

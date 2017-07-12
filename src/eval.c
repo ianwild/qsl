@@ -69,8 +69,7 @@ static obj make_argv (obj args, bool is_fexpr)
     // protect res across the eval_internal() calls
     p -> flags |= gc_fixed;
     {
-      uint16_t i;
-      for (i = 1; i <= argc; i += 1)
+      for (uint16_t i = 1; i <= argc; i += 1)
       {
         obj car;
         decons (args, &car, &args);

@@ -89,10 +89,9 @@ void do_gc (void)
   compact_string_space ();
   stack_reinit ();
 
-  obj i;
   obj high_water_mark = LAST_ROM_OBJ;
 
-  for (i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+  for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
     if (p -> flags & gc_wanted)

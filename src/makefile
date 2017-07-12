@@ -73,7 +73,7 @@ dep:
 ## AUTODEPS START ##
 arrays.c:	arrays.h cons.h integer.h obj.h stack.h
 arrays.h:	target.h types.h
-compiler.c:	compiler.h cons.h io.h obj.h stack.h
+compiler.c:	compiler.h cons.h dbg.h io.h obj.h stack.h
 compiler.h:	rom-symbols.h target.h types.h
 cons.c:	cons.h gc.h io.h obj.h stack.h
 cons.h:	target.h types.h
@@ -82,20 +82,20 @@ eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h io.h obj.h stack.h symbols.h tar
 eval.h:	target.h types.h
 fexprs.c:	compiler.h cons.h eval.h fexprs.h io.h obj.h stack.h symbols.h
 fexprs.h:	target.h types.h
-gc.c:	embedded.h eval.h gc.h io.h obj.h rom-symbols.h
+gc.c:	embedded.h eval.h gc.h io.h obj.h rom-symbols.h stack.h
 gc.h:	obj.h target.h
 hardware.h:	target.h types.h
 integer.c:	integer.h io.h obj.h stack.h
 integer.h:	target.h types.h
-io.c:	cons.h gc.h integer.h io.h obj.h stack.h symbols.h target.h
+io.c:	cons.h dbg.h gc.h integer.h io.h obj.h stack.h symbols.h target.h
 io.h:	target.h types.h
-main.c:	compiler.h embedded.h eval.h gc.h io.h obj.h stack.h symbols.h target.h
+main.c:	compiler.h dbg.h embedded.h eval.h gc.h io.h obj.h stack.h symbols.h target.h
 misc.c:	integer.h misc.h obj.h stack.h
 misc.h:	target.h types.h
 obj.c:	arrays.h cons.h dbg.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h
 obj.h:	target.h types.h
 rom-symbols.h:	types.h
-stack.c:	obj.h stack.h
+stack.c:	dbg.h gc.h obj.h stack.h
 stack.h:	target.h types.h
 symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h target.h
 symbols.h:	target.h types.h

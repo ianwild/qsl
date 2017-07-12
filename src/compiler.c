@@ -29,8 +29,7 @@ void compiler_init (void)
 void compiler_report (void)
 {
   printf ("Constants:\n");
-  unsigned i;
-  for (i = 0; i < const_length; i += 1)
+  for (unsigned i = 0; i < const_length; i += 1)
   {
     printf ("  %3u: %04x ", i, constants [i]);
     print1 (constants [i]);
@@ -38,7 +37,7 @@ void compiler_report (void)
   }
 
   printf ("Opcodes:\n");
-  for (i = 0; i < prog_length; i += 1)
+  for (unsigned i = 0; i < prog_length; i += 1)
     printf (" %02x", prog [i]);
   printf ("\n");
 }
@@ -195,8 +194,7 @@ void compile_expression (obj expr, bool value_context)
 
 void compile_constant (obj o)
 {
-  uint8_t i = 0;
-  for (i = 0; i < const_length; i += 1)
+  for (uint8_t i = 0; i < const_length; i += 1)
     if (constants [i] == o)
     {
       prog [prog_length++] = i;

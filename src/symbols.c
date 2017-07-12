@@ -70,8 +70,7 @@ static obj *find_lexical_binding (obj sym)
 
 static objhdr *find_global_binding (obj sym)
 {
-  obj res;
-  for (res = LAST_ROM_OBJ + 1; res <= last_allocated_object; res += 1)
+  for (obj res = LAST_ROM_OBJ + 1; res <= last_allocated_object; res += 1)
     if (get_type (res) == global_binding_type)
     {
       objhdr *p = get_header (res);
