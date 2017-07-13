@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "dbg.h"
 #include "gc.h"
 #include "obj.h"
@@ -32,6 +34,17 @@ obj get_arg (uint8_t idx)
 {
   return (base [depth - idx - 1]);
 }
+
+obj snip_arg (uint8_t idx)
+{
+  obj *addr = &base [depth - idx - 1];
+  obj res = *addr;
+  memmove (addr, addr + 1, idx * sizeof (obj));
+  depth -= 1;
+  return (res);
+}
+
+
 
 uint16_t get_and_incr_arg (uint8_t idx)
 {

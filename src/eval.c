@@ -430,12 +430,29 @@ void interpret_bytecodes (void)
 
 obj fn_apply (uint8_t *argc)
 {
-#if NOT_YET_CONVERTED
-  obj env;
-  obj fn = split_args (args, &env);
-  decons (fn, &fn, &args);
-  return (apply_internal (eval_internal (fn), args));
-#endif
-  (void) argc;
+  int n = *argc - 1;
+  obj fn = snip_arg (n);
+  obj tos = pop_arg ();
+  n -= 1;
+  while (get_type (tos) == cons_type)
+  {
+    obj car;
+    decons (tos, &car, &tos);
+    stack_push (car);
+    n += 1;
+  }
+  *argc = n;
+
+  switch (get_type (fn))
+  {
+  case rom_symbol_type:
+  {
+    const rom_object *hdr = get_rom_header (fn);
+    if (! hdr -> is_fexpr && hdr -> global_fn)
+      return (hdr -> global_fn (argc));
+    break;
+  }
+  }
+  throw_error (no_fdefn);
   return (obj_NIL);
 }
