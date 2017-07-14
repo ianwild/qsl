@@ -48,9 +48,7 @@ enum __attribute__ ((packed)) opcodes
   opPOP_CONTEXT,
   opCREATE_CLOSURE,
   opCALL,
-  opRETURN,
-
-  opLAST_OPCODE
+  opRETURN
 };
 
 
@@ -62,6 +60,7 @@ void           resolve_forward_jump   (forward_jump jmp);
 backward_jump  declare_backward_jump  (void);
 void           insert_backward_jump   (backward_jump jmp);
 
+obj            compile_top_level      (obj expr);
 void           compile_expression     (obj expr, bool value_context);
 void           compile_constant       (obj o);
 void           compile_opcode         (uint8_t);
@@ -76,4 +75,3 @@ END_EXTERN_C
 
 
 #endif /* QSL_COMPILER_H */
-

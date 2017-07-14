@@ -1,4 +1,5 @@
 #include "cons.h"
+#include "dbg.h"
 #include "gc.h"
 #include "io.h"
 #include "obj.h"
@@ -25,7 +26,10 @@ obj cons (obj car, obj cdr)
 void decons (obj cons, obj *car, obj *cdr)
 {
   if (get_type (cons) != cons_type)
+  {
+    TRACE (("type code is %d\n", get_type (cons)));
     throw_error (bad_type);
+  }
   objhdr *p = get_header (cons);
   *car = p -> u.cons_val.car_cell;
   *cdr = p -> u.cons_val.cdr_cell;
@@ -95,4 +99,3 @@ obj fn_rplacd (uint8_t *argc)
   objhdr *p = get_cons_header (cons_cell);
   return (p -> u.cons_val.cdr_cell = get_arg (0));
 }
-

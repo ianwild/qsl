@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "compiler.h"
 #include "cons.h"
@@ -14,7 +15,7 @@ uint8_t prog_length;
 static obj *constants;
 uint8_t const_length;
 
-static_assert (opLAST_OPCODE <= UINT8_MAX + 1, "opcodes too big for a byte");
+static_assert (sizeof (enum opcodes) == 1, "opcodes too big for a byte");
 
 void compiler_init (void)
 {
@@ -210,3 +211,64 @@ void compile_opcode (uint8_t op)
   prog [prog_length++] = op;
 }
 
+static void compile_pending_expression (obj expr)
+{
+  obj body = get_header (expr) -> u.closure_val.lambda_obj;
+  obj car, cdr;
+
+  decons (body, &car, &cdr);
+  if (car == obj_T)
+  {
+    compile_expression (cdr, true);
+    compile_opcode (opRETURN);
+  }
+  obj c_vec = new_extended_object (array_type, const_length);
+  memcpy (get_header (c_vec) -> u.array_val + 1,
+          constants, const_length * sizeof (obj));
+  get_header (body) -> xtype = lambda_type;
+  get_header (body) -> u.lambda_body.constants = c_vec;
+  obj b_vec = new_extended_object (string_type, prog_length);
+  memcpy (get_header (b_vec) -> u.string_val + 1, prog, prog_length);
+  get_header (body) -> u.lambda_body.opcodes = b_vec;
+  get_header (expr) -> u.closure_val.environment = obj_NIL;
+  TRACE (("created closure %04x\n", expr));
+  print1 (expr);
+}
+
+
+obj compile_top_level (obj expr)
+{
+  objhdr *p = (expr > LAST_ROM_OBJ) ? get_header (expr) : NULL;
+  objhdr *closure_hdr;
+  obj closure;
+
+  if (p)
+    p -> flags |= gc_fixed;
+  {
+    compiler_init ();
+
+    closure = new_object (closure_type, &closure_hdr);
+    closure_hdr -> u.closure_val.environment = obj_T;
+    closure_hdr -> u.closure_val.lambda_obj = cons (obj_T, expr);
+
+    for (;;)
+    {
+      obj next_to_compile;
+      for (next_to_compile = LAST_ROM_OBJ + 1;
+           next_to_compile <= last_allocated_object;
+           next_to_compile += 1)
+      {
+        closure_hdr = get_header (next_to_compile);
+        if (closure_hdr -> xtype == closure_type &&
+            closure_hdr -> u.closure_val.environment == obj_T)
+          break;
+      }
+      if (next_to_compile > last_allocated_object)
+        break;
+      compile_pending_expression (next_to_compile);
+    }
+  }
+  if (p)
+    p -> flags &= ~gc_fixed;
+  return (closure);
+}
