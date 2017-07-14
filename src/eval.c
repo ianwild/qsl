@@ -430,16 +430,23 @@ void interpret_bytecodes (void)
 
 obj fn_apply (uint8_t *argc)
 {
-  int n = *argc - 1;
+  if (! *argc)
+    return (obj_NIL);
+
+  uint8_t n = *argc - 1;
   obj fn = snip_arg (n);
-  obj tos = pop_arg ();
-  n -= 1;
-  while (get_type (tos) == cons_type)
+
+  if (n)
   {
-    obj car;
-    decons (tos, &car, &tos);
-    stack_push (car);
-    n += 1;
+    obj tos = pop_arg ();
+    n -= 1;
+    while (get_type (tos) == cons_type)
+    {
+      obj car;
+      decons (tos, &car, &tos);
+      stack_push (car);
+      n += 1;
+    }
   }
   *argc = n;
 
