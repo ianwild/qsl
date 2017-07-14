@@ -231,8 +231,6 @@ static void compile_pending_expression (obj expr)
   memcpy (get_header (b_vec) -> u.string_val + 1, prog, prog_length);
   get_header (body) -> u.lambda_body.opcodes = b_vec;
   get_header (expr) -> u.closure_val.environment = obj_NIL;
-  TRACE (("created closure %04x\n", expr));
-  print1 (expr);
 }
 
 

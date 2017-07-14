@@ -385,6 +385,20 @@ void interpret_bytecodes (void)
       }
       break;
 
+    case opCREATE_CLOSURE:
+      TRACE (("CREATE_CLOSURE %04x (%04x)\n",
+              get_arg (0), current_environment));
+      if (current_environment)
+      {
+        objhdr *p;
+        obj res = new_object (closure_type, &p);
+        objhdr *q = get_header (pop_arg ());
+        p -> u.closure_val.environment = current_environment;
+        p -> u.closure_val.lambda_obj = q -> u.closure_val.lambda_obj;
+        stack_push (res);
+      }
+      break;
+
     case opCALL:
       TRACE (("CALL %04x/%d\n", get_const (*current_function), current_function [1]));
       {

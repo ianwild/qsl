@@ -174,6 +174,7 @@ static obj defun_common (obj tag, uint8_t *for_value)
     compile_opcode (opDUP);
   compile_opcode (opLOAD_LITERAL);
   compile_constant (closure);
+  compile_opcode (opCREATE_CLOSURE);
   compile_opcode (opSET_FDEFN);
 
 #if NOT_YET_CONVERTED
@@ -335,4 +336,3 @@ obj fe_let_star (uint8_t *for_value)
 {
   return (let (true, for_value));
 }
-
