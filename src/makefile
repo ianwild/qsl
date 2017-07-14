@@ -75,10 +75,10 @@ arrays.c:	arrays.h cons.h integer.h obj.h stack.h
 arrays.h:	target.h types.h
 compiler.c:	compiler.h cons.h dbg.h io.h obj.h stack.h
 compiler.h:	rom-symbols.h target.h types.h
-cons.c:	cons.h gc.h io.h obj.h stack.h
+cons.c:	cons.h dbg.h gc.h io.h obj.h stack.h
 cons.h:	target.h types.h
 embedded.h:	obj.h target.h
-eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h io.h obj.h stack.h symbols.h target.h
+eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h integer.h io.h obj.h stack.h symbols.h target.h
 eval.h:	target.h types.h
 fexprs.c:	compiler.h cons.h eval.h fexprs.h io.h obj.h stack.h symbols.h
 fexprs.h:	target.h types.h

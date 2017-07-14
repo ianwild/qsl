@@ -3,6 +3,7 @@
 #include "dbg.h"
 #include "eval.h"
 #include "fexprs.h"
+#include "integer.h"
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
@@ -357,6 +358,31 @@ void interpret_bytecodes (void)
         p -> u.array_val [1] = current_environment;
         stack_push (obj_ZERO);
         stack_push (new_env);
+      }
+      break;
+
+    case opBIND_ARGLIST:
+      TRACE (("BIND_ARGLIST %d\n", *current_function));
+      {
+        obj old_tos = pop_arg ();
+        obj old_nos = pop_arg ();
+        obj old_3rd = pop_arg ();
+        uint8_t argc = get_int_val (pop_arg ());
+        uint8_t size = *current_function++;
+        adjust_argc (&argc, size);
+        obj new_env = new_extended_object (environment_type, 1 + 2 * size);
+        objhdr *p = get_header (new_env);
+        p -> u.array_val [1] = current_environment;
+        current_environment = new_env;
+        for (uint8_t i = size; i; i -= 1)
+        {
+          p -> u.array_val [2 * i - 1] = get_const (*current_function++);
+          p -> u.array_val [2 * i] = get_arg (i);
+        }
+        stack_pop (argc);
+        stack_push (old_3rd);
+        stack_push (old_nos);
+        stack_push (old_tos);
       }
       break;
 

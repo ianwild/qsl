@@ -44,6 +44,7 @@ enum __attribute__ ((packed)) opcodes
   opSET_FDEFN,
   opCREATE_CONTEXT_BLOCK,
   opINSERT_BINDING,
+  opBIND_ARGLIST,
   opPUSH_CONTEXT,
   opPOP_CONTEXT,
   opCREATE_CLOSURE,
