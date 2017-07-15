@@ -34,7 +34,7 @@ t
 (let* ((n1 v1) ...) e1 ...)
 
 (eval v1 v2)
-(apply v1 v2 ...)
+(apply v1 v2 ... (v8 v9 ...))
 
 (read)
 (print v1 ...)

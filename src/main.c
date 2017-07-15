@@ -27,8 +27,7 @@ int main (void)
     x = compile_top_level (x);
     compiler_report ();
     print_stack_depth ();
-    interpret_bytecodes ();
-    x = pop_arg ();
+    x = interpret_top_level (x);
 
     print_rom_string (PSTR ("\n= "));
     print1 (x);

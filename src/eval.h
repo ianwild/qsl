@@ -42,7 +42,9 @@ obj    fn_apply             (uint8_t *argc);
 obj    eval_internal        (obj expr);
 obj    apply_internal       (obj fn, obj args);
 
-void   interpret_bytecodes  (void);
+obj    interpret_top_level  (obj closure);
+void   mark_eval_state      (void);
+void   restore_eval_state   (void);
 
 extern obj current_environment;
 

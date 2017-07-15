@@ -3,6 +3,7 @@
 #include "dbg.h"
 #include "eval.h"
 #include "fexprs.h"
+#include "gc.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -240,11 +241,21 @@ static char *symname (uint8_t opcode)
 }
 #endif
 
-void interpret_bytecodes (void)
-{
-  uint8_t *function_base = get_opcodes ();
-  uint8_t *current_function = function_base;
+static obj *constants;
+static uint8_t *function_base;
+static uint8_t *current_function;
+static uint16_t interpreter_index;
+static obj current_closure;
+static obj current_lambda;
 
+
+static obj get_const (uint8_t idx)
+{
+  return (constants [idx]);
+}
+
+static obj interpret_bytecodes (void)
+{
   for (;;)
   {
     TRACE (("%4zd:\t", current_function - function_base));
@@ -439,7 +450,15 @@ void interpret_bytecodes (void)
 
     case opRETURN:
       TRACE (("RETURN\n"));
-      return;
+      {
+        obj retval = pop_arg ();
+        if (get_stack_depth () < 3)
+          return (retval);
+        interpreter_index = get_int_val (pop_arg ());
+        current_closure = pop_arg ();
+        current_environment = pop_arg ();
+      }
+      break;
 
     default:
       if (opcode <= LAST_ROM_OBJ)
@@ -466,6 +485,36 @@ void interpret_bytecodes (void)
       break;
     }
   }
+}
+
+void mark_eval_state (void)
+{
+  want_obj (current_closure);
+  want_obj (current_environment);
+  interpreter_index = (uint16_t) (current_function - function_base);
+}
+
+void restore_eval_state (void)
+{
+  if (current_closure)
+  {
+    objhdr *p = get_header (current_closure);
+    current_lambda = p -> u.closure_val.lambda_obj;
+    p = get_header (current_lambda);
+    function_base = get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
+    constants = get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
+    current_function = function_base + interpreter_index;
+  }
+}
+
+obj interpret_top_level (obj closure)
+{
+  stack_reinit ();
+  current_closure = closure;
+  interpreter_index = 0;
+  current_environment = obj_NIL;
+  restore_eval_state ();
+  return (interpret_bytecodes ());
 }
 
 obj fn_apply (uint8_t *argc)

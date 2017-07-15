@@ -69,9 +69,6 @@ void           compile_opcode         (uint8_t);
 void           compiler_init          (void);
 void           compiler_report        (void);
 
-obj            get_const              (uint8_t idx);
-uint8_t       *get_opcodes            (void);
-
 END_EXTERN_C
 
 

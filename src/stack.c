@@ -18,6 +18,11 @@ void print_stack_depth (void)
   TRACE (("stack depth %d/%d\n", depth, deepest));
 }
 
+uint8_t get_stack_depth (void)
+{
+  return (depth);
+}
+
 void stack_push (obj o)
 {
   base [depth++] = o;
