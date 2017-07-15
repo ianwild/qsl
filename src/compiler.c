@@ -5,6 +5,7 @@
 #include "compiler.h"
 #include "cons.h"
 #include "dbg.h"
+#include "fexprs.h"
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
@@ -203,15 +204,22 @@ void compile_opcode (uint8_t op)
 
 static void compile_pending_expression (obj expr)
 {
+  compiler_init ();
+
   obj body = get_header (expr) -> u.closure_val.lambda_obj;
   obj car, cdr;
 
   decons (body, &car, &cdr);
-  if (car == obj_T)
+  switch (car)
   {
+  case obj_T:
     compile_expression (cdr, true);
-    compile_opcode (opRETURN);
+    break;
+  case obj_LAMBDA:
+    compile_lambda_body (cdr);
+    break;
   }
+  compile_opcode (opRETURN);
   obj c_vec = new_extended_object (array_type, const_length);
   memcpy (get_header (c_vec) -> u.array_val + 1,
           constants, const_length * sizeof (obj));
@@ -233,7 +241,6 @@ obj compile_top_level (obj expr)
   if (p)
     p -> flags |= gc_fixed;
   {
-    compiler_init ();
 
     closure = new_object (closure_type, &closure_hdr);
     closure_hdr -> u.closure_val.environment = obj_T;

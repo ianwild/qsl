@@ -12,6 +12,7 @@ quote           fe
 lambda          -
 #fexpr           fe
 
+@               fn_at
 car             fn
 cdr             fn
 cons            fn
@@ -66,4 +67,3 @@ on-tick         fn
 on-serial       fn
 wait-for-event  fn
 do-events       fn
-

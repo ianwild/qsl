@@ -6,6 +6,7 @@
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
+#include "rom-symbols.h"
 #include "stack.h"
 #include "symbols.h"
 #include "target.h"
@@ -360,6 +361,14 @@ void print1 (obj o)
     print_int (o);
     print_rom_string (PSTR (", type "));
     print_int (get_type (o));
+    if (o > LAST_ROM_OBJ && o <= last_allocated_object)
+    {
+      objhdr *p = get_header (o);
+      print_rom_string (PSTR (": "));
+      print_int (p -> u.lambda_body.opcodes);
+      print_rom_string (PSTR (", "));
+      print_int (p -> u.lambda_body.constants);
+    }
     printc ('>');
     break;
   }
@@ -388,4 +397,17 @@ obj fn_peekchar (uint8_t *argc)
     return (FIRST_CHAR + (ch & 0xFF));
   else
     return (obj_NIL);
+}
+
+obj fn_at (uint8_t *argc)
+{
+  adjust_argc (argc, 1);
+  obj n = get_arg (0);
+  if (n >= obj_ZERO)
+  {
+    obj o = (obj) (n - obj_ZERO);
+    if (o <= last_allocated_object)
+      return (o);
+  }
+  return (n);
 }

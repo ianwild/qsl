@@ -2,6 +2,7 @@
 #include "cons.h"
 #include "fexprs.h"
 #include "eval.h"
+#include "integer.h"
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
@@ -199,6 +200,22 @@ static obj defun_common (obj tag, uint8_t *for_value)
   return (sym);
 #endif
   return (obj_NIL);
+}
+
+void compile_lambda_body (obj body)
+{
+  obj args;
+  decons (body, &args, &body);
+  uint16_t argc = internal_len (args);
+  compile_opcode (opBIND_ARGLIST);
+  compile_constant (create_int (argc));
+  while (args)
+  {
+    obj arg;
+    decons (args, &arg, &args);
+    compile_constant (arg);
+  }
+  compile_progn (body, (uint8_t *) "y");
 }
 
 obj fe_defun (uint8_t *for_value)

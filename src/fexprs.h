@@ -20,6 +20,8 @@ obj   fe_or            (uint8_t *argc);
 obj   fe_let           (uint8_t *argc);
 obj   fe_let_star      (uint8_t *argc);
 
+void  compile_lambda_body    (obj body);
+
 END_EXTERN_C
 
 #endif /* QSL_FEXPRS_H */

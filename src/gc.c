@@ -1,3 +1,4 @@
+#include "dbg.h"
 #include "gc.h"
 #include "embedded.h"
 #include "eval.h"
