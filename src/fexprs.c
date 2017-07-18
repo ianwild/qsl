@@ -208,7 +208,7 @@ void compile_lambda_body (obj body)
   decons (body, &args, &body);
   uint16_t argc = internal_len (args);
   compile_opcode (opBIND_ARGLIST);
-  compile_constant (create_int (argc));
+  compile_opcode (argc);
   while (args)
   {
     obj arg;

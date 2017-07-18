@@ -383,12 +383,13 @@ static obj interpret_bytecodes (void)
         adjust_argc (&argc, size);
         obj new_env = new_extended_object (environment_type, 1 + 2 * size);
         objhdr *p = get_header (new_env);
-        p -> u.array_val [1] = current_environment;
+        obj *fill_ptr = p -> u.array_val + 1;
+        *fill_ptr++ = current_environment;
         current_environment = new_env;
-        for (uint8_t i = size; i; i -= 1)
+        for (uint8_t i = 1; i <= size; i += 1)
         {
-          p -> u.array_val [2 * i - 1] = get_const (*current_function++);
-          p -> u.array_val [2 * i] = get_arg (i);
+          *fill_ptr++ = get_const (*current_function++);
+          *fill_ptr++ = get_arg (size - i);
         }
         stack_pop (argc);
         stack_push (old_3rd);
@@ -443,10 +444,21 @@ static obj interpret_bytecodes (void)
         uint8_t argc = *current_function++;
         objhdr *p = get_header (fn);
         obj lambda = p -> u.symbol_val.global_fn;
-        (void) lambda;
-        (void) argc;
-        TRACE (("lambda is %04x/%d\n", lambda, argc));
+        if (lambda)
+        {
+          stack_push (create_int (argc));
+          TRACE (("calling lambda %04x/%d\n", lambda, argc));
+          stack_push (current_environment);
+          stack_push (current_closure);
+          interpreter_index = (uint16_t) (current_function - function_base);
+          stack_push (create_int (interpreter_index));
+          current_closure = lambda;
+          interpreter_index = 0;
+          current_environment = get_header (lambda) -> u.closure_val.environment;
+          restore_eval_state ();
+        }
       }
+      break;
 
     case opRETURN:
       TRACE (("RETURN\n"));
@@ -457,6 +469,8 @@ static obj interpret_bytecodes (void)
         interpreter_index = get_int_val (pop_arg ());
         current_closure = pop_arg ();
         current_environment = pop_arg ();
+        stack_push (retval);
+        restore_eval_state ();
       }
       break;
 
