@@ -42,7 +42,7 @@ or              fe
 let             fe
 let*            fe_let_star
 
-eval            fn
+#eval            fn
 apply           fn
 
 read            fn

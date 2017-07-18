@@ -22,14 +22,6 @@ obj eval_progn (obj o, obj res)
   return (res);
 }
 
-#if NOT_YET_CONVERTED
-static obj split_args (obj args, obj *env)
-{
-  obj *argv = get_header (args) -> u.array_val;
-  *env = argv [2];
-  return (argv [1]);
-}
-#endif
 
 static void compile_progn (obj expr_list, uint8_t *for_value)
 {
@@ -178,27 +170,6 @@ static obj defun_common (obj tag, uint8_t *for_value)
   compile_opcode (opCREATE_CLOSURE);
   compile_opcode (opSET_FDEFN);
 
-#if NOT_YET_CONVERTED
-  obj env;
-  obj arglist = split_args (args, &env);
-  obj sym, cdr;
-  decons (arglist, &sym, &cdr);
-  if (get_type (sym) != symbol_type)
-    throw_error (bad_type);
-  objhdr *p;
-  obj closure = new_object (closure_type, &p);
-
-  // protect closure across the cons() call
-  p -> flags |= gc_fixed;
-  {
-    p -> u.closure_val.environment = env;
-    p -> u.closure_val.code = cons (tag, cdr);
-  }
-  p -> flags &= ~ gc_fixed;
-
-  get_header (sym) -> u.symbol_val.global_fn = closure;
-  return (sym);
-#endif
   return (obj_NIL);
 }
 
