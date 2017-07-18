@@ -59,12 +59,14 @@ obj last_allocated_object = LAST_ROM_OBJ;
 
 void memstats (void)
 {
+  uint8_t *ht = (uint8_t*) headers;
+  uint8_t *hb = (uint8_t *) get_header (last_allocated_object);
   printc ('<');
   print_int (string_space_top - string_space);
   printc ('|');
-  print_int ((last_allocated_object - LAST_ROM_OBJ) * sizeof (objhdr));
-  printc ('/');
-  print_int (last_allocated_object - LAST_ROM_OBJ);
+  print_int (hb - string_space_top);
+  printc ('|');
+  print_int (ht - hb);
   printc ('>');
 }
 

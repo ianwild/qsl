@@ -96,7 +96,6 @@ static uint8_t *spelling;
 
 void free_io_buffers (void)
 {
-  TRACE (("free %d (%p)\n", io_buffer, spelling));
   io_buffer = obj_NIL;
   spelling = NULL;
 }
@@ -107,7 +106,6 @@ static void allocate_io_buffers (void)
   {
     io_buffer = new_extended_object (string_type, MAX_TOKEN);
     spelling = get_spelling (io_buffer, NULL);
-    TRACE (("allocated %d (%p)\n", io_buffer, spelling));
   }
 
 }
