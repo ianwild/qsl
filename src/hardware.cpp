@@ -3,7 +3,7 @@
 
 #include "embedded.h"
 #include "eval.h"
-#include "gc.h"
+#include "gc-hooks.h"
 #include "hardware.h"
 #include "integer.h"
 #include "obj.h"
