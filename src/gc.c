@@ -1,5 +1,6 @@
 #include "dbg.h"
 #include "gc.h"
+#include "gc-hooks.h"
 #include "embedded.h"
 #include "eval.h"
 #include "io.h"
@@ -44,6 +45,7 @@ void do_gc (void)
   memstats ();
   next_to_sweep = LAST_ROM_OBJ + 1;
   free_io_buffers ();
+  free_compile_buffers ();
   mark_roots ();
 
   while (next_to_sweep <= last_allocated_object)

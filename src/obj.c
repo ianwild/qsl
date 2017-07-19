@@ -6,6 +6,7 @@
 #include "eval.h"
 #include "fexprs.h"
 #include "gc.h"
+#include "gc-hooks.h"
 #include "hardware.h"
 #include "integer.h"
 #include "misc.h"

@@ -2,7 +2,7 @@
 
 #include "cons.h"
 #include "dbg.h"
-#include "gc.h"
+#include "gc-hooks.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -12,6 +12,24 @@
 #include "target.h"
 
 bool slow_output;
+
+static obj io_buffer;
+static uint8_t *spelling;
+
+void free_io_buffers (void)
+{
+  io_buffer = obj_NIL;
+  spelling = NULL;
+}
+
+static void allocate_io_buffers (void)
+{
+  if (! spelling)
+  {
+    io_buffer = new_extended_object (string_type, MAX_TOKEN);
+    spelling = get_spelling (io_buffer, NULL);
+  }
+}
 
 #if ! TARGET_ARDUINO
 uint8_t readc (void)
@@ -89,25 +107,6 @@ void (throw_error) (enum errcode e, const char *file, int line)
   print_rom_string (msg);
   printc ('\n');
   exit (1);
-}
-
-static obj io_buffer;
-static uint8_t *spelling;
-
-void free_io_buffers (void)
-{
-  io_buffer = obj_NIL;
-  spelling = NULL;
-}
-
-static void allocate_io_buffers (void)
-{
-  if (! spelling)
-  {
-    io_buffer = new_extended_object (string_type, MAX_TOKEN);
-    spelling = get_spelling (io_buffer, NULL);
-  }
-
 }
 
 static obj read_token (uint8_t ch1)
@@ -359,14 +358,6 @@ void print1 (obj o)
     print_int (o);
     print_rom_string (PSTR (", type "));
     print_int (get_type (o));
-    if (o > LAST_ROM_OBJ && o <= last_allocated_object)
-    {
-      objhdr *p = get_header (o);
-      print_rom_string (PSTR (": "));
-      print_int (p -> u.lambda_body.opcodes);
-      print_rom_string (PSTR (", "));
-      print_int (p -> u.lambda_body.constants);
-    }
     printc ('>');
     break;
   }

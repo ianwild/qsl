@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "dbg.h"
-#include "gc.h"
+#include "gc-hooks.h"
 #include "obj.h"
 #include "stack.h"
 
@@ -16,6 +16,16 @@ static uint8_t deepest;
 void print_stack_depth (void)
 {
   TRACE (("stack depth %d/%d\n", depth, deepest));
+}
+
+void dump_stack (void)
+{
+#if ! TARGET_ARDUINO
+  printf ("[");
+  for (uint8_t i = 0; i < depth; i += 1)
+    printf ("%04x, ", base [i]);
+  printf ("]\n");
+#endif
 }
 
 uint8_t get_stack_depth (void)
@@ -68,7 +78,10 @@ void adjust_argc (uint8_t *argc, uint8_t wanted)
 {
   uint8_t n = *argc;
   if (n > wanted)
+  {
     stack_pop (n - wanted);
+    n = wanted;
+  }
   else
     while (n < wanted)
     {

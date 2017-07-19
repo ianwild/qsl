@@ -1,3 +1,4 @@
+#include "dbg.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -10,7 +11,10 @@ int32_t get_int_val (obj o)
   if (o >= FIRST_SMALL_INT)
     return ((int32_t) o - (int32_t) obj_ZERO);
   if (get_type (o) != int_type)
+  {
+    TRACE (("type is %d instead of %d\n", get_type (o), int_type));
     throw_error (bad_type);
+  }
   return (get_header (o) -> u.int_val);
 }
 
@@ -77,4 +81,3 @@ obj fn_divide (uint8_t *argc)
   }
   return (create_int (ans));
 }
-

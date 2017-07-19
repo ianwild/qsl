@@ -6,30 +6,45 @@
 #include "cons.h"
 #include "dbg.h"
 #include "fexprs.h"
+#include "gc-hooks.h"
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
 
+static obj prog_obj;
 static uint8_t *prog;
+#define MAX_PROG_LENGTH 128
 uint8_t prog_length;
 
+static obj constants_obj;
 static obj *constants;
+#define MAX_CONSTANTS 32
 uint8_t const_length;
 
 static_assert (sizeof (enum opcodes) == 1, "opcodes too big for a byte");
 
+void free_compile_buffers (void)
+{
+  prog_obj = constants_obj = obj_NIL;
+  prog = NULL;
+  constants = NULL;
+}
+
 void compiler_init (void)
 {
-  if (! prog)
-    prog = malloc (1024 * sizeof (uint8_t));
-  if (! constants)
-    constants = malloc (1024 * sizeof (obj));
+  if (! prog_obj)
+    prog_obj = new_extended_object (string_type, MAX_PROG_LENGTH);
+  if (! constants_obj)
+    constants_obj = new_extended_object (array_type, MAX_CONSTANTS);
+  prog = get_spelling (prog_obj, NULL);
+  constants = get_header (constants_obj) -> u.array_val + 1;
   prog_length = 0;
   const_length = 0;
 }
 
 void compiler_report (void)
 {
+#if ! TARGET_ARDUINO
   printf ("Constants:\n");
   for (unsigned i = 0; i < const_length; i += 1)
   {
@@ -42,6 +57,7 @@ void compiler_report (void)
   for (unsigned i = 0; i < prog_length; i += 1)
     printf (" %02x", prog [i]);
   printf ("\n");
+#endif
 }
 
 forward_jump declare_forward_jump (void)
@@ -231,6 +247,9 @@ static void compile_pending_expression (obj expr)
   memcpy (get_header (b_vec) -> u.string_val + 1, prog, prog_length);
   get_header (body) -> u.lambda_body.opcodes = b_vec;
   get_header (expr) -> u.closure_val.environment = obj_NIL;
+
+  compiler_report ();
+  free_compile_buffers ();
 }
 
 

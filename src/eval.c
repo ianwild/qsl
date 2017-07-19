@@ -3,7 +3,7 @@
 #include "dbg.h"
 #include "eval.h"
 #include "fexprs.h"
-#include "gc.h"
+#include "gc-hooks.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -46,7 +46,18 @@ static obj get_const (uint8_t idx)
 static void call_lambda (obj fn, uint8_t argc)
 {
   objhdr *p = get_header (fn);
-  obj lambda = p -> u.symbol_val.global_fn;
+  obj lambda = obj_NIL;
+  switch (p -> xtype)
+  {
+  case symbol_type:
+    lambda = p -> u.symbol_val.global_fn;
+    break;
+
+  case closure_type:
+    lambda = fn;
+    break;
+  }
+
   if (lambda)
   {
     stack_push (create_int (argc));
@@ -183,12 +194,6 @@ static obj interpret_bytecodes (void)
     case opBIND_ARGLIST:
       TRACE (("BIND_ARGLIST %d\n", *current_function));
       {
-        {
-          printf ("[");
-          for (uint8_t i = 0; i < get_stack_depth (); i += 1)
-            printf ("%04x, ", get_arg (i));
-          printf ("]\n");
-        }
         obj old_tos = pop_arg ();
         obj old_nos = pop_arg ();
         obj old_3rd = pop_arg ();
@@ -356,9 +361,6 @@ obj fn_apply (uint8_t *argc)
   }
   *argc = n;
 
-  print1 (fn);
-  TRACE (("type is %d\n", get_type (fn)));
-
   switch (get_type (fn))
   {
   case rom_symbol_type:
@@ -375,6 +377,7 @@ obj fn_apply (uint8_t *argc)
   }
 
   case symbol_type:
+  case closure_type:
     call_lambda (fn, n);
     return (obj_NIL);
   }

@@ -25,13 +25,12 @@ int main (void)
     obj x = internal_read ();
 
     x = compile_top_level (x);
-    compiler_report ();
     print_stack_depth ();
     x = interpret_top_level (x);
+    dump_stack ();
 
     print_rom_string (PSTR ("\n= "));
     print1 (x);
-    print_stack_depth ();
   }
   return (0);
 }

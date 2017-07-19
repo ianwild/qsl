@@ -7,9 +7,6 @@
 START_EXTERN_C
 
 void    do_gc       (void);
-void    want_obj    (obj o);
-
-extern obj working_root;
 
 END_EXTERN_C
 
