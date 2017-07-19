@@ -9,7 +9,8 @@
 nil             -
 t               -
 quote           fe
-lambda          -
+lambda          fe
+apply           fn
 #fexpr           fe
 
 @               fn_at
@@ -43,7 +44,6 @@ let             fe
 let*            fe_let_star
 
 #eval            fn
-apply           fn
 
 read            fn
 print           fn

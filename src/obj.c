@@ -17,7 +17,13 @@
 
 static const char PROGMEM this_file [] = __FILE__;
 
-static uint8_t string_space [12800];
+#if TARGET_ARDUINO
+  #define TOTAL_SIZE 1280
+#else
+  #define TOTAL_SIZE 12800
+#endif
+
+static uint8_t string_space [TOTAL_SIZE];
 static uint8_t *string_space_top = string_space;
 static objhdr *const headers =
   (objhdr *) (string_space + sizeof (string_space));

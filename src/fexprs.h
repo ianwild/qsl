@@ -14,7 +14,7 @@ obj   fe_while         (uint8_t *argc);
 obj   fe_quote         (uint8_t *argc);
 obj   fe_setq          (uint8_t *argc);
 obj   fe_defun         (uint8_t *argc);
-obj   fe_fexpr         (uint8_t *argc);
+obj   fe_lambda        (uint8_t *argc);
 obj   fe_and           (uint8_t *argc);
 obj   fe_or            (uint8_t *argc);
 obj   fe_let           (uint8_t *argc);

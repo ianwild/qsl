@@ -160,9 +160,11 @@ void compile_expression (obj expr, bool value_context)
       compile_opcode (opCALL);
       compile_constant (fn);
     }
-    if (! value_context)
+    if (fn != obj_APPLY && ! value_context)
       n |= 0x80;
     compile_opcode (n);
+    if (fn == obj_APPLY && ! value_context)
+      compile_opcode (opDROP);
     return;
   }
 

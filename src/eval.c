@@ -43,6 +43,25 @@ static obj get_const (uint8_t idx)
   return (constants [idx]);
 }
 
+static void call_lambda (obj fn, uint8_t argc)
+{
+  objhdr *p = get_header (fn);
+  obj lambda = p -> u.symbol_val.global_fn;
+  if (lambda)
+  {
+    stack_push (create_int (argc));
+    TRACE (("calling lambda %04x/%d\n", lambda, argc));
+    stack_push (current_environment);
+    stack_push (current_closure);
+    interpreter_index = (uint16_t) (current_function - function_base);
+    stack_push (create_int (interpreter_index));
+    current_closure = lambda;
+    interpreter_index = 0;
+    current_environment = get_header (lambda) -> u.closure_val.environment;
+    restore_eval_state ();
+  }
+}
+
 static obj interpret_bytecodes (void)
 {
   for (;;)
@@ -164,6 +183,12 @@ static obj interpret_bytecodes (void)
     case opBIND_ARGLIST:
       TRACE (("BIND_ARGLIST %d\n", *current_function));
       {
+        {
+          printf ("[");
+          for (uint8_t i = 0; i < get_stack_depth (); i += 1)
+            printf ("%04x, ", get_arg (i));
+          printf ("]\n");
+        }
         obj old_tos = pop_arg ();
         obj old_nos = pop_arg ();
         obj old_3rd = pop_arg ();
@@ -231,21 +256,7 @@ static obj interpret_bytecodes (void)
       {
         obj fn = get_const (*current_function++);
         uint8_t argc = *current_function++;
-        objhdr *p = get_header (fn);
-        obj lambda = p -> u.symbol_val.global_fn;
-        if (lambda)
-        {
-          stack_push (create_int (argc));
-          TRACE (("calling lambda %04x/%d\n", lambda, argc));
-          stack_push (current_environment);
-          stack_push (current_closure);
-          interpreter_index = (uint16_t) (current_function - function_base);
-          stack_push (create_int (interpreter_index));
-          current_closure = lambda;
-          interpreter_index = 0;
-          current_environment = get_header (lambda) -> u.closure_val.environment;
-          restore_eval_state ();
-        }
+        call_lambda (fn, argc);
       }
       break;
 
@@ -276,9 +287,12 @@ static obj interpret_bytecodes (void)
         if (void_context)
           argc -= 128;
         obj res = fn (&argc);
-        stack_pop (argc);
-        if (! void_context)
-          stack_push (res);
+        if (opcode != obj_APPLY)
+        {
+          stack_pop (argc);
+          if (! void_context)
+            stack_push (res);
+        }
       }
       else
       {
@@ -342,15 +356,27 @@ obj fn_apply (uint8_t *argc)
   }
   *argc = n;
 
+  print1 (fn);
+  TRACE (("type is %d\n", get_type (fn)));
+
   switch (get_type (fn))
   {
   case rom_symbol_type:
   {
     const rom_object *hdr = get_rom_header (fn);
     if (! hdr -> is_fexpr && hdr -> global_fn)
-      return (hdr -> global_fn (argc));
+    {
+      obj res = hdr -> global_fn (argc);
+      stack_pop (*argc);
+      stack_push (res);
+      return (obj_NIL);
+    }
     break;
   }
+
+  case symbol_type:
+    call_lambda (fn, n);
+    return (obj_NIL);
   }
   throw_error (no_fdefn);
   return (obj_NIL);

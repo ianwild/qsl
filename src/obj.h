@@ -8,7 +8,7 @@
 #define obj_T                 OBJECT_C (1)
 #define obj_QUOTE             OBJECT_C (2)
 #define obj_LAMBDA            OBJECT_C (3)
-#define obj_FEXPR             OBJECT_C (4)
+#define obj_APPLY             OBJECT_C (4)
 
 #define FIRST_SMALL_INT       OBJECT_C (0x8000)
 #define obj_ZERO              OBJECT_C (0xC000)

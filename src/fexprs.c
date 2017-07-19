@@ -144,35 +144,6 @@ obj fe_setq (uint8_t *for_value)
   return (obj_NIL);
 }
 
-static obj defun_common (obj tag, uint8_t *for_value)
-{
-  obj body = get_arg (0);
-  print1 (body);
-  obj sym, cdr;
-  decons (body, &sym, &cdr);
-  if (get_type (sym) != symbol_type)
-    throw_error (bad_type);
-  objhdr *p;
-  obj closure = new_object (closure_type, &p);
-  // protect closure across the cons() call
-  p -> flags |= gc_fixed;
-  {
-    p -> u.closure_val.environment = obj_T;
-    p -> u.closure_val.lambda_obj = cons (tag, cdr);
-  }
-  p -> flags &= ~ gc_fixed;
-  compile_opcode (opLOAD_LITERAL);
-  compile_constant (sym);
-  if (for_value)
-    compile_opcode (opDUP);
-  compile_opcode (opLOAD_LITERAL);
-  compile_constant (closure);
-  compile_opcode (opCREATE_CLOSURE);
-  compile_opcode (opSET_FDEFN);
-
-  return (obj_NIL);
-}
-
 void compile_lambda_body (obj body)
 {
   obj args;
@@ -191,13 +162,59 @@ void compile_lambda_body (obj body)
 
 obj fe_defun (uint8_t *for_value)
 {
-  return (defun_common (obj_LAMBDA, for_value));
+  obj body = get_arg (0);
+  obj sym, cdr;
+  decons (body, &sym, &cdr);
+  if (get_type (sym) != symbol_type)
+    throw_error (bad_type);
+  objhdr *p;
+  obj closure = new_object (closure_type, &p);
+  // protect closure across the cons() call
+  p -> flags |= gc_fixed;
+  {
+    p -> u.closure_val.environment = obj_T;
+    p -> u.closure_val.lambda_obj = cons (obj_LAMBDA, cdr);
+  }
+  p -> flags &= ~ gc_fixed;
+  compile_opcode (opLOAD_LITERAL);
+  compile_constant (sym);
+  if (for_value)
+    compile_opcode (opDUP);
+  compile_opcode (opLOAD_LITERAL);
+  compile_constant (closure);
+  compile_opcode (opCREATE_CLOSURE);
+  compile_opcode (opSET_FDEFN);
+
+  return (obj_NIL);
 }
 
+obj fe_lambda (uint8_t *for_value)
+{
+  if (for_value)
+  {
+    obj body = get_arg (0);
+    objhdr *p;
+    obj closure = new_object (closure_type, &p);
+    // protect closure across the cons() call
+    p -> flags |= gc_fixed;
+    {
+      p -> u.closure_val.environment = obj_T;
+      p -> u.closure_val.lambda_obj = cons (obj_LAMBDA, body);
+    }
+    p -> flags &= ~ gc_fixed;
+    compile_opcode (opLOAD_LITERAL);
+    compile_constant (closure);
+    compile_opcode (opCREATE_CLOSURE);
+  }
+  return (obj_NIL);
+}
+
+#if 0
 obj fe_fexpr (uint8_t *for_value)
 {
   return (defun_common (obj_FEXPR, for_value));
 }
+#endif
 
 obj fe_and (uint8_t *for_value)
 {
