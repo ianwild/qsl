@@ -255,7 +255,8 @@ static void compile_pending_expression (obj expr)
 
 obj compile_top_level (obj expr)
 {
-  objhdr *p = (expr > LAST_ROM_OBJ) ? get_header (expr) : NULL;
+  objhdr *p = ((expr > LAST_ROM_OBJ && expr <= LAST_POSSIBLE_OBJECT)
+               ? get_header (expr) : NULL);
   objhdr *closure_hdr;
   obj closure;
 

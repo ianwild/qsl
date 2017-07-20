@@ -38,6 +38,7 @@ static void mark_roots (void)
   embed_mark_roots ();
 #endif
   mark_stack ();
+  mark_eval_state ();
 }
 
 void do_gc (void)

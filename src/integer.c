@@ -13,6 +13,9 @@ int32_t get_int_val (obj o)
   if (get_type (o) != int_type)
   {
     TRACE (("type is %d instead of %d\n", get_type (o), int_type));
+    printc ('[');
+    print1 (o);
+    printc (']');
     throw_error (bad_type);
   }
   return (get_header (o) -> u.int_val);
