@@ -64,17 +64,21 @@ obj last_allocated_object = LAST_ROM_OBJ;
 
 #include "rom-symbols.ci"
 
-void memstats (void)
+void memstats (bool gc_done)
 {
   uint8_t *ht = (uint8_t*) headers;
   uint8_t *hb = (uint8_t *) get_header (last_allocated_object);
-  printc ('<');
+  printc ('[');
   print_int (string_space_top - string_space);
   printc ('|');
   print_int (hb - string_space_top);
   printc ('|');
   print_int (ht - hb);
-  printc ('>');
+  printc (']');
+  if (gc_done)
+    printc ('\n');
+  else
+    printc ('>');
 }
 
 static objhdr *GET_HEADER (obj o)

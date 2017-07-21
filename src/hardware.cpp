@@ -61,15 +61,6 @@ static bool isReady (void)
   return (false);
 }
 
-static void apply_lambda (obj lambda)
-{
-  uint8_t argc = 2;
-  stack_push (lambda);
-  stack_push (obj_NIL);
-  fn_apply (&argc);
-  stack_pop (argc);
-}
-
 obj fn_wait_for_event (uint8_t *argc)
 {
   (void) argc;
@@ -88,20 +79,15 @@ obj fn_wait_for_event (uint8_t *argc)
 obj fn_do_events (uint8_t *argc)
 {
   (void) argc;
-  uint8_t n = 0;
+
+  if (serial_action && Serial.available ())
+    return (serial_action);
 
   if (tick_action && millis () - last_time >= timeout)
   {
-    n += 1;
     last_time = millis ();
-    apply_lambda (tick_action);
+    return (tick_action);
   }
 
-  if (serial_action && Serial.available ())
-  {
-    n += 1;
-    apply_lambda (serial_action);
-  }
-
-  return (create_int (n));
+  return (obj_NIL);
 }

@@ -32,7 +32,7 @@ void               throw_error          (enum errcode e,
 
 extern obj last_allocated_object;
 
-void               memstats             (void);
+void               memstats             (bool gc_done);
 
 END_EXTERN_C
 

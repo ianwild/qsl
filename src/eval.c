@@ -194,13 +194,13 @@ static obj interpret_bytecodes (void)
     case opBIND_ARGLIST:
       TRACE (("BIND_ARGLIST %d\n", *current_function));
       {
+        uint8_t size = *current_function++;
+        obj new_env = new_extended_object (environment_type, 1 + 2 * size);
         obj old_tos = pop_arg ();
         obj old_nos = pop_arg ();
         obj old_3rd = pop_arg ();
         uint8_t argc = get_int_val (pop_arg ());
-        uint8_t size = *current_function++;
         adjust_argc (&argc, size);
-        obj new_env = new_extended_object (environment_type, 1 + 2 * size);
         objhdr *p = get_header (new_env);
         obj *fill_ptr = p -> u.array_val + 1;
         *fill_ptr++ = current_environment;
@@ -321,6 +321,11 @@ void restore_eval_state (void)
   if (current_closure)
   {
     objhdr *p = get_header (current_closure);
+    if (p -> xtype != closure_type)
+    {
+      print_int (p -> xtype);
+      throw_error (bad_type);
+    }
     current_lambda = p -> u.closure_val.lambda_obj;
     p = get_header (current_lambda);
     function_base = get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;

@@ -5,7 +5,7 @@
 #include "obj.h"
 #include "stack.h"
 
-#define STACK_MAX 128
+#define STACK_MAX 64
 
 static obj stack_obj;
 static obj *base;

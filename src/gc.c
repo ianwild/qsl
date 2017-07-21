@@ -11,6 +11,7 @@
 static obj next_to_sweep;
 obj working_root;
 
+
 void want_obj (obj o)
 {
   if (o <= LAST_ROM_OBJ || o > last_allocated_object)
@@ -43,7 +44,7 @@ static void mark_roots (void)
 
 void do_gc (void)
 {
-  memstats ();
+  memstats (false);
   next_to_sweep = LAST_ROM_OBJ + 1;
   free_io_buffers ();
   free_compile_buffers ();
@@ -108,4 +109,5 @@ void do_gc (void)
   }
 
   last_allocated_object = high_water_mark;
+  memstats (true);
 }
