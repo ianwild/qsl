@@ -10,19 +10,6 @@
 
 static const char PROGMEM this_file [] = __FILE__;
 
-obj eval_progn (obj o, obj res)
-{
-  while (o != obj_NIL)
-  {
-    obj car, cdr;
-    decons (o, &car, &cdr);
-    res = eval_internal (car);
-    o = cdr;
-  }
-  return (res);
-}
-
-
 static void compile_progn (obj expr_list, uint8_t *for_value)
 {
   while (expr_list != obj_NIL)
@@ -170,12 +157,12 @@ obj fe_defun (uint8_t *for_value)
   objhdr *p;
   obj closure = new_object (closure_type, &p);
   // protect closure across the cons() call
-  p -> flags |= gc_fixed;
+  FIX_OBJ (p);
   {
     p -> u.closure_val.environment = obj_T;
     p -> u.closure_val.lambda_obj = cons (obj_LAMBDA, cdr);
   }
-  p -> flags &= ~ gc_fixed;
+  RELEASE_OBJ (p);
   compile_opcode (opLOAD_LITERAL);
   compile_constant (sym);
   if (for_value)
@@ -196,12 +183,12 @@ obj fe_lambda (uint8_t *for_value)
     objhdr *p;
     obj closure = new_object (closure_type, &p);
     // protect closure across the cons() call
-    p -> flags |= gc_fixed;
+    FIX_OBJ (p);
     {
       p -> u.closure_val.environment = obj_T;
       p -> u.closure_val.lambda_obj = cons (obj_LAMBDA, body);
     }
-    p -> flags &= ~ gc_fixed;
+    RELEASE_OBJ (p);
     compile_opcode (opLOAD_LITERAL);
     compile_constant (closure);
     compile_opcode (opCREATE_CLOSURE);
@@ -320,7 +307,6 @@ static obj let (bool star, uint8_t *for_value)
     else
       compile_opcode (opLOAD_NIL);
     compile_opcode (opINSERT_BINDING);
-    //compile_opcode (i);
     compile_constant (one_binding);
   }
 

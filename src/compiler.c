@@ -22,6 +22,11 @@ static obj *constants;
 uint8_t const_length;
 
 static_assert (sizeof (enum opcodes) == 1, "opcodes too big for a byte");
+static_assert (last_type_code <= typecode_mask, "too many types defined");
+
+#if TARGET_ARDUINO
+static_assert (sizeof (objhdr) == 5, "objhdr should be six bytes");
+#endif
 
 void free_compile_buffers (void)
 {
@@ -241,7 +246,7 @@ static void compile_pending_expression (obj expr)
   obj c_vec = new_extended_object (array_type, const_length);
   memcpy (get_header (c_vec) -> u.array_val + 1,
           constants, const_length * sizeof (obj));
-  get_header (body) -> xtype = lambda_type;
+  get_header (body) -> control = lambda_type;
   get_header (body) -> u.lambda_body.constants = c_vec;
   obj b_vec = new_extended_object (string_type, prog_length);
   memcpy (get_header (b_vec) -> u.string_val + 1, prog, prog_length);
@@ -261,7 +266,7 @@ obj compile_top_level (obj expr)
   obj closure;
 
   if (p)
-    p -> flags |= gc_fixed;
+    FIX_OBJ (p);
   {
 
     closure = new_object (closure_type, &closure_hdr);
@@ -276,7 +281,7 @@ obj compile_top_level (obj expr)
            next_to_compile += 1)
       {
         closure_hdr = get_header (next_to_compile);
-        if (closure_hdr -> xtype == closure_type &&
+        if (GET_TYPE (closure_hdr) == closure_type &&
             closure_hdr -> u.closure_val.environment == obj_T)
           break;
       }
@@ -286,6 +291,6 @@ obj compile_top_level (obj expr)
     }
   }
   if (p)
-    p -> flags &= ~gc_fixed;
+    RELEASE_OBJ (p);
   return (closure);
 }

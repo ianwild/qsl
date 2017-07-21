@@ -19,15 +19,14 @@ enum __attribute__ ((packed)) typecode
 
   char_type,
   rom_symbol_type,
-};
 
-enum __attribute__ ((packed)) flag_bits
-{
-  gc_wanted  = 0x01,
-  gc_scanned = 0x02,
-  gc_fixed   = 0x04,
+  last_type_code,
+  typecode_mask = 0x0f,
 
-  fexpr      = 0x80
+  gc_wanted  = 0x10,
+  gc_scanned = 0x20,
+  gc_fixed   = 0x40,
+  flagbit_mask = 0xf0
 };
 
 enum __attribute__ ((packed)) errcode
@@ -62,8 +61,13 @@ typedef struct __attribute__ ((packed)) rom_object
 
 typedef struct __attribute__ ((packed)) objhdr
 {
-  uint8_t flags;
-  uint8_t xtype;
+  uint8_t control;
+#define GET_TYPE(p)      ((p) -> control & typecode_mask)
+#define GET_FLAGS(p)     ((p) -> control & flagbit_mask)
+#define SET_FLAGS(p,f)   ((p) -> control |= (f))
+#define CLR_FLAGS(p,f)   ((p) -> control &= ~(f))
+#define FIX_OBJ(p)       SET_FLAGS ((p), gc_fixed)
+#define RELEASE_OBJ(p)   CLR_FLAGS ((p), gc_fixed)
 
   union
   {

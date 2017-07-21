@@ -6,8 +6,6 @@
 
 START_EXTERN_C
 
-obj   eval_progn       (obj o, obj res);
-
 obj   fe_progn         (uint8_t *argc);
 obj   fe_cond          (uint8_t *argc);
 obj   fe_while         (uint8_t *argc);

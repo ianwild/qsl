@@ -17,9 +17,9 @@ void want_obj (obj o)
   if (o <= LAST_ROM_OBJ || o > last_allocated_object)
     return;
   objhdr *p = get_header (o);
-  if (o < next_to_sweep && (p -> flags & gc_wanted) == 0)
+  if (o < next_to_sweep && (GET_FLAGS (p) & gc_wanted) == 0)
     next_to_sweep = o;
-  p -> flags |= gc_wanted;
+  SET_FLAGS (p, gc_wanted);
 }
 
 static void mark_roots (void)
@@ -27,11 +27,12 @@ static void mark_roots (void)
   for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
-    if ((p -> flags & gc_fixed) ||
-        (p -> xtype == symbol_type && p -> u.symbol_val.global_fn) ||
-        (p -> xtype == global_binding_type) ||
-        (p -> xtype == closure_type && p -> u.closure_val.environment == obj_T))
-      p -> flags |= gc_wanted;
+    if ((GET_FLAGS (p) & gc_fixed) ||
+        (GET_TYPE (p) == symbol_type && p -> u.symbol_val.global_fn) ||
+        (GET_TYPE (p) == global_binding_type) ||
+        (GET_TYPE (p) == closure_type &&
+         p -> u.closure_val.environment == obj_T))
+      SET_FLAGS (p, gc_wanted);
   }
   want_obj (working_root);
   want_obj (current_environment);
@@ -53,10 +54,10 @@ void do_gc (void)
   while (next_to_sweep <= last_allocated_object)
   {
     objhdr *p = get_header (next_to_sweep++);
-    if ((p -> flags & (gc_wanted | gc_scanned)) == gc_wanted)
+    if ((GET_FLAGS (p) & (gc_wanted | gc_scanned)) == gc_wanted)
     {
-      p -> flags |= gc_scanned;
-      switch (p -> xtype)
+      SET_FLAGS (p, gc_scanned);
+      switch (GET_TYPE (p))
       {
       case closure_type:
         want_obj (p -> u.closure_val.environment);
@@ -99,13 +100,13 @@ void do_gc (void)
   for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
-    if (p -> flags & gc_wanted)
+    if (GET_FLAGS (p) & gc_wanted)
     {
-      p -> flags &= ~ (gc_wanted | gc_scanned);
+      CLR_FLAGS (p, gc_wanted | gc_scanned);
       high_water_mark = i;
     }
     else
-      p -> xtype = unallocated_type;
+      p -> control = unallocated_type;
   }
 
   last_allocated_object = high_water_mark;

@@ -225,12 +225,12 @@ static obj read_list (void)
 
     // protect res across the cons() call
     if (p)
-      p -> flags |= gc_fixed;
+      FIX_OBJ (p);
     {
       res = cons (internal_read (), res);
     }
     if (p)
-      p -> flags &= ~gc_fixed;
+      RELEASE_OBJ (p);
   }
 }
 

@@ -39,9 +39,6 @@ START_EXTERN_C
 obj    fn_eval              (uint8_t *argc);
 obj    fn_apply             (uint8_t *argc);
 
-obj    eval_internal        (obj expr);
-obj    apply_internal       (obj fn, obj args);
-
 obj    interpret_top_level  (obj closure);
 void   mark_eval_state      (void);
 void   restore_eval_state   (void);

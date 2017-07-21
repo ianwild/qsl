@@ -113,7 +113,7 @@ obj set_symbol_value (obj sym, obj val)
     if (p)
     {
       if (sym == val)
-        p -> xtype = unallocated_type;
+        p -> control = unallocated_type;
       else
         p -> u.cons_val.cdr_cell = val;
       return (val);

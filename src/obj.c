@@ -107,7 +107,7 @@ uint8_t *get_spelling (obj o, uint16_t *len)
   objhdr *hdr = get_header (o);
   uint8_t *p;
 
-  switch (hdr -> xtype)
+  switch (GET_TYPE (hdr))
   {
   case string_type:
     p = hdr -> u.string_val;
@@ -144,7 +144,7 @@ static obj check_available_space (int16_t string_space_needed)
     obj i = LAST_ROM_OBJ + 1;
     while (i <= last_allocated_object)
     {
-      if (p -> xtype == unallocated_type)
+      if (GET_TYPE (p) == unallocated_type)
         break;
       i += 1;
       p -= 1;
@@ -173,7 +173,7 @@ obj new_object (enum typecode type, objhdr **hdr)
   obj res = check_available_space (0);
   objhdr *p = GET_HEADER (res);
   memset (p, 0, sizeof (*p));
-  p -> xtype = type;
+  p -> control = type;
   if (hdr)
     *hdr = p;
   return (working_root = res);
@@ -201,7 +201,7 @@ obj new_extended_object (enum typecode type, uint16_t size)
   memset (p, 0, sizeof (*p));
   *(obj *) string_space_top = res;
   string_space_top += sizeof (obj);
-  switch (p -> xtype = type)
+  switch (p -> control = type)
   {
   case string_type:
     p -> u.string_val = string_space_top;
@@ -235,7 +235,7 @@ uint8_t get_type (obj o)
     return (rom_symbol_type);
   if (o > last_allocated_object)
     return (unallocated_type);
-  return (GET_HEADER (o) -> xtype);
+  return (GET_TYPE (GET_HEADER (o)));
 }
 
 void compact_string_space (void)
@@ -249,7 +249,7 @@ void compact_string_space (void)
     objhdr *p = get_header (o);
     uint16_t len = 0;
     void *back_ptr = NULL;
-    switch (p -> xtype)
+    switch (GET_TYPE (p))
     {
     case symbol_type:
     case string_type:
@@ -264,7 +264,7 @@ void compact_string_space (void)
       break;
     }
     len += sizeof (obj);
-    if ((p -> flags & gc_wanted) && (back_ptr == from + sizeof (obj)))
+    if ((GET_FLAGS (p) & gc_wanted) && (back_ptr == from + sizeof (obj)))
     {
       if (to != from)
         memmove (to, from, len);
