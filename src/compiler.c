@@ -25,7 +25,7 @@ static_assert (sizeof (enum opcodes) == 1, "opcodes too big for a byte");
 static_assert (last_type_code <= typecode_mask, "too many types defined");
 
 #if TARGET_ARDUINO
-static_assert (sizeof (objhdr) == 5, "objhdr should be six bytes");
+static_assert (sizeof (objhdr) == 5, "objhdr should be five bytes");
 #endif
 
 void free_compile_buffers (void)
