@@ -63,7 +63,7 @@ obj fe_cond (uint8_t *for_value)
       {
         // not last clause
         compile_expression (test, true);
-        if (for_value)
+        if (for_value && clause == obj_NIL)
           compile_opcode (opDUP_UNLESS_NIL);
         if (clause == obj_NIL)
         {
