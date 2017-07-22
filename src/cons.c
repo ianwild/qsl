@@ -25,6 +25,11 @@ obj cons (obj car, obj cdr)
 
 void decons (obj cons, obj *car, obj *cdr)
 {
+  if (cons == obj_NIL)
+  {
+    *car = *cdr = obj_NIL;
+    return;
+  }
   if (get_type (cons) != cons_type)
   {
     TRACE (("type code is %d\n", get_type (cons)));
