@@ -19,9 +19,9 @@
 static const char PROGMEM this_file [] = __FILE__;
 
 #if TARGET_ARDUINO
-  #define TOTAL_SIZE 1280
+  #define TOTAL_SIZE 1024
 #else
-  #define TOTAL_SIZE 12800
+  #define TOTAL_SIZE 10240
 #endif
 
 static uint8_t string_space [TOTAL_SIZE];
@@ -64,6 +64,7 @@ obj last_allocated_object = LAST_ROM_OBJ;
 
 #include "rom-symbols.ci"
 
+#if WITH_MEMSTATS
 void memstats (bool gc_done)
 {
   uint8_t *ht = (uint8_t*) headers;
@@ -80,6 +81,7 @@ void memstats (bool gc_done)
   else
     printc ('>');
 }
+#endif
 
 static objhdr *GET_HEADER (obj o)
 {

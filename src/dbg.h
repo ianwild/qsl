@@ -3,11 +3,11 @@
 
 #include <assert.h>
 
-#if TARGET_ARDUINO
-#define TRACE(x)
+#if WITH_TRACE
+  #include <stdio.h>
+  #define TRACE(x) printf x
 #else
-#include <stdio.h>
-#define TRACE(x) printf x
+  #define TRACE(x)
 #endif
 
 #if ! defined (static_assert)

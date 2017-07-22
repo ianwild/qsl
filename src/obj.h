@@ -32,7 +32,11 @@ void               throw_error          (enum errcode e,
 
 extern obj last_allocated_object;
 
+#if WITH_MEMSTATS
 void               memstats             (bool gc_done);
+#else
+#define memstats(b)
+#endif
 
 END_EXTERN_C
 

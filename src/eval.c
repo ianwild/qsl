@@ -16,7 +16,7 @@ static const char PROGMEM this_file [] = __FILE__;
 obj current_environment;
 
 
-#if ! TARGET_ARDUINO
+#if WITH_TRACE
 static char *symname (uint8_t opcode)
 {
   static char buf [128];

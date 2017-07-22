@@ -387,16 +387,3 @@ obj fn_peekchar (uint8_t *argc)
   else
     return (obj_NIL);
 }
-
-obj fn_at (uint8_t *argc)
-{
-  adjust_argc (argc, 1);
-  obj n = get_arg (0);
-  if (n >= obj_ZERO)
-  {
-    obj o = (obj) (n - obj_ZERO);
-    if (o <= last_allocated_object)
-      return (o);
-  }
-  return (n);
-}

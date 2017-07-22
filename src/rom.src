@@ -11,9 +11,7 @@ t               -
 quote           fe
 lambda          fe
 apply           fn
-#fexpr           fe
 
-@               fn_at
 car             fn
 cdr             fn
 cons            fn
@@ -42,8 +40,6 @@ and             fe
 or              fe
 let             fe
 let*            fe_let_star
-
-#eval            fn
 
 read            fn
 print           fn

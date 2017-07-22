@@ -1,4 +1,4 @@
-OBJECTS =
+OBJECTS :=
 OBJECTS += arrays.o
 OBJECTS += compiler.o
 OBJECTS += cons.o
@@ -13,15 +13,21 @@ OBJECTS += obj.o
 OBJECTS += stack.o
 OBJECTS += symbols.o
 
-GENERATED =
+GENERATED :=
 GENERATED += qsl
 GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 
-OPTIMISER_FLAGS = -Os -flto
-WARNING_FLAGS = -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
-CFLAGS = --std=c11 $(OPTIMISER_FLAGS) -DTARGET_ARDUINO=0 $(WARNING_FLAGS)
-LDFLAGS = $(OPTIMISER_FLAGS)
+
+BUILD_OPTIONS :=
+BUILD_OPTIONS += -DWITH_TRACE=0
+BUILD_OPTIONS += -DTARGET_ARDUINO=0
+BUILD_OPTIONS += -DWITH_MEMSTATS=0
+
+OPTIMISER_FLAGS := -Os -flto
+WARNING_FLAGS := -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
+CFLAGS := --std=c11 $(OPTIMISER_FLAGS) $(WARNING_FLAGS) $(BUILD_OPTIONS)
+LDFLAGS := $(OPTIMISER_FLAGS)
 
 .PHONY: clean tar dep tags
 
