@@ -35,12 +35,15 @@ static void allocate_io_buffers (void)
 #if ! TARGET_ARDUINO
 uint8_t readc (void)
 {
-  return (getchar ());
+  int ch = getchar ();
+  if (ch == EOF)
+    exit (0);
+  return (ch);
 }
 
-int16_t peekc (void)
+int peekc (void)
 {
-  int16_t ch = getchar ();
+  int ch = getchar ();
   ungetc (ch, stdin);
   return (ch);
 }

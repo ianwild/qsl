@@ -133,14 +133,23 @@ void compile_lambda_body (obj body)
 {
   obj args;
   decons (body, &args, &body);
-  uint16_t argc = internal_len (args);
-  compile_opcode (opBIND_ARGLIST);
-  compile_opcode (argc);
-  while (args)
+  if (args == obj_NIL || get_type (args) == cons_type)
   {
-    obj arg;
-    decons (args, &arg, &args);
-    compile_constant (arg);
+    uint16_t argc = internal_len (args);
+    compile_opcode (opBIND_ARGLIST);
+    compile_opcode (argc);
+    while (args)
+    {
+      obj arg;
+      decons (args, &arg, &args);
+      compile_constant (arg);
+    }
+  }
+  else
+  {
+    compile_opcode (opBIND_ARGLIST);
+    compile_opcode (255);
+    compile_constant (args);
   }
   compile_progn (body, (uint8_t *) "y");
 }

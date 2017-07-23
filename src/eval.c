@@ -198,14 +198,26 @@ static obj interpret_bytecodes (void)
     case opBIND_ARGLIST:
       TRACE (("BIND_ARGLIST %d\n", *current_function));
       {
+        bool listify = false;
         uint8_t size = *current_function++;
+        if (size == 255)
+        {
+          listify = true;
+          size = 1;
+        }
         obj new_env =
           size ? new_extended_object (environment_type, 1 + 2 * size) : obj_NIL;
         obj old_tos = pop_arg ();
         obj old_nos = pop_arg ();
         obj old_3rd = pop_arg ();
         uint8_t argc = get_int_val (pop_arg ());
-        adjust_argc (&argc, size);
+        if (listify)
+        {
+          stack_push (fn_list (&argc));
+          argc = 1;
+        }
+        else
+          adjust_argc (&argc, size);
         if (size)
         {
           objhdr *p = get_header (new_env);
@@ -376,14 +388,14 @@ obj fn_apply (uint8_t *argc)
   case rom_symbol_type:
   {
     const rom_object *hdr = get_rom_header (fn);
-    if (! hdr -> is_fexpr && hdr -> global_fn)
-    {
-      obj res = hdr -> global_fn (argc);
-      stack_pop (*argc);
-      stack_push (res);
-      return (obj_NIL);
-    }
-    break;
+    built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
+    if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
+      throw_error (no_fdefn);
+
+    obj res = fn (argc);
+    stack_pop (*argc);
+    stack_push (res);
+    return (obj_NIL);
   }
 
   case symbol_type:

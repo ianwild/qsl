@@ -6,7 +6,7 @@
 
 START_EXTERN_C
 
-int16_t  peekc            (void);
+int      peekc            (void);
 uint8_t  readc            (void);
 void     pushbackc        (uint8_t ch);
 void     printc           (uint8_t ch);
