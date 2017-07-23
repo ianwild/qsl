@@ -48,9 +48,9 @@ three weeks to get from zero to `blink`, but ...
 
 After running out of memory on even _mildly_ complex functions, I
 wondered if there might be some possible improvements to be made.  A
-month was a pretty tight schedule, and meant that I was more or less
+month was a pretty tight schedule, and it meant that I was more or less
 committed to interpreting directly from the raw CONS cells the user
-had entered at the REPL prompt.
+had entered at the REPL prompt.  This caused a few problems.
 
 Consider: if `eval` saw `(while (< n 10) (setq n (+ n 1)))`, then
 
@@ -73,5 +73,5 @@ original ping-pong to do this compilation, but only at the C level.
 
 So, does an Arduino Nano have enough ROM and RAM to implement a
 bytecode compiler and interpreter?  This took a bit long than three
-weeks - about a year and a half, in fact - but the answer seems to be
-"yes".
+weeks to answer - about a year and a half, in fact - but the
+conclusion seems to be "yes".

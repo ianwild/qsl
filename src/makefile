@@ -59,7 +59,8 @@ tar:	clean
 		--exclude .git                  \
 		--exclude .gitignore            \
 		--exclude TAGS                  \
-		..
+		--directory ..                  \
+		.
 
 tags:
 	find . -name '*.[ch]' -o -name '*.cpp' | etags -
