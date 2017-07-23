@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "buffer-limits.h"
 #include "cons.h"
 #include "dbg.h"
 #include "gc-hooks.h"
@@ -10,6 +11,8 @@
 #include "stack.h"
 #include "symbols.h"
 #include "target.h"
+
+static_assert (MAX_TOKEN_LENGTH > 8, "token buffer too small");
 
 bool slow_output;
 
@@ -26,7 +29,7 @@ static void allocate_io_buffers (void)
 {
   if (! spelling)
   {
-    io_buffer = new_extended_object (string_type, MAX_TOKEN);
+    io_buffer = new_extended_object (string_type, MAX_TOKEN_LENGTH);
     spelling = get_spelling (io_buffer, NULL);
   }
 }
@@ -116,7 +119,7 @@ static obj read_token (uint8_t ch1)
   for (;;)
   {
     spelling [len] = ch1;
-    if ((len += 1) == MAX_TOKEN)
+    if ((len += 1) == MAX_TOKEN_LENGTH)
       break;
     if ((ch1 = readc ()) <= ' ' ||
         ch1 == ';' ||
@@ -156,7 +159,7 @@ static obj read_string (uint8_t quote)
     else if (ch == '\\')
       ch = readc ();
     spelling [len] = ch;
-    if ((len += 1) == MAX_TOKEN)
+    if ((len += 1) == MAX_TOKEN_LENGTH)
       break;
   }
   obj res = new_extended_object ((quote == '"' ? string_type : symbol_type),
@@ -265,6 +268,17 @@ obj fn_read (uint8_t *argc)
   return (internal_read ());
 }
 
+static void print_quoted (uint8_t q, uint8_t *p, uint16_t len)
+{
+  printc (q);
+  while (len--)
+  {
+    if (*p == q || *p == '\\')
+      printc ('\\');
+    printc (*p++);
+  }
+  printc (q);
+}
 
 void print1 (obj o)
 {
@@ -279,14 +293,7 @@ void print1 (obj o)
   {
     uint16_t len;
     uint8_t *p = get_spelling (o, &len);
-    printc ('"');
-    while (len--)
-    {
-      if (*p == '"' || *p == '\\')
-        printc ('\\');
-      printc (*p++);
-    }
-    printc ('"');
+    print_quoted ('"', p, len);
     break;
   }
 
@@ -294,10 +301,7 @@ void print1 (obj o)
   {
     uint16_t len;
     uint8_t *p = get_spelling (o, &len);
-    printc ('|');
-    while (len--)
-      printc (*p++);
-    printc ('|');
+    print_quoted ('|', p, len);
     break;
   }
 

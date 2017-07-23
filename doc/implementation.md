@@ -36,6 +36,7 @@ compile for a void or a value context.
 Note that a lambda expression can't know in advance whether it will be
 called in a value or a void context.  It must therefore assume
 _value_, and leave it to the called to remove the result if necessary.
-As a further consequence, `apply`, though a function and not a fexpr,
-must know for itself the call-site context.  It therefore gets quite a
-bit of special casing.
+This means that most of the time `opCALL` will be followed by an
+`opDROP`.  As a further consequence, `apply`, though a function and
+not a fexpr, must know for itself the call-site context, so it gets
+quite a bit of special casing.

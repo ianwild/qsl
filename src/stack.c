@@ -1,16 +1,18 @@
 #include <string.h>
 
+#include "buffer-limits.h"
 #include "dbg.h"
 #include "gc-hooks.h"
 #include "obj.h"
 #include "stack.h"
 
-#define STACK_MAX 64
+static_assert (MAX_STACK_DEPTH > 8, "stack unreasonably small");
 
 static obj stack_obj;
 static obj *base;
 static uint8_t depth;
 
+#if WITH_TRACE
 static uint8_t deepest;
 
 void print_stack_depth (void)
@@ -27,6 +29,7 @@ void dump_stack (void)
   printf ("]\n");
 #endif
 }
+#endif
 
 uint8_t get_stack_depth (void)
 {
@@ -36,8 +39,10 @@ uint8_t get_stack_depth (void)
 void stack_push (obj o)
 {
   base [depth++] = o;
+  #if WITH_TRACE
   if (depth > deepest)
     deepest = depth;
+  #endif
 }
 
 void stack_pop (uint8_t n)
@@ -93,7 +98,7 @@ void adjust_argc (uint8_t *argc, uint8_t wanted)
 
 void mark_stack (void)
 {
-  for (uint8_t n = depth; n < STACK_MAX; n += 1)
+  for (uint8_t n = depth; n < MAX_STACK_DEPTH; n += 1)
     base [n] = obj_NIL;
   want_obj (stack_obj);
   base = NULL;
@@ -102,6 +107,6 @@ void mark_stack (void)
 void stack_reinit (void)
 {
   if (! stack_obj)
-    stack_obj = new_extended_object (array_type, STACK_MAX);
+    stack_obj = new_extended_object (array_type, MAX_STACK_DEPTH);
   base = get_header (stack_obj) -> u.array_val + 1;
 }

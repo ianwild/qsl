@@ -1,0 +1,10 @@
+#ifndef QSL_BUFFER_LIMITS_H
+#define QSL_BUFFER_LIMITS_H
+
+#define MAX_OPCODES_PER_LAMBDA     64
+#define MAX_LITERALS_PER_LAMBDA    16
+#define MAX_STACK_DEPTH            64
+#define MAX_TOKEN_LENGTH           32
+
+
+#endif // QSL_BUFFER_LIMITS_H

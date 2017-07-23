@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "buffer-limits.h"
 #include "compiler.h"
 #include "cons.h"
 #include "dbg.h"
@@ -13,16 +14,21 @@
 
 static obj prog_obj;
 static uint8_t *prog;
-#define MAX_PROG_LENGTH 64
 uint8_t prog_length;
 
 static obj constants_obj;
 static obj *constants;
-#define MAX_CONSTANTS 16
 uint8_t const_length;
 
-static_assert (sizeof (enum opcodes) == 1, "opcodes too big for a byte");
-static_assert (last_type_code <= typecode_mask, "too many types defined");
+static_assert (sizeof (enum opcodes) == 1,
+               "opcodes too big for a byte");
+static_assert (last_type_code <= typecode_mask,
+               "too many types defined");
+static_assert (MAX_OPCODES_PER_LAMBDA <= UINT8_MAX,
+               "opcode limit too big to buffer");
+static_assert ((MAX_OPCODES_PER_LAMBDA > 2 * MAX_LITERALS_PER_LAMBDA) &&
+               (MAX_LITERALS_PER_LAMBDA >= 4),
+               "literal limit not realistic");
 
 #if TARGET_ARDUINO
 static_assert (sizeof (objhdr) == 5, "objhdr should be five bytes");
@@ -38,9 +44,9 @@ void free_compile_buffers (void)
 void compiler_init (void)
 {
   if (! prog_obj)
-    prog_obj = new_extended_object (string_type, MAX_PROG_LENGTH);
+    prog_obj = new_extended_object (string_type, MAX_OPCODES_PER_LAMBDA);
   if (! constants_obj)
-    constants_obj = new_extended_object (array_type, MAX_CONSTANTS);
+    constants_obj = new_extended_object (array_type, MAX_LITERALS_PER_LAMBDA);
   prog = get_spelling (prog_obj, NULL);
   constants = get_header (constants_obj) -> u.array_val + 1;
   prog_length = 0;

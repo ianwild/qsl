@@ -25,8 +25,14 @@ obj        pop_arg               (void);
 void       adjust_argc           (uint8_t *argc, uint8_t wanted);
 
 void       stack_reinit          (void);
+
+#if WITH_TRACE
 void       print_stack_depth     (void);
 void       dump_stack            (void);
+#else
+#define print_stack_depth()
+#define dump_stack()
+#endif
 
 END_EXTERN_C
 
