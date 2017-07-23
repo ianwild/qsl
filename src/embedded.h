@@ -1,7 +1,6 @@
 #ifndef QSL_EMBEDDED_H
 #define QSL_EMBEDDED_H
 
-#include "obj.h"
 #include "target.h"
 
 START_EXTERN_C
@@ -14,4 +13,3 @@ END_EXTERN_C
 
 
 #endif // QSL_EMBEDDED_H
-

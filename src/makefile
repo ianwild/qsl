@@ -79,31 +79,31 @@ dep:
 ## AUTODEPS START ##
 arrays.c:	arrays.h cons.h integer.h obj.h stack.h
 arrays.h:	target.h types.h
-compiler.c:	compiler.h cons.h dbg.h fexprs.h gc-hooks.h io.h obj.h stack.h
+compiler.c:	buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc-hooks.h io.h obj.h stack.h
 compiler.h:	rom-symbols.h target.h types.h
-cons.c:	cons.h dbg.h gc.h io.h obj.h stack.h
+cons.c:	cons.h dbg.h io.h obj.h stack.h
 cons.h:	target.h types.h
-embedded.h:	obj.h target.h
-eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h target.h
+embedded.h:	target.h
+eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h
 eval.h:	target.h types.h
-fexprs.c:	compiler.h cons.h eval.h fexprs.h integer.h io.h obj.h stack.h symbols.h
+fexprs.c:	compiler.h cons.h eval.h fexprs.h integer.h obj.h stack.h
 fexprs.h:	target.h types.h
 gc-hooks.h:	target.h types.h
 gc.c:	dbg.h embedded.h eval.h gc-hooks.h gc.h io.h obj.h rom-symbols.h stack.h
-gc.h:	obj.h target.h
+gc.h:	target.h
 hardware.h:	target.h types.h
 integer.c:	dbg.h integer.h io.h obj.h stack.h
 integer.h:	target.h types.h
-io.c:	cons.h dbg.h gc-hooks.h integer.h io.h obj.h rom-symbols.h stack.h symbols.h target.h
+io.c:	buffer-limits.h cons.h dbg.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h
 io.h:	target.h types.h
-main.c:	compiler.h dbg.h embedded.h eval.h gc.h io.h obj.h stack.h symbols.h target.h
+main.c:	compiler.h dbg.h embedded.h eval.h gc.h io.h obj.h stack.h
 misc.c:	integer.h misc.h obj.h stack.h
 misc.h:	target.h types.h
-obj.c:	arrays.h cons.h dbg.h eval.h fexprs.h gc-hooks.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h target.h types.h
+obj.c:	arrays.h buffer-limits.h cons.h dbg.h eval.h fexprs.h gc-hooks.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h
 obj.h:	target.h types.h
 rom-symbols.h:	types.h
-stack.c:	dbg.h gc-hooks.h obj.h stack.h
+stack.c:	buffer-limits.h dbg.h gc-hooks.h obj.h stack.h
 stack.h:	target.h types.h
-symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h target.h
+symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h
 symbols.h:	target.h types.h
 ## AUTODEPS END ##

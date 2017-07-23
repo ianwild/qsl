@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "arrays.h"
+#include "buffer-limits.h"
 #include "cons.h"
 #include "dbg.h"
 #include "eval.h"
@@ -13,18 +14,12 @@
 #include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
-#include "target.h"
-#include "types.h"
 
 static const char PROGMEM this_file [] = __FILE__;
 
-#if TARGET_ARDUINO
-  #define TOTAL_SIZE 1280
-#else
-  #define TOTAL_SIZE 10240
-#endif
+static_assert (TOTAL_HEAP_SIZE >= 1024, "heap too small");
 
-static uint8_t string_space [TOTAL_SIZE];
+static uint8_t string_space [TOTAL_HEAP_SIZE];
 static uint8_t *string_space_top = string_space;
 static objhdr *const headers =
   (objhdr *) (string_space + sizeof (string_space));

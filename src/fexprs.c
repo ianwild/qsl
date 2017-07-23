@@ -3,10 +3,8 @@
 #include "fexprs.h"
 #include "eval.h"
 #include "integer.h"
-#include "io.h"
 #include "obj.h"
 #include "stack.h"
-#include "symbols.h"
 
 static const char PROGMEM this_file [] = __FILE__;
 

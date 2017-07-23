@@ -7,10 +7,8 @@
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
-#include "rom-symbols.h"
 #include "stack.h"
 #include "symbols.h"
-#include "target.h"
 
 static_assert (MAX_TOKEN_LENGTH > 8, "token buffer too small");
 

@@ -2,7 +2,6 @@
 #include <avr/sleep.h>
 
 #include "embedded.h"
-#include "eval.h"
 #include "gc-hooks.h"
 #include "hardware.h"
 #include "integer.h"

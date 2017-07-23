@@ -9,7 +9,6 @@
 #include "obj.h"
 #include "stack.h"
 #include "symbols.h"
-#include "target.h"
 
 static const char PROGMEM this_file [] = __FILE__;
 

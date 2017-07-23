@@ -6,8 +6,6 @@
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
-#include "symbols.h"
-#include "target.h"
 
 
 int main (void)
