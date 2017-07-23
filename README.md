@@ -40,4 +40,38 @@ Getting that far turned out to be surprisingly easy, so I kept adding features u
 ```
 to get the LED blinking at 1Hz, have the interpreter return to the prompt on a keystroke, _and_ with the processor spending most of its time in a `sleep` state.
 
-Now all I need to do is document it.
+----------------------------------------------------------------------------
+
+I had, for no discernable reason, decided that it should take me no
+more than a month to get something working.  In fact, it took about
+three weeks to get from zero to `blink`, but ...
+
+After running out of memory on even _mildly_ complex functions, I
+wondered if there might be some possible improvements to be made.  A
+month was a pretty tight schedule, and meant that I was more or less
+committed to interpreting directly from the raw CONS cells the user
+had entered at the REPL prompt.
+
+Consider: if `eval` saw `(while (< n 10) (setq n (+ n 1)))`, then
+
+-   since `while` isn't a true function, `eval` calls a special handler
+
+-   `while` then needs to call `eval` for each clause in the body
+
+-   this nested `eval` needs a special handler for the `setq`
+
+-   `setq` calls _yet another_ `eval` to do the `+`
+
+This `eval`-recursion happens at both the C and Lisp levels.  If we
+were a bit smarter, though, we could flatten the original expression
+to something like:
+
+      XXX: n@, 10, <, jump-if-nil YYY, n@, 1, +, n!, jump XXX, YYY:
+
+which can be evaluated with _no_ recursion.  Yes, we still need the
+original ping-pong to do this compilation, but only at the C level.
+
+So, does an Arduino Nano have enough ROM and RAM to implement a
+bytecode compiler and interpreter?  This took a bit long than three
+weeks - about a year and a half, in fact - but the answer seems to be
+"yes".
