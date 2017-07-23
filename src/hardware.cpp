@@ -63,6 +63,8 @@ static bool isReady (void)
 obj fn_wait_for_event (uint8_t *argc)
 {
   (void) argc;
+  sleep_enable ();
+  set_sleep_mode (SLEEP_MODE_IDLE);
   for (;;)
   {
     noInterrupts ();
