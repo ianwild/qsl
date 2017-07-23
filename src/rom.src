@@ -58,6 +58,9 @@ aset            fn
 char-code       fn
 code-char       fn
 
+
+# (arduino-only)
+
 pin             fn
 on-tick         fn
 on-serial       fn

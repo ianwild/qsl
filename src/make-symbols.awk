@@ -1,10 +1,14 @@
 # create "rom-symbols.ci", which contains a pair of arrays:
 #   bytes[] is just the (len,spelling) pairs for the symbols in ROM,
 #   rom_symbols[] is a list of rom_object structures.
-
+# anything after a line containing the text (arduino-only) will be
+# made conditional on TARGET_ARDUINO
 BEGIN {
     next_sym = 0;
+    arduino_only = -1;
 }
+
+/(arduino-only)/ {arduino_only = next_sym;}
 
 NF && ! /^#/ {
     lisp_name = $1;
@@ -25,6 +29,8 @@ END {
     print "static const PROGMEM uint8_t bytes [] = {";
     idx = 0;
     for (i = 0; i < next_sym; i += 1) {
+        if (i == arduino_only)
+            print "#if TARGET_ARDUINO";
         lisp_name = symbol_table [i];
         len = length(lisp_name);
         name_offset [lisp_name] = idx;
@@ -38,17 +44,21 @@ END {
         idx += len + 1;
         printf ("\n");
     }
+    if (arduino_only >= 0)
+        print "#endif";
     print "};\n";
 
     print "static const PROGMEM rom_object rom_symbols [] = {";
     for (i = 0; i < next_sym; i += 1) {
+        if (i == arduino_only)
+            print "#if TARGET_ARDUINO";
         lisp_name = symbol_table [i];
         spelling = name_offset [lisp_name];
         fn = c_name [lisp_name];
-        printf ("  /* %3d = %-8s */  ", i, lisp_name);
+        printf ("  /* %3d = %-15s */  ", i, lisp_name);
         printf ("{bytes + %3d, %s, %d},\n", spelling, fn, fn ~ /^fe_/);
     }
+    if (arduino_only >= 0)
+        print "#endif";
     print "};\n";
 }
-
-

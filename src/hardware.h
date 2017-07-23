@@ -17,16 +17,6 @@
 
   END_EXTERN_C
 
-#else
-
-  // these make no sense without the Arduino
-
-  #define fn_pin                NULL
-  #define fn_on_tick            NULL
-  #define fn_on_serial          NULL
-  #define fn_wait_for_event     NULL
-  #define fn_next_event         NULL
-
 #endif
 
 

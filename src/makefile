@@ -51,7 +51,7 @@ arduino: clean rom-symbols.ci rom-symbols.h
 
 clean:
 	rm -fr arduino
-	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s
+	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s core
 	rm -f ../doc/*~ ../doc/*#
 
 tar:	clean

@@ -71,6 +71,8 @@ static void call_lambda (obj fn, uint8_t argc)
     current_environment = get_header (lambda) -> u.closure_val.environment;
     restore_eval_state ();
   }
+  else
+    throw_error (no_fdefn);
 }
 
 static obj interpret_bytecodes (void)

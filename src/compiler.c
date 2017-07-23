@@ -53,9 +53,11 @@ void compiler_init (void)
   const_length = 0;
 }
 
+#if TARGET_ARDUINO
+#define compiler_report()
+#else
 void compiler_report (void)
 {
-#if ! TARGET_ARDUINO
   printf ("Constants:\n");
   for (unsigned i = 0; i < const_length; i += 1)
   {
@@ -68,8 +70,8 @@ void compiler_report (void)
   for (unsigned i = 0; i < prog_length; i += 1)
     printf (" %02x", prog [i]);
   printf ("\n");
-#endif
 }
+#endif
 
 forward_jump declare_forward_jump (void)
 {
