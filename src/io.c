@@ -266,8 +266,11 @@ obj fn_read (uint8_t *argc)
   return (internal_read ());
 }
 
-static void print_quoted (uint8_t q, uint8_t *p, uint16_t len)
+static void print_quoted (uint8_t q, obj o)
 {
+  uint16_t len;
+  uint8_t *p = get_spelling (o, &len);
+#if PRINT_WITH_QUOTES
   printc (q);
   while (len--)
   {
@@ -276,6 +279,11 @@ static void print_quoted (uint8_t q, uint8_t *p, uint16_t len)
     printc (*p++);
   }
   printc (q);
+#else
+  (void) q;
+  while (len--)
+    printc (*p++);
+#endif
 }
 
 void print1 (obj o)
@@ -283,32 +291,32 @@ void print1 (obj o)
   switch (get_type (o))
   {
   case char_type:
+#if PRINT_WITH_QUOTES
     printc ('?');
+#endif
     printc (o - FIRST_CHAR);
     break;
 
   case string_type:
-  {
-    uint16_t len;
-    uint8_t *p = get_spelling (o, &len);
-    print_quoted ('"', p, len);
+    print_quoted ('"', o);
     break;
-  }
 
   case symbol_type:
-  {
-    uint16_t len;
-    uint8_t *p = get_spelling (o, &len);
-    print_quoted ('|', p, len);
+    print_quoted ('|', o);
     break;
-  }
 
   case rom_symbol_type:
   {
     uint16_t len;
+#if PRINT_WITH_QUOTES
+    printc ('|');
+#endif
     const uint8_t *p = get_rom_spelling (o, &len);
     while (len--)
       printc (pgm_read_byte_near (p++));
+#if PRINT_WITH_QUOTES
+    printc ('|');
+#endif
     break;
   }
 
@@ -370,7 +378,6 @@ obj fn_print (uint8_t *argc)
   uint8_t n = *argc;
   while (n)
     print1 (get_arg (n -= 1));
-  printc ('\n');
   return (obj_NIL);
 }
 
