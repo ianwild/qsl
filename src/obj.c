@@ -19,7 +19,7 @@
 static const char PROGMEM this_file [] = __FILE__;
 
 #if TARGET_ARDUINO
-  #define TOTAL_SIZE 1024
+  #define TOTAL_SIZE 1280
 #else
   #define TOTAL_SIZE 10240
 #endif

@@ -13,12 +13,12 @@
 
 static obj prog_obj;
 static uint8_t *prog;
-#define MAX_PROG_LENGTH 128
+#define MAX_PROG_LENGTH 64
 uint8_t prog_length;
 
 static obj constants_obj;
 static obj *constants;
-#define MAX_CONSTANTS 32
+#define MAX_CONSTANTS 16
 uint8_t const_length;
 
 static_assert (sizeof (enum opcodes) == 1, "opcodes too big for a byte");
@@ -174,17 +174,19 @@ void compile_expression (obj expr, bool value_context)
       compile_expression (arg1, true);
       n += 1;
     }
+    bool maybe_drop = (fn == obj_APPLY);
     if (get_type (fn) == rom_symbol_type)
       compile_opcode (fn);
     else
     {
       compile_opcode (opCALL);
       compile_constant (fn);
+      maybe_drop = true;
     }
     if (fn != obj_APPLY && ! value_context)
       n |= 0x80;
     compile_opcode (n);
-    if (fn == obj_APPLY && ! value_context)
+    if (maybe_drop && ! value_context)
       compile_opcode (opDROP);
     return;
   }

@@ -60,6 +60,7 @@ static void call_lambda (obj fn, uint8_t argc)
 
   if (lambda)
   {
+    argc &= 0x7f;
     stack_push (create_int (argc));
     TRACE (("calling lambda %04x/%d\n", lambda, argc));
     stack_push (current_environment);
@@ -77,8 +78,10 @@ static obj interpret_bytecodes (void)
 {
   for (;;)
   {
-    TRACE (("%4zd:\t", current_function - function_base));
+    TRACE (("[%03d] %4zd:\t",
+            get_stack_depth (), current_function - function_base));
     uint8_t opcode = *current_function++;
+//    printc ('{'); print_int (opcode); printc ('}');
     switch (opcode)
     {
     case opDROP:

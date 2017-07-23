@@ -6,7 +6,7 @@
 BOARD_TAG = nano328
 MONITOR_PORT = /dev/ttyUSB0
 
-EXTRA_FLAGS := -Os -flto
+EXTRA_FLAGS := -Os #-flto
 # avr-ld can't currently handle -flto :-(
 
 DEFS := -DTARGET_ARDUINO=1
@@ -14,9 +14,9 @@ DEFS += -DWITH_MEMSTATS=1
 
 CFLAGS   += $(DEFS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror
-#CFLAGS   += $(EXTRA_FLAGS)
+CFLAGS   += $(EXTRA_FLAGS)
 CXXFLAGS += $(DEFS) -W -Wall -std=gnu++11
-#CXXFLAGS += $(EXTRA_FLAGS)
-#LDFLAGS  += $(EXTRA_FLAGS)
+CXXFLAGS += $(EXTRA_FLAGS)
+LDFLAGS  += $(EXTRA_FLAGS)
 
 include /usr/share/arduino/Arduino.mk
