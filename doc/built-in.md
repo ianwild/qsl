@@ -237,3 +237,31 @@
 `(code-char v1)`
 
 >   Returns the character whose codepoint is the integer `v1`.
+
+--------------------------------------------------------------------------
+
+
+`(on-tick v1 v2)`
+
+>   Attempt to run the function `v2` every `v1` milliseconds.
+
+`(on-serial v1)`
+
+>   Run the function `v1` every time a character is available on the
+    serial port.
+
+`(pin v1 v2)`
+
+>   Set pin `v1` to the Arduino constant `LOW` if `v2` is `nil`, to
+    `HIGH` otherwise.
+
+
+`(wait-for-event)`
+
+>   Put the processor into a sleep state until one of the registered
+    events (tick or serial) is ready to run.
+
+`(next-event)`
+
+>   If a registered event is ready, return its function, otherwise
+    return `nil`.

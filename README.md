@@ -36,7 +36,7 @@ Getting that far turned out to be surprisingly easy, so I kept adding features u
 (setq running t)
 (while running
   (wait-for-event)
-  (apply (do-events)))
+  (apply (next-event)))
 ```
 to get the LED blinking at 1Hz, have the interpreter return to the prompt on a keystroke, _and_ with the processor spending most of its time in a `sleep` state.
 

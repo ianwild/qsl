@@ -2,7 +2,7 @@
 #define QSL_BUFFER_LIMITS_H
 
 #if TARGET_ARDUINO
-  #define TOTAL_HEAP_SIZE        1280
+  #define TOTAL_HEAP_SIZE        1024
 #else
   #define TOTAL_HEAP_SIZE       10240
 #endif

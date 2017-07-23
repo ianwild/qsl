@@ -75,7 +75,7 @@ obj fn_wait_for_event (uint8_t *argc)
   return (obj_NIL);
 }
 
-obj fn_do_events (uint8_t *argc)
+obj fn_next_event (uint8_t *argc)
 {
   (void) argc;
 

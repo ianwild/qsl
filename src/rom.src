@@ -62,4 +62,4 @@ pin             fn
 on-tick         fn
 on-serial       fn
 wait-for-event  fn
-do-events       fn
+next-event      fn

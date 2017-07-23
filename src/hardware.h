@@ -13,7 +13,7 @@
   obj  fn_on_tick           (uint8_t *argc);
   obj  fn_on_serial         (uint8_t *argc);
   obj  fn_wait_for_event    (uint8_t *argc);
-  obj  fn_do_events         (uint8_t *argc);
+  obj  fn_next_event        (uint8_t *argc);
 
   END_EXTERN_C
 
@@ -25,7 +25,7 @@
   #define fn_on_tick            NULL
   #define fn_on_serial          NULL
   #define fn_wait_for_event     NULL
-  #define fn_do_events          NULL
+  #define fn_next_event         NULL
 
 #endif
 
