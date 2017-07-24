@@ -110,5 +110,6 @@ void do_gc (void)
   }
 
   last_allocated_object = high_water_mark;
+  restore_eval_state ();
   memstats (true);
 }
