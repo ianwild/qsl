@@ -101,7 +101,7 @@ io.h:	target.h types.h
 main.c:	compiler.h dbg.h embedded.h eval.h gc.h io.h obj.h stack.h
 misc.c:	integer.h misc.h obj.h stack.h
 misc.h:	target.h types.h
-obj.c:	arrays.h buffer-limits.h cons.h dbg.h eval.h fexprs.h gc-hooks.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h
+obj.c:	arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h stack.h
 obj.h:	target.h types.h
 rom-symbols.h:	types.h
 stack.c:	buffer-limits.h dbg.h gc-hooks.h obj.h stack.h
