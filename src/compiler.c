@@ -14,11 +14,13 @@
 
 static obj prog_obj;
 static uint8_t *prog;
-uint8_t prog_length;
+static uint8_t prog_length;
+static uint8_t longest_prog;
 
 static obj constants_obj;
 static obj *constants;
-uint8_t const_length;
+static uint8_t const_length;
+static uint8_t longest_const;
 
 static_assert (sizeof (enum opcodes) == 1,
                "opcodes too big for a byte");
@@ -33,6 +35,17 @@ static_assert ((MAX_OPCODES_PER_LAMBDA > 2 * MAX_LITERALS_PER_LAMBDA) &&
 #if TARGET_ARDUINO
 static_assert (sizeof (objhdr) == 5, "objhdr should be five bytes");
 #endif
+
+uint8_t get_longest_opcodes (void)
+{
+  return (longest_prog);
+}
+
+uint8_t get_longest_constants (void)
+{
+  return (longest_const);
+}
+
 
 void free_compile_buffers (void)
 {
@@ -228,11 +241,15 @@ void compile_constant (obj o)
 
   prog [prog_length++] = const_length;
   constants [const_length++] = o;
+  if (const_length > longest_const)
+    longest_const = const_length;
 }
 
 void compile_opcode (uint8_t op)
 {
   prog [prog_length++] = op;
+  if (prog_length > longest_prog)
+    longest_prog = prog_length;
 }
 
 static void compile_pending_expression (obj expr)

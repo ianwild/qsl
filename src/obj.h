@@ -32,6 +32,9 @@ void               throw_error          (enum errcode e,
 
 extern obj last_allocated_object;
 
+obj       fn_gc           (uint8_t *argc);
+obj       fn_mem          (uint8_t *argc);
+
 #if WITH_MEMSTATS
 void               memstats             (bool gc_done);
 #else

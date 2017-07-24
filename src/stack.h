@@ -16,6 +16,7 @@
 START_EXTERN_C
 
 uint8_t    get_stack_depth       (void);
+uint8_t    get_stack_deepest     (void);
 void       stack_push            (obj o);
 void       stack_pop             (uint8_t n);
 obj        get_arg               (uint8_t idx);

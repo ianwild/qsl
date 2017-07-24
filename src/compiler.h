@@ -69,6 +69,9 @@ void           compile_opcode         (uint8_t);
 void           compiler_init          (void);
 void           compiler_report        (void);
 
+uint8_t        get_longest_opcodes    (void);
+uint8_t        get_longest_constants  (void);
+
 END_EXTERN_C
 
 

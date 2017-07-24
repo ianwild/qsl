@@ -11,10 +11,9 @@ static_assert (MAX_STACK_DEPTH > 8, "stack unreasonably small");
 static obj stack_obj;
 static obj *base;
 static uint8_t depth;
-
-#if WITH_TRACE
 static uint8_t deepest;
 
+#if WITH_TRACE
 void print_stack_depth (void)
 {
   TRACE (("stack depth %d/%d\n", depth, deepest));
@@ -36,13 +35,17 @@ uint8_t get_stack_depth (void)
   return (depth);
 }
 
+uint8_t get_stack_deepest (void)
+{
+  return (deepest);
+}
+
+
 void stack_push (obj o)
 {
   base [depth++] = o;
-  #if WITH_TRACE
   if (depth > deepest)
     deepest = depth;
-  #endif
 }
 
 void stack_pop (uint8_t n)

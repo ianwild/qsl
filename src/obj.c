@@ -2,6 +2,7 @@
 
 #include "arrays.h"
 #include "buffer-limits.h"
+#include "compiler.h"
 #include "cons.h"
 #include "dbg.h"
 #include "eval.h"
@@ -14,6 +15,7 @@
 #include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
+#include "stack.h"
 
 static const char PROGMEM this_file [] = __FILE__;
 
@@ -77,6 +79,51 @@ void memstats (bool gc_done)
     printc ('>');
 }
 #endif
+
+obj fn_gc (uint8_t *argc)
+{
+  (void) argc;
+  uint8_t *h = (uint8_t *) get_header (last_allocated_object);
+  int32_t before = h - string_space_top;
+  do_gc ();
+  h = (uint8_t *) get_header (last_allocated_object);
+  int32_t after = h - string_space_top;
+  return (create_int (after - before));
+}
+
+obj fn_mem (uint8_t *argc)
+{
+  adjust_argc (argc, 1);
+  int32_t n;
+  switch (get_arg (0))
+  {
+  case obj_ZERO + 0:
+    n = string_space_top - string_space;
+    break;
+  case obj_ZERO + 1:
+    n = (uint8_t *) get_header (last_allocated_object) - string_space_top;
+    break;
+  case obj_ZERO + 2:
+    n = last_allocated_object - LAST_ROM_OBJ;
+    break;
+
+  case obj_ZERO + 10 + 0:
+    n = get_stack_deepest ();
+    break;
+
+  case obj_ZERO + 20 + 0:
+    n = get_longest_opcodes ();
+    break;
+
+  case obj_ZERO + 20 + 1:
+    n = get_longest_constants ();
+    break;
+
+  default:
+    return (obj_NIL);
+  }
+  return (create_int (n));
+}
 
 static objhdr *GET_HEADER (obj o)
 {

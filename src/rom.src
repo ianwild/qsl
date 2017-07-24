@@ -58,6 +58,8 @@ aset            fn
 char-code       fn
 code-char       fn
 
+gc              fn
+mem             fn
 
 # (arduino-only)
 
