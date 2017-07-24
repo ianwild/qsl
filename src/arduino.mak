@@ -10,7 +10,7 @@ AR_NAME = avr-gcc-ar
 EXTRA_FLAGS := -Os -flto
 
 DEFS := -DTARGET_ARDUINO=1
-DEFS += -DWITH_MEMSTATS=1
+DEFS += -DWITH_MEMSTATS=0
 
 CFLAGS   += $(DEFS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror

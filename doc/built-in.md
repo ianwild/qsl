@@ -238,6 +238,23 @@
 
 >   Returns the character whose codepoint is the integer `v1`.
 
+`(gc)`
+
+>   Forces a garbage collection cycle, and returns the number of bytes
+    released into the heap.
+
+
+`(mem v1)`
+
+>   Returns a single data point about the system memory usage:
+
+        v1 = 0   =>  bytes used by strings and arrays
+        v1 = 1   =>  free space in heap
+        v1 = 2   =>  number of object headers allocated
+        v1 = 10  =>  maximum stack depth used
+        v1 = 20  =>  largest number of bytecodes in a compiled expression
+        v1 = 21  =>  largest number of constants in a compiled expression
+
 --------------------------------------------------------------------------
 
 
