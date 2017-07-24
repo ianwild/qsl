@@ -1,3 +1,7 @@
+# QSL Built-in symbols
+
+## Both Arduino and Linux (test) build
+
 `nil`
 
 >   The constant false, the empty list, and a symbol.
@@ -256,6 +260,8 @@
         v1 = 21  =>  largest number of constants in a compiled expression
 
 --------------------------------------------------------------------------
+
+## Arduino build only
 
 
 `(on-tick v1 v2)`
