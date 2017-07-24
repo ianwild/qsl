@@ -6,8 +6,8 @@
 BOARD_TAG = nano328
 MONITOR_PORT = /dev/ttyUSB0
 
-EXTRA_FLAGS := -Os #-flto
-# avr-ld can't currently handle -flto :-(
+AR_NAME = avr-gcc-ar
+EXTRA_FLAGS := -Os -flto
 
 DEFS := -DTARGET_ARDUINO=1
 DEFS += -DWITH_MEMSTATS=1
