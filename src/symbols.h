@@ -12,4 +12,4 @@ obj  set_symbol_value   (obj sym, obj val);
 
 END_EXTERN_C
 
-#endif /* QSL_SYMBOLS_H */
+#endif // QSL_SYMBOLS_H

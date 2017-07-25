@@ -31,16 +31,11 @@ void               throw_error          (enum errcode e,
 #define throw_error(e) throw_error (e, this_file, __LINE__)
 
 extern obj last_allocated_object;
+extern obj working_root;
 
 obj       fn_gc           (uint8_t *argc);
 obj       fn_mem          (uint8_t *argc);
 
-#if WITH_MEMSTATS
-void               memstats             (bool gc_done);
-#else
-#define memstats(b)
-#endif
-
 END_EXTERN_C
 
-#endif /* QSL_OBJ_H */
+#endif // QSL_OBJ_H

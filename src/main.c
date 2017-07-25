@@ -1,6 +1,8 @@
+#include <setjmp.h>
+
+#include "announce.h"
 #include "compiler.h"
 #include "dbg.h"
-#include "embedded.h"
 #include "eval.h"
 #include "gc.h"
 #include "io.h"
@@ -10,11 +12,15 @@
 
 int main (void)
 {
-  stack_reinit ();
+  extern jmp_buf reset;
+  announce (ann_startup);
 
-#if TARGET_ARDUINO
-  embed_init ();
-#endif
+  switch (setjmp (reset))
+  {
+  case 1:
+    announce (ann_computation_aborted);
+    break;
+  }
 
   for (;;)
   {

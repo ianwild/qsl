@@ -37,4 +37,4 @@ void       dump_stack            (void);
 
 END_EXTERN_C
 
-#endif /* QSL_STACK_H */
+#endif // QSL_STACK_H

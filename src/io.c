@@ -1,9 +1,11 @@
+#include <setjmp.h>
 #include <string.h>
 
+#include "announce.h"
 #include "buffer-limits.h"
 #include "cons.h"
 #include "dbg.h"
-#include "gc-hooks.h"
+#include "gc.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -14,14 +16,25 @@ static_assert (MAX_TOKEN_LENGTH > 8, "token buffer too small");
 
 bool slow_output;
 
+jmp_buf reset;
+
 static obj io_buffer;
 static uint8_t *spelling;
 
-void free_io_buffers (void)
+void io_announce (enum announcement ann)
 {
-  io_buffer = obj_NIL;
-  spelling = NULL;
+  switch (ann)
+  {
+  case ann_gc_starting:
+    io_buffer = obj_NIL;
+    spelling = NULL;
+    break;
+
+  default:
+    break;
+  }
 }
+
 
 static void allocate_io_buffers (void)
 {
@@ -110,7 +123,8 @@ void (throw_error) (enum errcode e, const char *file, int line)
   print_rom_string (PSTR ("): "));
   print_rom_string (msg);
   printc ('\n');
-  exit (1);
+  slow_output = false;
+  longjmp (reset, 1);
 }
 
 static obj read_token (uint8_t ch1)

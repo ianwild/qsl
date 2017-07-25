@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include <avr/sleep.h>
 
-#include "embedded.h"
-#include "gc-hooks.h"
+#include "announce.h"
+#include "gc.h"
 #include "hardware.h"
 #include "integer.h"
+#include "io.h"
 #include "obj.h"
 #include "stack.h"
 
@@ -14,16 +15,24 @@ static int32_t last_time;
 static obj tick_action;
 static obj serial_action;
 
-void embed_init (void)
-{
-  init ();
-  Serial.begin (9600);
-}
 
-void embed_mark_roots (void)
+void embed_announce (enum announcement ann)
 {
-  want_obj (tick_action);
-  want_obj (serial_action);
+  switch (ann)
+  {
+  case ann_startup:
+    init ();
+    Serial.begin (9600);
+    break;
+
+  case ann_gc_starting:
+    want_obj (tick_action);
+    want_obj (serial_action);
+    break;
+
+  default:
+    break;
+  }
 }
 
 

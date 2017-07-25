@@ -19,4 +19,4 @@ uint16_t internal_len   (obj o);
 
 END_EXTERN_C
 
-#endif /* QSL_CONS_H */
+#endif // QSL_CONS_H

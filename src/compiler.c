@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "announce.h"
 #include "buffer-limits.h"
 #include "compiler.h"
 #include "cons.h"
 #include "dbg.h"
 #include "fexprs.h"
-#include "gc-hooks.h"
+#include "gc.h"
 #include "io.h"
 #include "obj.h"
 #include "stack.h"
@@ -47,11 +48,25 @@ uint8_t get_longest_constants (void)
 }
 
 
-void free_compile_buffers (void)
+void compiler_announce (enum announcement ann)
 {
-  prog_obj = constants_obj = obj_NIL;
-  prog = NULL;
-  constants = NULL;
+  switch (ann)
+  {
+  case ann_startup:
+  case ann_clear_memory:
+  case ann_computation_aborted:
+    prog_obj = constants_obj = obj_NIL;
+
+  case ann_gc_starting:
+    prog = NULL;
+    constants = NULL;
+    want_obj (prog_obj);
+    want_obj (constants_obj);
+    break;
+
+  default:
+    break;
+  }
 }
 
 void compiler_init (void)
@@ -281,7 +296,6 @@ static void compile_pending_expression (obj expr)
   get_header (expr) -> u.closure_val.environment = obj_NIL;
 
   compiler_report ();
-  free_compile_buffers ();
 }
 
 

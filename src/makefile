@@ -1,4 +1,5 @@
 OBJECTS :=
+OBJECTS += announce.o
 OBJECTS += arrays.o
 OBJECTS += compiler.o
 OBJECTS += cons.o
@@ -22,7 +23,7 @@ GENERATED += rom-symbols.h
 BUILD_OPTIONS :=
 BUILD_OPTIONS += -DWITH_TRACE=1
 BUILD_OPTIONS += -DTARGET_ARDUINO=0
-BUILD_OPTIONS += -DWITH_MEMSTATS=0
+BUILD_OPTIONS += -DWITH_MEMSTATS=1
 BUILD_OPTIONS += -DPRINT_WITH_QUOTES=1
 
 OPTIMISER_FLAGS := -Os -flto
@@ -79,32 +80,33 @@ dep:
 
 
 ## AUTODEPS START ##
+announce.c:	announce.h dbg.h io.h
+announce.h:	target.h
 arrays.c:	arrays.h cons.h integer.h obj.h stack.h
 arrays.h:	target.h types.h
-compiler.c:	buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc-hooks.h io.h obj.h stack.h
+compiler.c:	announce.h buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc-hooks.h io.h obj.h stack.h
 compiler.h:	rom-symbols.h target.h types.h
 cons.c:	cons.h dbg.h io.h obj.h stack.h
 cons.h:	target.h types.h
-embedded.h:	target.h
-eval.c:	compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h
+eval.c:	announce.h compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h
 eval.h:	target.h types.h
 fexprs.c:	compiler.h cons.h eval.h fexprs.h integer.h obj.h stack.h
 fexprs.h:	target.h types.h
 gc-hooks.h:	target.h types.h
-gc.c:	dbg.h embedded.h eval.h gc-hooks.h gc.h io.h obj.h rom-symbols.h stack.h
+gc.c:	announce.h dbg.h eval.h gc-hooks.h gc.h io.h obj.h rom-symbols.h stack.h
 gc.h:	target.h
 hardware.h:	target.h types.h
 integer.c:	dbg.h integer.h io.h obj.h stack.h
 integer.h:	target.h types.h
-io.c:	buffer-limits.h cons.h dbg.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h
+io.c:	announce.h buffer-limits.h cons.h dbg.h gc-hooks.h integer.h io.h obj.h stack.h symbols.h
 io.h:	target.h types.h
-main.c:	compiler.h dbg.h embedded.h eval.h gc.h io.h obj.h stack.h
+main.c:	announce.h compiler.h dbg.h eval.h gc.h io.h obj.h stack.h
 misc.c:	integer.h misc.h obj.h stack.h
 misc.h:	target.h types.h
-obj.c:	arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h stack.h
+obj.c:	announce.h arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h fexprs.h gc-hooks.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h stack.h
 obj.h:	target.h types.h
 rom-symbols.h:	types.h
-stack.c:	buffer-limits.h dbg.h gc-hooks.h obj.h stack.h
+stack.c:	announce.h buffer-limits.h dbg.h gc-hooks.h io.h obj.h stack.h
 stack.h:	target.h types.h
 symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h
 symbols.h:	target.h types.h

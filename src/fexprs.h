@@ -22,4 +22,4 @@ void  compile_lambda_body    (obj body);
 
 END_EXTERN_C
 
-#endif /* QSL_FEXPRS_H */
+#endif // QSL_FEXPRS_H

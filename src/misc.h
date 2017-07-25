@@ -18,4 +18,4 @@ obj       fn_not_equals   (uint8_t *argc);
 
 END_EXTERN_C
 
-#endif /* QSL_MISC_H */
+#endif // QSL_MISC_H

@@ -16,4 +16,4 @@ obj   fn_code_char      (uint8_t *argc);
 
 END_EXTERN_C
 
-#endif /* QSL_ARRAYS_H */
+#endif // QSL_ARRAYS_H

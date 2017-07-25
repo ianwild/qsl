@@ -40,11 +40,10 @@ obj    fn_eval              (uint8_t *argc);
 obj    fn_apply             (uint8_t *argc);
 
 obj    interpret_top_level  (obj closure);
-void   mark_eval_state      (void);
 void   restore_eval_state   (void);
 
 extern obj current_environment;
 
 END_EXTERN_C
 
-#endif /* QSL_EVAL_H */
+#endif // QSL_EVAL_H

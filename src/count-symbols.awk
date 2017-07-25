@@ -27,5 +27,5 @@ END {
         printf ("#define LAST_ROM_OBJ    OBJECT_C (%d)\n\n", next_sym - 1);
     }
 
-    print "#endif /* QSL_ROM_SYMBOLS_H */";
+    print "#endif // QSL_ROM_SYMBOLS_H";
 }

@@ -1,8 +1,10 @@
 #include <string.h>
 
+#include "announce.h"
 #include "buffer-limits.h"
 #include "dbg.h"
-#include "gc-hooks.h"
+#include "gc.h"
+#include "io.h"
 #include "obj.h"
 #include "stack.h"
 
@@ -99,17 +101,31 @@ void adjust_argc (uint8_t *argc, uint8_t wanted)
   *argc = n;
 }
 
-void mark_stack (void)
-{
-  for (uint8_t n = depth; n < MAX_STACK_DEPTH; n += 1)
-    base [n] = obj_NIL;
-  want_obj (stack_obj);
-  base = NULL;
-}
-
 void stack_reinit (void)
 {
   if (! stack_obj)
     stack_obj = new_extended_object (array_type, MAX_STACK_DEPTH);
   base = get_header (stack_obj) -> u.array_val + 1;
+}
+
+void stack_announce (enum announcement ann)
+{
+  switch (ann)
+  {
+  case ann_gc_starting:
+    if (base)
+      for (uint8_t n = depth; n < MAX_STACK_DEPTH; n += 1)
+        base [n] = obj_NIL;
+    want_obj (stack_obj);
+    base = NULL;
+    break;
+
+  case ann_startup:
+  case ann_gc_finished:
+    stack_reinit ();
+    break;
+
+  default:
+    break;
+  }
 }

@@ -1,9 +1,10 @@
+#include "announce.h"
 #include "compiler.h"
 #include "cons.h"
 #include "dbg.h"
 #include "eval.h"
 #include "fexprs.h"
-#include "gc-hooks.h"
+#include "gc.h"
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
@@ -329,12 +330,29 @@ static obj interpret_bytecodes (void)
   }
 }
 
-void mark_eval_state (void)
+void eval_announce (enum announcement ann)
 {
-  want_obj (current_closure);
-  want_obj (current_environment);
-  interpreter_index = (uint16_t) (current_function - function_base);
+  switch (ann)
+  {
+  case ann_computation_aborted:
+    current_closure = current_environment = obj_NIL;
+    break;
+
+  case ann_gc_starting:
+    want_obj (current_closure);
+    want_obj (current_environment);
+    interpreter_index = (uint16_t) (current_function - function_base);
+    break;
+
+  case ann_gc_finished:
+    restore_eval_state ();
+    break;
+
+  default:
+    break;
+  }
 }
+
 
 void restore_eval_state (void)
 {

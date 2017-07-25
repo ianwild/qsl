@@ -1,7 +1,7 @@
+#include "announce.h"
 #include "dbg.h"
 #include "gc.h"
 #include "gc-hooks.h"
-#include "embedded.h"
 #include "eval.h"
 #include "io.h"
 #include "obj.h"
@@ -34,21 +34,12 @@ static void mark_roots (void)
          p -> u.closure_val.environment == obj_T))
       SET_FLAGS (p, gc_wanted);
   }
-  want_obj (working_root);
-  want_obj (current_environment);
-#if TARGET_ARDUINO
-  embed_mark_roots ();
-#endif
-  mark_stack ();
-  mark_eval_state ();
 }
 
 void do_gc (void)
 {
-  memstats (false);
   next_to_sweep = LAST_ROM_OBJ + 1;
-  free_io_buffers ();
-  free_compile_buffers ();
+  announce (ann_gc_starting);
   mark_roots ();
 
   while (next_to_sweep <= last_allocated_object)
@@ -93,7 +84,6 @@ void do_gc (void)
   }
 
   compact_string_space ();
-  stack_reinit ();
 
   obj high_water_mark = LAST_ROM_OBJ;
 
@@ -110,6 +100,5 @@ void do_gc (void)
   }
 
   last_allocated_object = high_water_mark;
-  restore_eval_state ();
-  memstats (true);
+  announce (ann_gc_finished);
 }

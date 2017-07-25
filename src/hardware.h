@@ -20,4 +20,4 @@
 #endif
 
 
-#endif /* QSL_HARDWARE_H */
+#endif // QSL_HARDWARE_H

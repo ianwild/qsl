@@ -75,4 +75,4 @@ uint8_t        get_longest_constants  (void);
 END_EXTERN_C
 
 
-#endif /* QSL_COMPILER_H */
+#endif // QSL_COMPILER_H

@@ -16,4 +16,4 @@ obj       fn_divide       (uint8_t *argc);
 
 END_EXTERN_C
 
-#endif /* QSL_INTEGER_H */
+#endif // QSL_INTEGER_H

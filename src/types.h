@@ -1,5 +1,5 @@
-#ifndef QSL_TYPE_H
-#define QSL_TYPE_H
+#ifndef QSL_TYPES_H
+#define QSL_TYPES_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -111,4 +111,4 @@ typedef struct __attribute__ ((packed)) objhdr
   } u;
 } objhdr;
 
-#endif /* QSL_TYPE_H */
+#endif // QSL_TYPES_H

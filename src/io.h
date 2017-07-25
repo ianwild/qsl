@@ -25,4 +25,4 @@ obj      fn_print         (uint8_t *argc);
 
 END_EXTERN_C
 
-#endif /* QSL_IO_H */
+#endif // QSL_IO_H

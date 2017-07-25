@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "announce.h"
 #include "arrays.h"
 #include "buffer-limits.h"
 #include "compiler.h"
@@ -8,7 +9,6 @@
 #include "eval.h"
 #include "fexprs.h"
 #include "gc.h"
-#include "gc-hooks.h"
 #include "hardware.h"
 #include "integer.h"
 #include "misc.h"
@@ -62,7 +62,7 @@ obj last_allocated_object = LAST_ROM_OBJ;
 #include "rom-symbols.ci"
 
 #if WITH_MEMSTATS
-void memstats (bool gc_done)
+static void memstats (bool gc_done)
 {
   uint8_t *ht = (uint8_t*) headers;
   uint8_t *hb = (uint8_t *) get_header (last_allocated_object);
@@ -78,7 +78,28 @@ void memstats (bool gc_done)
   else
     printc ('>');
 }
+#else
+#define memstats(b)
 #endif
+
+void obj_announce (enum announcement ann)
+{
+  switch (ann)
+  {
+  case ann_gc_starting:
+    memstats (false);
+    want_obj (working_root);
+    break;
+
+  case ann_gc_finished:
+    memstats (true);
+    break;
+
+  default:
+    break;
+  }
+}
+
 
 obj fn_gc (uint8_t *argc)
 {
@@ -100,9 +121,11 @@ obj fn_mem (uint8_t *argc)
   case obj_ZERO + 0:
     n = string_space_top - string_space;
     break;
+
   case obj_ZERO + 1:
     n = (uint8_t *) get_header (last_allocated_object) - string_space_top;
     break;
+
   case obj_ZERO + 2:
     n = last_allocated_object - LAST_ROM_OBJ;
     break;

@@ -35,4 +35,4 @@
 
 #endif // TARGET_ARDUINO
 
-#endif /* QSL_TARGET_H */
+#endif // QSL_TARGET_H
