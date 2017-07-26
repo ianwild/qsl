@@ -9,8 +9,21 @@
 #include "integer.h"
 #include "io.h"
 #include "obj.h"
+#include "serial_io.h"
 #include "stack.h"
 #include "symbols.h"
+
+
+#if WITH_RC_SCRIPT
+
+static const PROGMEM uint8_t rc_text [] =
+  "(setq nl (code-char 10))"
+  "";
+
+static const uint8_t *rc_script = rc_text;
+
+#endif
+
 
 static_assert (MAX_TOKEN_LENGTH > 8, "token buffer too small");
 
@@ -20,6 +33,7 @@ jmp_buf reset;
 
 static obj io_buffer;
 static uint8_t *spelling;
+static int16_t latch = -1;
 
 void io_announce (enum announcement ann)
 {
@@ -45,33 +59,76 @@ static void allocate_io_buffers (void)
   }
 }
 
-#if ! TARGET_ARDUINO
 uint8_t readc (void)
 {
+  if (latch >= 0)
+  {
+    uint8_t ch = latch;
+    latch = -1;
+    return (ch);
+  }
+
+#if WITH_RC_SCRIPT
+  if (rc_script)
+  {
+    uint8_t ch = pgm_read_byte_near (rc_script++);
+    if (ch)
+      return (ch);
+    rc_script = NULL;
+  }
+#endif
+
+#if TARGET_ARDUINO
+  return (serial_readc ());
+#else
   int ch = getchar ();
   if (ch == EOF)
     exit (0);
   return (ch);
+#endif
 }
 
 int peekc (void)
 {
-  int ch = getchar ();
-  ungetc (ch, stdin);
-  return (ch);
+  if (latch >= 0)
+    return (latch);
+
+#if WITH_RC_SCRIPT
+  if (rc_script)
+  {
+    uint8_t ch = pgm_read_byte_near (rc_script);
+    if (ch)
+      return (latch = ch);
+    rc_script = NULL;
+  }
+#endif
+
+#if TARGET_ARDUINO
+  return (latch = serial_peekc ());
+#else
+  return (latch = getchar ());
+#endif
 }
 
 void pushbackc (uint8_t ch)
 {
-  ungetc (ch, stdin);
+  latch = ch;
 }
 
 void printc (uint8_t ch)
 {
+#if WITH_RC_SCRIPT
+  if (rc_script)
+    return;
+#endif
+
+#if TARGET_ARDUINO
+  serial_printc (ch);
+#else
   putchar (ch);
+#endif
 }
 
-#endif
 
 void print_rom_string (const char *p)
 {
@@ -388,6 +445,10 @@ void print1 (obj o)
     printc ('>');
     break;
   }
+#if WITH_RC_SCRIPT
+  if (rc_script)
+    peekc ();
+#endif
 }
 
 obj fn_print (uint8_t *argc)

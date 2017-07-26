@@ -1,40 +1,25 @@
-#include "io.h"
+#include "serial_io.h"
 
-static int16_t latch = -1;
+bool slow_output;
 
-uint8_t readc (void)
+uint8_t serial_readc (void)
 {
-  if (latch >= 0)
-  {
-    int ch = latch;
-    latch = -1;
-    return (ch);
-  }
-
   while (! Serial.available ())
     ;
 
   return (Serial.read ());
 }
 
-int16_t peekc (void)
+int16_t serial_peekc (void)
 {
-  if (latch >= 0)
-    return (latch);
   if (Serial.available ())
-    return (latch = Serial.read ());
+    return (Serial.read ());
   return (-1);
 }
 
-void pushbackc (uint8_t ch)
-{
-  latch = ch;
-}
-
-void printc (uint8_t ch)
+void serial_printc (uint8_t ch)
 {
   Serial.write (ch);
   if (slow_output)
     delay (10);
 }
-

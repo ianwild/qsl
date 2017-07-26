@@ -11,6 +11,7 @@ EXTRA_FLAGS := -Os -flto
 
 DEFS := -DTARGET_ARDUINO=1
 DEFS += -DWITH_MEMSTATS=0
+DEFS += -DWITH_RC_SCRIPT=0
 
 CFLAGS   += $(DEFS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror

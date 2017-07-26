@@ -1,7 +1,6 @@
 #include "announce.h"
 #include "dbg.h"
 #include "gc.h"
-#include "gc-hooks.h"
 #include "eval.h"
 #include "io.h"
 #include "obj.h"
