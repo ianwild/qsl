@@ -6,13 +6,20 @@
 
     It helps if your processor can handle mis-aligned loads and
     stores.  It doesn't need to handle them _well_, just not kill the
-    program.
+    program.  (There's a `static_assert()` in `compiler.c` that
+    tries to check this for you.)
+    
+    I assume you've got tools installed to build an executable
+    for your computer (at least `gcc`, `make`, and `awk`), and
+    that you've installed and tested the Arduino IDE (for the
+    Arduino libraries, the `ttyUSB` permissions,  and the `avr-gcc`
+    tool-chain).
 
-1)  Make sure you've got `arduino-mk` installed, either by using your
+1)  You'll also need `arduino-mk` installed, either by using your
     OS's package manager or by grabbing a copy from Github.
 
-2)  Grab a copy of the sources - either the ZIP file or by cloning the
-    QSL repo.
+2)  Get a copy of the QSL sources - either download the ZIP file or
+    clone the repo.
 
 3)  To build the test version, go into the `src` directory and type
     `make`. If this works, type something like:
