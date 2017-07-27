@@ -59,6 +59,9 @@ obj last_allocated_object = LAST_ROM_OBJ;
 
 */
 
+obj working_root;
+
+
 #include "rom-symbols.ci"
 
 #if WITH_MEMSTATS
@@ -81,25 +84,6 @@ static void memstats (bool gc_done)
 #else
 #define memstats(b)
 #endif
-
-void obj_announce (enum announcement ann)
-{
-  switch (ann)
-  {
-  case ann_gc_starting:
-    memstats (false);
-    want_obj (working_root);
-    break;
-
-  case ann_gc_finished:
-    memstats (true);
-    break;
-
-  default:
-    break;
-  }
-}
-
 
 obj fn_gc (uint8_t *argc)
 {
@@ -342,4 +326,28 @@ void compact_string_space (void)
   }
 
   string_space_top = to;
+}
+
+void obj_announce (enum announcement ann)
+{
+  switch (ann)
+  {
+  case ann_computation_aborted:
+    working_root = obj_NIL;
+    for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+      RELEASE_OBJ (GET_HEADER (i));
+    break;
+
+  case ann_gc_starting:
+    memstats (false);
+    want_obj (working_root);
+    break;
+
+  case ann_gc_finished:
+    memstats (true);
+    break;
+
+  default:
+    break;
+  }
 }

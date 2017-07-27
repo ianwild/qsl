@@ -8,7 +8,6 @@
 #include "stack.h"
 
 static obj next_to_sweep;
-obj working_root;
 
 
 void want_obj (obj o)

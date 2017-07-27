@@ -120,6 +120,10 @@ void stack_announce (enum announcement ann)
     base = NULL;
     break;
 
+  case ann_computation_aborted:
+    depth = 0;
+    break;
+
   case ann_startup:
   case ann_gc_finished:
     stack_reinit ();
