@@ -20,18 +20,18 @@ Temporary buffers (for I/O, the call stack, working space for the
 compiler) are allocated in the same way as normal user objects, but
 are released when no longer needed.
 
-Built-in functions (`fn_`) take a single parameter, `uint8_t *argc`,
+Built-in functions (`fn_*`) take a single parameter, `uint8_t *argc`,
 which indicates how many arguments `interpret_bytecodes()` has pushed.
 This can be used as-is, or modified (up or down) with `adjust_argc()`
-to either lose excessive arguments or to pad with `NIL`s.  When the
+to either lose excessive arguments or to pad with `nil`s.  When the
 function returns, `interpret_bytecodes()` will remove the remaining
 arguments, and (if the call was in a value context) push the returned
 value.
 
-Since they live in the same table, built-in fexprs (`fe_`) must have
+Since they live in the same table, built-in fexprs (`fe_*`) must have
 the same signature.  However, in this case there is a _single_ `obj`
 pushed onto the stack, the `cdr` of the fexpr form.  Instead of a
-count of how many arguments are passed, instead the parameter pointer
+count of how many arguments are passed, the parameter pointer
 is either NULL or non-NULL, depending on whether the fexpr should
 compile for a void or a value context.
 
