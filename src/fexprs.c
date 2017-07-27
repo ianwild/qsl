@@ -41,7 +41,13 @@ obj fe_cond (uint8_t *for_value)
       obj clause;
       decons (expr_list, &clause, &expr_list);
       obj test;
-      decons (clause, &test, &clause);
+      if (get_type (clause) == cons_type)
+        decons (clause, &test, &clause);
+      else
+      {
+        test = clause;
+        clause = obj_NIL;
+      }
       if (expr_list == obj_NIL)
       {
         // last clause
