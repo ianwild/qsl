@@ -2,7 +2,10 @@
 
 A little while ago (2015-10-13, apparently) I wondered
 
-> Is there sufficient space and processing power on an Arduino Nano to run something that's recognisably an interactive Lisp environment?  And, if so, would the massive 2K of RAM be enough to do anything useful?  Or even enough to blink the LED on a timer?
+>   Is there sufficient space and processing power on an Arduino Nano
+>   to run something that's recognisably an interactive Lisp environment?
+>   And, if so, would the massive 2K of RAM be enough to do anything useful?
+>   Or even enough to blink the LED on a timer?
 
 Thus was born QSL - a Quite Small Lisp.
 
@@ -18,7 +21,8 @@ qsl> (+ 3 4)
 ```
 I'd've considered that something of a win).
 
-Getting that far turned out to be surprisingly easy, so I kept adding features until I could do this:
+Getting that far turned out to be surprisingly easy, so I kept adding
+features until I could do this:
 
 ```
 (let ((state t))
@@ -38,7 +42,9 @@ Getting that far turned out to be surprisingly easy, so I kept adding features u
   (wait-for-event)
   (apply (next-event)))
 ```
-to get the LED blinking at 1Hz, have the interpreter return to the prompt on a keystroke, _and_ with the processor spending most of its time in a `sleep` state.
+to get the LED blinking at 1Hz, have the interpreter return to the
+prompt on a keystroke, _and_ with the processor spending most of its
+time in a `sleep` state.
 
 ----------------------------------------------------------------------------
 
@@ -70,6 +76,8 @@ to something like:
 
 which can be evaluated with _no_ recursion.  Yes, we still need the
 original ping-pong to do this compilation, but only at the C level.
+**And**, once we've compiled an expression, we can abandon the original
+conses and re-use the memory to do the evaluation.  Win/win.
 
 So, does an Arduino Nano have enough ROM and RAM to implement a
 bytecode compiler and interpreter?  This took a bit long than three
