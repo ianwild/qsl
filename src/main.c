@@ -24,7 +24,7 @@ int main (void)
 
   for (;;)
   {
-    print_rom_string (PSTR ("\nqsl> "));
+    print_prompt ();
     do_gc ();
     obj x = internal_read ();
 
@@ -33,8 +33,7 @@ int main (void)
     x = interpret_top_level (x);
     dump_stack ();
 
-    print_rom_string (PSTR ("\n= "));
-    print1 (x);
+    print_result (x);
   }
   return (0);
 }

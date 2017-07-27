@@ -12,9 +12,10 @@ void     pushbackc        (uint8_t ch);
 void     printc           (uint8_t ch);
 void     print1           (obj o);
 obj      internal_read    (void);
-void     print_rom_string (const char *p);
 void     print_int        (int32_t n0);
 void     free_io_buffers  (void);
+void     print_prompt     (void);
+void     print_result     (obj o);
 
 obj      fn_peekchar      (uint8_t *argc);
 obj      fn_readchar      (uint8_t *argc);

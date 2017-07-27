@@ -9,14 +9,14 @@ MONITOR_PORT = /dev/ttyUSB0
 AR_NAME = avr-gcc-ar
 EXTRA_FLAGS := -Os -flto
 
-DEFS := -DTARGET_ARDUINO=1
-DEFS += -DWITH_MEMSTATS=0
-DEFS += -DWITH_RC_SCRIPT=0
+QSL_OPTIONS := -DTARGET_ARDUINO=1
+QSL_OPTIONS += -DWITH_MEMSTATS=0
+QSL_OPTIONS += -DWITH_RC_SCRIPT=0
 
-CFLAGS   += $(DEFS) -W -Wall -std=c11
+CFLAGS   += $(QSL_OPTIONS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror
 CFLAGS   += $(EXTRA_FLAGS)
-CXXFLAGS += $(DEFS) -W -Wall -std=gnu++11
+CXXFLAGS += $(QSL_OPTIONS) -W -Wall -std=gnu++11
 CXXFLAGS += $(EXTRA_FLAGS)
 LDFLAGS  += $(EXTRA_FLAGS)
 

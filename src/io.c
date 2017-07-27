@@ -117,11 +117,6 @@ void pushbackc (uint8_t ch)
 
 void printc (uint8_t ch)
 {
-#if WITH_RC_SCRIPT
-  if (rc_script)
-    return;
-#endif
-
 #if TARGET_ARDUINO
   serial_printc (ch);
 #else
@@ -130,12 +125,31 @@ void printc (uint8_t ch)
 }
 
 
-void print_rom_string (const char *p)
+static void print_rom_string (const char *p)
 {
   uint8_t ch;
 
   while ((ch = (uint8_t) pgm_read_byte_near (p++)) != 0)
     printc (ch);
+}
+
+void print_prompt (void)
+{
+#if WITH_RC_SCRIPT
+  if (rc_script && pgm_read_byte_near (rc_script))
+    return;
+#endif
+  print_rom_string (PSTR ("\nqsl> "));
+}
+
+void print_result (obj o)
+{
+#if WITH_RC_SCRIPT
+  if (rc_script)
+    return;
+#endif
+  print_rom_string (PSTR ("\n= "));
+  print1 (o);
 }
 
 void print_int (int32_t n0)
@@ -445,10 +459,6 @@ void print1 (obj o)
     printc ('>');
     break;
   }
-#if WITH_RC_SCRIPT
-  if (rc_script)
-    peekc ();
-#endif
 }
 
 obj fn_print (uint8_t *argc)

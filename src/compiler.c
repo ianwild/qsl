@@ -35,6 +35,24 @@ static_assert ((MAX_OPCODES_PER_LAMBDA > 2 * MAX_LITERALS_PER_LAMBDA) &&
 
 #if TARGET_ARDUINO
 static_assert (sizeof (objhdr) == 5, "objhdr should be five bytes");
+#else
+// Okay - this one's a bit of a trick.
+
+// An objhdr is a flag byte followed by one of:
+//    some uint16_t objects (so total size is odd); or
+//    a pointer (so total size is odd).
+
+// If sizeof(objhdr) is EVEN, then, the compiler has added padding,
+// which means it has decided to ignore the packed attribute, which
+// probably means it doesn't believe the processor can handle
+// misaligned uint16_t or pointer variables.
+
+// Even if it gets far enough to need it, the compact_string_space()
+// function is no respecter of alignment, so the first garbage
+// collection will cause mysterious failures.  Better to head them off
+// early.
+
+static_assert (sizeof (objhdr) & 1, "misaligned accesses might not work");
 #endif
 
 uint8_t get_longest_opcodes (void)
@@ -81,9 +99,7 @@ void compiler_init (void)
   const_length = 0;
 }
 
-#if TARGET_ARDUINO
-#define compiler_report()
-#else
+#if WITH_COMPILER_STATS
 void compiler_report (void)
 {
   printf ("Constants:\n");
@@ -99,6 +115,8 @@ void compiler_report (void)
     printf (" %02x", prog [i]);
   printf ("\n");
 }
+#else
+#define compiler_report()
 #endif
 
 forward_jump declare_forward_jump (void)

@@ -30,7 +30,7 @@
     create an `arduino` sub-directory, link all the source files, then
     do a build.  If that works, ...
 
-6)  To upload to the target hardware, type `make -C arduino upload`.
+6)  To upload to the target hardware, type `make upload`.
 
 7)  To test it, you can try `make -C arduino monitor`.  This "works",
     but since QSL doesn't echo what you type, it's a bit unpleasant.

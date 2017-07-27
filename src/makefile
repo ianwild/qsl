@@ -20,19 +20,20 @@ GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 
 
-BUILD_OPTIONS :=
-BUILD_OPTIONS += -DWITH_TRACE=1
-BUILD_OPTIONS += -DWITH_RC_SCRIPT=1
-BUILD_OPTIONS += -DTARGET_ARDUINO=0
-BUILD_OPTIONS += -DWITH_MEMSTATS=1
-BUILD_OPTIONS += -DPRINT_WITH_QUOTES=1
+QSL_OPTIONS :=
+QSL_OPTIONS += -DTARGET_ARDUINO=0
+QSL_OPTIONS += -DPRINT_WITH_QUOTES=1
+QSL_OPTIONS += -DWITH_COMPILER_STATS=1
+QSL_OPTIONS += -DWITH_MEMSTATS=1
+QSL_OPTIONS += -DWITH_RC_SCRIPT=1
+QSL_OPTIONS += -DWITH_TRACE=1
 
 OPTIMISER_FLAGS := -Os -flto
 WARNING_FLAGS := -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
-CFLAGS := --std=c11 $(OPTIMISER_FLAGS) $(WARNING_FLAGS) $(BUILD_OPTIONS)
+CFLAGS := --std=c11 $(OPTIMISER_FLAGS) $(WARNING_FLAGS) $(QSL_OPTIONS)
 LDFLAGS := $(OPTIMISER_FLAGS)
 
-.PHONY: clean tar dep tags
+.PHONY: clean tar dep tags upload
 
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
@@ -50,6 +51,9 @@ arduino: clean rom-symbols.ci rom-symbols.h
 	ln arduino.mak arduino/Makefile
 	mv arduino/main.c arduino/main.ino
 	make -C arduino
+
+upload:
+	make -C arduino upload
 
 clean:
 	rm -fr arduino
