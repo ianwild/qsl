@@ -77,6 +77,9 @@ void do_gc (void)
           want_obj (*q++);
         break;
       }
+
+      default:
+        break;
       }
     }
   }

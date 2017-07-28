@@ -60,7 +60,7 @@ typedef struct __attribute__ ((packed)) rom_object
 typedef struct __attribute__ ((packed)) objhdr
 {
   uint8_t control;
-#define GET_TYPE(p)      ((p) -> control & typecode_mask)
+#define GET_TYPE(p)      ((enum typecode) ((p) -> control & typecode_mask))
 #define GET_FLAGS(p)     ((p) -> control & flagbit_mask)
 #define SET_FLAGS(p,f)   ((p) -> control |= (f))
 #define CLR_FLAGS(p,f)   ((p) -> control &= ~(f))

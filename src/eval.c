@@ -56,6 +56,9 @@ static void call_lambda (obj fn, uint8_t argc)
   case closure_type:
     lambda = fn;
     break;
+
+  default:
+    break;
   }
 
   if (lambda)
@@ -420,7 +423,9 @@ obj fn_apply (uint8_t *argc)
   case closure_type:
     call_lambda (fn, n);
     return (obj_NIL);
+
+  default:
+    throw_error (no_fdefn);
+    return (obj_NIL);
   }
-  throw_error (no_fdefn);
-  return (obj_NIL);
 }

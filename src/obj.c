@@ -17,6 +17,7 @@
 #include "rom-symbols.h"
 #include "stack.h"
 
+static_assert (1, "");
 static const char PROGMEM this_file [] = __FILE__;
 
 static_assert (TOTAL_HEAP_SIZE >= 1024, "heap too small");
@@ -181,7 +182,7 @@ const uint8_t *get_rom_spelling (obj o, uint16_t *len)
 {
   if (o > LAST_ROM_OBJ)
     throw_error (bad_obj);
-  const uint8_t *p = (void *)pgm_read_word_near (&rom_symbols [o].name);
+  const uint8_t *p = (uint8_t *)pgm_read_word_near (&rom_symbols [o].name);
   *len = pgm_read_byte_near (p);
   return (p + 1);
 }
@@ -276,7 +277,7 @@ obj new_extended_object (enum typecode type, uint16_t size)
   return (working_root = res);
 }
 
-uint8_t get_type (obj o)
+enum typecode get_type (obj o)
 {
   if (o >= FIRST_SMALL_INT)
     return (int_type);
@@ -312,6 +313,8 @@ void compact_string_space (void)
       len = * (obj *) (from + sizeof (obj)) + 1;
       len *= sizeof (obj);
       back_ptr = p -> u.array_val;
+      break;
+    default:
       break;
     }
     len += sizeof (obj);

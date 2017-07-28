@@ -100,7 +100,7 @@ obj fe_while (uint8_t *for_value)
   compile_opcode (opJUMP_ALWAYS);
   to_test = insert_forward_jump (to_test);
   backward_jump loop_start = declare_backward_jump ();
-  compile_progn (body, false);
+  compile_progn (body, NULL);
   resolve_forward_jump (to_test);
   compile_expression (test, true);
   compile_opcode (opJUMP_UNLESS_NIL);

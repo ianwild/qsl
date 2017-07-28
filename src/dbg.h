@@ -10,7 +10,7 @@
   #define TRACE(x)
 #endif
 
-#if ! defined (static_assert)
+#if ! defined (static_assert) && ! __cplusplus
   #define static_assert _Static_assert
 #endif
 

@@ -37,7 +37,6 @@ static const uint8_t *rc_script = rc_text;
 
 static_assert (MAX_TOKEN_LENGTH > 8, "token buffer too small");
 
-bool slow_output;
 
 jmp_buf reset;
 

@@ -50,6 +50,7 @@ arduino: clean rom-symbols.ci rom-symbols.h
 	ln *.[ch]* arduino
 	ln arduino.mak arduino/Makefile
 	mv arduino/main.c arduino/main.ino
+	#for i in arduino/*.c; do mv $$i $${i%.c}.cpp; done
 	make -C arduino
 
 upload:
