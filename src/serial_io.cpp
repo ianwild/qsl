@@ -4,8 +4,6 @@
 START_EXTERN_C
 #endif
 
-bool slow_output;
-
 uint8_t serial_readc (void)
 {
   while (! Serial.available ())

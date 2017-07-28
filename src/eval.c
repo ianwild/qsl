@@ -175,7 +175,8 @@ static obj interpret_bytecodes (void)
       break;
 
     case opSETQ:
-      TRACE (("SETQ %04x %04x\n", get_const (*current_function), get_arg (0)));
+      TRACE (("SETQ %04x %04x\n",
+              get_const (*current_function), get_arg (0)));
       set_symbol_value (get_const (*current_function++), pop_arg ());
       break;
 
@@ -211,8 +212,9 @@ static obj interpret_bytecodes (void)
           listify = true;
           size = 1;
         }
-        obj new_env =
-          size ? new_extended_object (environment_type, 1 + 2 * size) : obj_NIL;
+        obj new_env = (size
+                       ? new_extended_object (environment_type, 1 + 2 * size)
+                       : obj_NIL);
         obj old_tos = pop_arg ();
         obj old_nos = pop_arg ();
         obj old_3rd = pop_arg ();
@@ -283,7 +285,8 @@ static obj interpret_bytecodes (void)
       break;
 
     case opCALL:
-      TRACE (("CALL %04x/%d\n", get_const (*current_function), current_function [1]));
+      TRACE (("CALL %04x/%d\n",
+              get_const (*current_function), current_function [1]));
       {
         obj fn = get_const (*current_function++);
         uint8_t argc = *current_function++;
@@ -308,7 +311,8 @@ static obj interpret_bytecodes (void)
     default:
       if (opcode <= LAST_ROM_OBJ)
       {
-        TRACE (("call builtin |%s| with %d args\n", symname (opcode), *current_function));
+        TRACE (("call builtin |%s| with %d args\n",
+                symname (opcode), *current_function));
         const rom_object *hdr = get_rom_header (opcode);
         built_in_fn fn = (built_in_fn) pgm_read_word_near (&hdr -> global_fn);
         if (! fn || pgm_read_byte_near (&hdr -> is_fexpr))
@@ -368,8 +372,10 @@ void restore_eval_state (void)
       throw_error (bad_type);
     current_lambda = p -> u.closure_val.lambda_obj;
     p = get_header (current_lambda);
-    function_base = get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
-    constants = get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
+    function_base =
+      get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
+    constants =
+      get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
     current_function = function_base + interpreter_index;
   }
 }

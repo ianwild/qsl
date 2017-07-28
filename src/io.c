@@ -38,6 +38,7 @@ static const uint8_t *rc_script = rc_text;
 
 static_assert (MAX_TOKEN_LENGTH > 8, "token buffer too small");
 
+bool slow_output;
 
 jmp_buf reset;
 
@@ -180,7 +181,11 @@ void print_int (int32_t n0)
     printc ('0' + *--p);
 }
 
+#if WITH_THROW_LOCATION
 void (throw_error) (enum errcode e, const char *file, int line)
+#else
+void (throw_error) (enum errcode e)
+#endif
 {
   const char *msg = PSTR ("weird");
   switch (e)
@@ -198,10 +203,12 @@ void (throw_error) (enum errcode e, const char *file, int line)
 #undef MSG
   }
   slow_output = true;
+  #if WITH_THROW_LOCATION
   print_rom_string (file);
   printc ('(');
   print_int (line);
   print_rom_string (PSTR ("): "));
+  #endif
   print_rom_string (msg);
   printc ('\n');
   slow_output = false;

@@ -26,9 +26,15 @@ obj                new_object           (enum typecode type, objhdr **hdr);
 obj                new_extended_object  (enum typecode type, uint16_t size);
 void               compact_string_space (void);
 
+#if WITH_THROW_LOCATION
 void               throw_error          (enum errcode e,
                                          const char *file, int line);
+
 #define throw_error(e) throw_error (e, this_file, __LINE__)
+#else
+void               throw_error          (enum errcode e);
+#endif
+
 
 extern obj last_allocated_object;
 extern obj working_root;
