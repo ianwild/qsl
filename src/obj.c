@@ -17,6 +17,8 @@
 #include "rom-symbols.h"
 #include "stack.h"
 
+START_EXTERN_C
+
 static_assert (1, "");
 static const char PROGMEM this_file [] = __FILE__;
 
@@ -354,3 +356,5 @@ void obj_announce (enum announcement ann)
     break;
   }
 }
+
+END_EXTERN_C

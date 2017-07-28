@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "target.h"
+
+START_EXTERN_C
+
 enum __attribute__ ((packed)) typecode
 {
   unallocated_type,
@@ -110,5 +114,7 @@ typedef struct __attribute__ ((packed)) objhdr
     obj  *array_val;
   } u;
 } objhdr;
+
+END_EXTERN_C
 
 #endif // QSL_TYPES_H

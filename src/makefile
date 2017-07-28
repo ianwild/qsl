@@ -116,4 +116,5 @@ stack.c:	announce.h buffer-limits.h dbg.h gc.h io.h obj.h stack.h
 stack.h:	target.h types.h
 symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h
 symbols.h:	target.h types.h
+types.h:	target.h
 ## AUTODEPS END ##

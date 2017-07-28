@@ -1,5 +1,9 @@
 #include "serial_io.h"
 
+#if WITH_NAMESPACE
+START_EXTERN_C
+#endif
+
 bool slow_output;
 
 uint8_t serial_readc (void)
@@ -23,3 +27,7 @@ void serial_printc (uint8_t ch)
   if (slow_output)
     delay (10);
 }
+
+#if WITH_NAMESPACE
+END_EXTERN_C
+#endif

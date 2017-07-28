@@ -12,6 +12,7 @@ EXTRA_FLAGS := -Os -flto
 QSL_OPTIONS := -DTARGET_ARDUINO=1
 QSL_OPTIONS += -DWITH_MEMSTATS=0
 QSL_OPTIONS += -DWITH_RC_SCRIPT=0
+QSL_OPTIONS += -DWITH_NAMESPACE=0
 
 CFLAGS   += $(QSL_OPTIONS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror

@@ -9,6 +9,10 @@
 #include "obj.h"
 #include "stack.h"
 
+#if WITH_NAMESPACE
+START_EXTERN_C
+#endif
+
 static uint32_t timeout;
 static int32_t last_time;
 
@@ -101,3 +105,7 @@ obj fn_next_event (uint8_t *argc)
 
   return (obj_NIL);
 }
+
+#if WITH_NAMESPACE
+END_EXTERN_C
+#endif

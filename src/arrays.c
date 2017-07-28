@@ -4,6 +4,8 @@
 #include "obj.h"
 #include "stack.h"
 
+START_EXTERN_C
+
 static const char PROGMEM this_file [] = __FILE__;
 
 static obj make_xxx (uint8_t *argc, enum typecode t)
@@ -170,3 +172,5 @@ obj fn_code_char (uint8_t *argc)
     throw_error (bad_idx);
   return (FIRST_CHAR + c);
 }
+
+END_EXTERN_C

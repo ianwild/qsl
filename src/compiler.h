@@ -5,6 +5,8 @@
 #include "target.h"
 #include "types.h"
 
+START_EXTERN_C
+
 #if TARGET_ARDUINO
 
 typedef uint16_t forward_jump;
@@ -52,8 +54,6 @@ enum __attribute__ ((packed)) opcodes
   opRETURN
 };
 
-
-START_EXTERN_C
 
 forward_jump   declare_forward_jump   (void);
 forward_jump   insert_forward_jump    (forward_jump jmp);

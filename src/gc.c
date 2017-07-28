@@ -7,6 +7,9 @@
 #include "rom-symbols.h"
 #include "stack.h"
 
+
+START_EXTERN_C
+
 static obj next_to_sweep;
 
 
@@ -103,3 +106,5 @@ void do_gc (void)
   last_allocated_object = high_water_mark;
   announce (ann_gc_finished);
 }
+
+END_EXTERN_C

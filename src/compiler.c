@@ -13,6 +13,8 @@
 #include "obj.h"
 #include "stack.h"
 
+START_EXTERN_C
+
 static obj prog_obj;
 static uint8_t *prog;
 static uint8_t prog_length;
@@ -353,3 +355,5 @@ obj compile_top_level (obj expr)
     RELEASE_OBJ (p);
   return (closure);
 }
+
+END_EXTERN_C

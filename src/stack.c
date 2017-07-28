@@ -8,6 +8,8 @@
 #include "obj.h"
 #include "stack.h"
 
+START_EXTERN_C
+
 static_assert (MAX_STACK_DEPTH > 8, "stack unreasonably small");
 
 static obj stack_obj;
@@ -133,3 +135,5 @@ void stack_announce (enum announcement ann)
     break;
   }
 }
+
+END_EXTERN_C

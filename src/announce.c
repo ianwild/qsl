@@ -4,6 +4,8 @@
 #include "dbg.h"
 #include "io.h"
 
+START_EXTERN_C
+
 void announce (enum announcement ann)
 {
   typedef void (*announcement_listener) (enum announcement ann);
@@ -36,3 +38,5 @@ void announce (enum announcement ann)
       a (ann);
     }
 }
+
+END_EXTERN_C

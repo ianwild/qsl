@@ -3,6 +3,8 @@
 #include "obj.h"
 #include "stack.h"
 
+START_EXTERN_C
+
 static const char PROGMEM this_file [] = __FILE__;
 
 obj fn_not (uint8_t *argc)
@@ -70,3 +72,4 @@ obj fn_not_equals (uint8_t *argc)
   return ((compare_two_args (argc) != 0) ? obj_T : obj_NIL);
 }
 
+END_EXTERN_C

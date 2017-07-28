@@ -9,8 +9,8 @@
 #include "obj.h"
 #include "stack.h"
 
-
-int main (void)
+START_EXTERN_C
+static void repl (void)
 {
   extern jmp_buf reset;
   announce (ann_startup);
@@ -35,5 +35,15 @@ int main (void)
 
     print_result (x);
   }
+}
+END_EXTERN_C
+
+#if __cplusplus && WITH_NAMESPACE
+  #define repl  QSL::repl
+#endif
+
+int main (void)
+{
+  repl ();
   return (0);
 }

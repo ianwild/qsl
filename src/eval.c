@@ -11,6 +11,8 @@
 #include "stack.h"
 #include "symbols.h"
 
+START_EXTERN_C
+
 static const char PROGMEM this_file [] = __FILE__;
 
 obj current_environment;
@@ -429,3 +431,5 @@ obj fn_apply (uint8_t *argc)
     return (obj_NIL);
   }
 }
+
+END_EXTERN_C

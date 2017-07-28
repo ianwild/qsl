@@ -4,6 +4,8 @@
 #include "target.h"
 #include "types.h"
 
+START_EXTERN_C
+
 #define obj_NIL               OBJECT_C (0)
 #define obj_T                 OBJECT_C (1)
 #define obj_QUOTE             OBJECT_C (2)
@@ -14,8 +16,6 @@
 #define obj_ZERO              OBJECT_C (0xC000)
 #define FIRST_CHAR            OBJECT_C (0x7F00)
 #define LAST_POSSIBLE_OBJECT  OBJECT_C (0x7EFF)
-
-START_EXTERN_C
 
 enum typecode      get_type             (obj o);
 objhdr            *get_header           (obj o);

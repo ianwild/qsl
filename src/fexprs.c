@@ -6,6 +6,8 @@
 #include "obj.h"
 #include "stack.h"
 
+START_EXTERN_C
+
 static const char PROGMEM this_file [] = __FILE__;
 
 static void compile_progn (obj expr_list, uint8_t *for_value)
@@ -340,3 +342,5 @@ obj fe_let_star (uint8_t *for_value)
 {
   return (let (true, for_value));
 }
+
+END_EXTERN_C
