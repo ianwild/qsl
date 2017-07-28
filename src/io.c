@@ -17,7 +17,17 @@
 #if WITH_RC_SCRIPT
 
 static const PROGMEM uint8_t rc_text [] =
+  // define a readable newline
   "(setq nl (code-char 10))"
+
+  #if ! TARGET_ARDUINO
+  // stub out the functions defined in hardware.cpp
+  "(defun pin () ())"
+  "(defun on-tick () ())"
+  "(defun on-serial () ())"
+  "(defun wait-for-event ())"
+  "(defun next-event ())"
+  #endif
   "";
 
 static const uint8_t *rc_script = rc_text;
