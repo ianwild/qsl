@@ -1,17 +1,15 @@
 #ifndef QSL_TARGET_H
 #define QSL_TARGET_H
 
-#if __cplusplus
-  #if WITH_NAMESPACE
-    #define START_EXTERN_C namespace QSL {
-    #define END_EXTERN_C   }
-  #else
-    #define START_EXTERN_C extern "C" {
-    #define END_EXTERN_C   }
-  #endif
-#else
+#if ! __cplusplus
   #define START_EXTERN_C
   #define END_EXTERN_C
+#elif WITH_NAMESPACE
+  #define START_EXTERN_C namespace QSL {
+  #define END_EXTERN_C   }
+#else
+  #define START_EXTERN_C extern "C" {
+  #define END_EXTERN_C   }
 #endif
 
 
