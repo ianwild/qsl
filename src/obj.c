@@ -22,7 +22,7 @@ START_EXTERN_C
 static_assert (1, "");
 static const char PROGMEM this_file [] = __FILE__;
 
-static_assert (TOTAL_HEAP_SIZE >= 1024, "heap too small");
+static_assert (TOTAL_HEAP_SIZE >= 768, "heap too small");
 
 static uint8_t string_space [TOTAL_HEAP_SIZE];
 static uint8_t *string_space_top = string_space;
