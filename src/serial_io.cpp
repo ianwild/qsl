@@ -4,6 +4,10 @@
 START_EXTERN_C
 #endif
 
+uint8_t serial_readc  (void) __attribute__ ((weak));
+int16_t serial_peekc  (void) __attribute__ ((weak));
+void    serial_printc (void) __attribute__ ((weak));
+
 uint8_t serial_readc (void)
 {
   while (! Serial.available ())

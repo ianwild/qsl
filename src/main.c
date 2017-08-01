@@ -10,7 +10,12 @@
 #include "stack.h"
 
 START_EXTERN_C
+
+#if REPL_IS_MAIN
+void repl (void)
+#else
 static void repl (void)
+#endif
 {
   extern jmp_buf reset;
   announce (ann_startup);
@@ -38,6 +43,7 @@ static void repl (void)
 }
 END_EXTERN_C
 
+#if ! REPL_IS_MAIN
 #if __cplusplus && WITH_NAMESPACE
   #define repl  QSL::repl
 #endif
@@ -47,3 +53,4 @@ int main (void)
   repl ();
   return (0);
 }
+#endif

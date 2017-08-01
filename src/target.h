@@ -1,6 +1,8 @@
 #ifndef QSL_TARGET_H
 #define QSL_TARGET_H
 
+#include "qsl-options.h"
+
 #if ! __cplusplus
   #define START_EXTERN_C
   #define END_EXTERN_C

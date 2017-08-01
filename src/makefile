@@ -18,7 +18,7 @@ GENERATED :=
 GENERATED += qsl
 GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
-
+GENERATED += qsl-options.h
 
 QSL_OPTIONS :=
 QSL_OPTIONS += -DTARGET_ARDUINO=0
@@ -46,6 +46,17 @@ rom-symbols.ci:	make-symbols.awk rom.src
 rom-symbols.h:	count-symbols.awk rom.src
 	awk -f count-symbols.awk <rom.src >$@
 
+qsl-options.h:
+	echo '// this file will be over-written' >$@
+
+lib:	clean rom-symbols.ci rom-symbols.h
+	mkdir -p QSL/src
+	cp *.[ch]* QSL/src
+	for i in QSL/src/*.c; do mv $$i $${i%.c}.cpp; done
+	awk -f extract-options.awk <arduino.mak >QSL/src/qsl-options.h
+	cp lib-etc/QSL.h QSL/src
+	cp lib-etc/library.properties QSL
+
 arduino: clean rom-symbols.ci rom-symbols.h
 	mkdir arduino
 	ln *.[ch]* arduino
@@ -58,8 +69,9 @@ upload:
 	make -C arduino upload
 
 clean:
-	rm -fr arduino
+	rm -fr arduino QSL
 	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s core
+	rm -f lib-etc/*~ lib-etc/*#
 	rm -f ../doc/*~ ../doc/*#
 
 tar:	clean
