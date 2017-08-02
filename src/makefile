@@ -57,7 +57,7 @@ lib:	clean rom-symbols.ci rom-symbols.h
 	cp lib-etc/QSL.h QSL/src
 	cp lib-etc/library.properties QSL
 
-arduino: clean rom-symbols.ci rom-symbols.h
+arduino: clean rom-symbols.ci rom-symbols.h qsl-options.h
 	mkdir arduino
 	ln *.[ch]* arduino
 	ln arduino.mak arduino/Makefile
