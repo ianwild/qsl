@@ -1,7 +1,7 @@
 # -*- makefile -*-
 ARDUINO_DIR = $(HOME)/Arduino/arduino-1.8.3
 ARDMK_DIR = $(HOME)/Arduino/Arduino-Makefile-master
-BOARDS_TXT = $(ARDUINO_DIR)/hardware/arduino/avr/boards.txt
+#BOARDS_TXT = $(ARDUINO_DIR)/hardware/arduino/avr/boards.txt
 
 #BOARD_TAG = uno
 #MONITOR_PORT = /dev/ttyACM0

@@ -62,7 +62,7 @@ arduino: clean rom-symbols.ci rom-symbols.h qsl-options.h
 	ln *.[ch]* arduino
 	ln arduino.mak arduino/Makefile
 	mv arduino/main.c arduino/main.ino
-	#for i in arduino/*.c; do mv $$i $${i%.c}.cpp; done
+	for i in arduino/*.c; do mv $$i $${i%.c}.cpp; done
 	make -C arduino
 
 upload:
@@ -129,5 +129,6 @@ stack.c:	announce.h buffer-limits.h dbg.h gc.h io.h obj.h stack.h
 stack.h:	target.h types.h
 symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h
 symbols.h:	target.h types.h
+target.h:	qsl-options.h
 types.h:	target.h
 ## AUTODEPS END ##
