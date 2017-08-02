@@ -340,7 +340,13 @@ void obj_announce (enum announcement ann)
   case ann_computation_aborted:
     working_root = obj_NIL;
     for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
-      RELEASE_OBJ (GET_HEADER (i));
+    {
+      objhdr *p = GET_HEADER (i);
+      if (GET_TYPE (p) == closure_type &&
+          p -> u.closure_val.environment == obj_T)
+        p -> u.closure_val.environment = obj_NIL;
+      RELEASE_OBJ (p);
+    }
     break;
 
   case ann_gc_starting:

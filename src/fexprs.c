@@ -124,10 +124,17 @@ obj fe_quote (uint8_t *for_value)
   return (obj_NIL);
 }
 
+static void variable_needed (obj s)
+{
+  if (s <= obj_T || get_type (s) != symbol_type)
+    throw_error (var_needed);
+}
+
 obj fe_setq (uint8_t *for_value)
 {
   obj sym, car, cdr;
   decons (get_arg (0), &sym, &cdr);
+  variable_needed (sym);
   decons (cdr, &car, &cdr);
   compile_expression (car, true);
   if (for_value)
@@ -150,6 +157,7 @@ void compile_lambda_body (obj body)
     {
       obj arg;
       decons (args, &arg, &args);
+      variable_needed (arg);
       compile_constant (arg);
     }
   }
@@ -157,6 +165,7 @@ void compile_lambda_body (obj body)
   {
     compile_opcode (opBIND_ARGLIST);
     compile_opcode (255);
+    variable_needed (args);
     compile_constant (args);
   }
   compile_progn (body, (uint8_t *) "y");
@@ -322,6 +331,7 @@ static obj let (bool star, uint8_t *for_value)
     else
       compile_opcode (opLOAD_NIL);
     compile_opcode (opINSERT_BINDING);
+    variable_needed (one_binding);
     compile_constant (one_binding);
   }
 

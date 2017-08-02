@@ -40,6 +40,7 @@ enum __attribute__ ((packed)) errcode
   bad_obj,
   bad_argc,
   bad_idx,
+  var_needed,
   div_by_zero,
   no_fdefn,
   no_mem,

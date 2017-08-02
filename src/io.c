@@ -51,6 +51,7 @@ void io_announce (enum announcement ann)
   switch (ann)
   {
   case ann_gc_starting:
+  case ann_computation_aborted:
     io_buffer = obj_NIL;
     spelling = NULL;
     break;
@@ -196,6 +197,7 @@ void (throw_error) (enum errcode e)
     MSG (bad_obj);
     MSG (bad_argc);
     MSG (bad_idx);
+    MSG (var_needed);
     MSG (div_by_zero);
     MSG (no_fdefn);
     MSG (no_mem);
