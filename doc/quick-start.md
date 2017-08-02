@@ -52,4 +52,5 @@
           (wait-for-event)
           (apply (next-event)))
 ````
-    Send `.` to stop.
+
+8)  Send `.` to stop.
