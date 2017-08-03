@@ -14,7 +14,7 @@ computer (at least `make` and `awk`), and that you've installed and
 tested the Arduino IDE (for the Arduino libraries, the `ttyUSB`
 permissions, and the `avr-gcc` tool-chain).
 
-Building QSL as an Arduino library
+Building QSL as an Arduino Library
 ----------------------------------
 
 Get a copy of the QSL sources - either download the ZIP file or clone
@@ -25,46 +25,46 @@ Go into the `src` directory and type `make lib`.
 With the IDE _not_ running, move the (newly created) QSL directory to
 your Arduino `libraries` directory.
 
-Testing the new library
+Testing the New Library
 -----------------------
 
 Start the IDE and create a new sketch containing:
 
-      #include <QSL.h>
+    #include <QSL.h>
 
-      void setup() {
-      }
+    void setup() {
+    }
 
-      void loop() {
-        QSL::repl ();
-      }
+    void loop() {
+      QSL::repl ();
+    }
 
 Upload the sketch to the Arduino.
 
 Open the Serial Monitor (`Ctrl-Shift-M`), enter `(+ 3 4)`, and click
 `Send`.
 
-Let's try Blink
+Let's Try Blink
 ---------------
 
 Copy and paste this into the Serial Monitor:
 
-      (let ((state t))
-        (defun blink ()
-          (pin 13 state)
-          (setq state (not state))))
+    (let ((state t))
+      (defun blink ()
+        (pin 13 state)
+        (setq state (not state))))
 
-      (on-tick 500 blink)
+    (on-tick 500 blink)
 
-      (on-serial
-       (lambda ()
-         (cond
-          ((>= (readchar) ? ) (setq running nil)))))
+    (on-serial
+     (lambda ()
+       (cond
+        ((>= (readchar) ? ) (setq running nil)))))
 
-      (setq running t)
-      (while running
-        (wait-for-event)
-        (apply (next-event)))
+    (setq running t)
+    (while running
+      (wait-for-event)
+      (apply (next-event)))
 
 and click `Send`.  The LED should start flashing.
 
