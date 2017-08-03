@@ -1,49 +1,91 @@
-# QSL Less Quick (but still fairly quick) Start
+QSL Less Quick (but still fairly quick) Start
+=============================================
 
-0)  I know this works with Linux, and shouldn't be too far away from
-    working with most other Unix-a-likes.  It might even work with
-    Windows, but I've got no real interest in that direction.
+Preliminaries
+-------------
 
-    It helps if your processor can handle mis-aligned loads and
-    stores.  It doesn't need to handle them _well_, just not kill the
-    program.  (There's a `static_assert()` in `compiler.c` that
-    tries to check this for you.)
-    
-    I assume you've got tools installed to build an executable
-    for your computer (at least `gcc`, `make`, and `awk`), and
-    that you've installed and tested the Arduino IDE (for the
-    Arduino libraries, the `ttyUSB` permissions,  and the `avr-gcc`
-    tool-chain).
+I know this works with Linux, and shouldn't be too far away from
+working with most other Unix-a-likes.  It might even work with
+Windows, especially if you've got Cygwin or MSYS installed, but I've
+got no real interest in that direction.
 
-1)  You'll also need `arduino-mk` installed, either by using your
-    OS's package manager or by grabbing a copy from Github.
+It helps if your processor can handle mis-aligned loads and stores.
+It doesn't need to handle them _well_, just not kill the program.
+(There's a `static_assert()` in `compiler.c` that tries to check this
+for you.)
 
-2)  Get a copy of the QSL sources - either download the ZIP file or
-    clone the repo.
+I assume you've got tools installed to build an executable for your
+computer (at least `gcc`, `make`, and `awk`), and that you've
+installed and tested the Arduino IDE (for the Arduino libraries, the
+`ttyUSB` permissions, and the `avr-gcc` tool-chain).
 
-3)  To build the test version, go into the `src` directory and type
-    `make`. If this works, type something like:
+Building and running the test version
+-------------------------------------
 
-        echo '(+ 3 4)' | ./qsl
+Get a copy of the QSL sources - either download the ZIP file or clone
+the repo.
 
-    and see if the results look reasonable.
+To build the test version, go into the `src` directory and type
+`make`. If this works, type something like:
 
-4)  Edit `arduino.mak` to make sure the `BOARD_TAG` and `MONITOR_PORT`
-    variables are correct, and that the last line points to your
-    `arduino-mk` installation.  (See your `arduino-mk` documentation
-    for `BOARD_TAG` and `MONITOR_PORT`.)
+      echo '(+ 3 4)' | ./qsl
 
-5)  To build the Arduino version, type `make arduino`.  This will
-    create an `arduino` sub-directory, link all the source files, then
-    do a build.  If that works, ...
+and see if the results look reasonable.
 
-6)  To upload to the target hardware, type `make upload`.
 
-7)  To test it, you can try `make -C arduino monitor`.  This "works",
-    but since QSL doesn't echo what you type, it's a bit unpleasant.
-    Instead, I prefer:
+Building the Arduino version
+----------------------------
 
-        picocom /dev/ttyUSB0 9600 --emap crcrlf -c --imap lfcrlf
+You'll also need `arduino-mk` installed, either by using your OS's
+package manager or by grabbing a copy from Github.
 
-    to get local echo and decent CRLF handling.  Either way, at the
-    `qsl>` prompt, try `(+ 3 4)` and see what happens.
+
+Edit `arduino.mak` to make sure the `BOARD_TAG`, `BOARD_SUB`, and
+`MONITOR_PORT` variables are correct, and that the last line points to
+your `arduino-mk` installation.  (See your `arduino-mk` documentation
+for `BOARD_TAG` and `MONITOR_PORT`.)
+
+To build the Arduino version, type `make arduino`.  This will create
+an `arduino` sub-directory, link all the source files, then do a
+build.  If that works, ...
+
+To upload to the target hardware, type `make upload`.
+
+
+Testing the Arduino version
+---------------------------
+
+To test it, you can try `make -C arduino monitor`.  This "works", but
+since QSL doesn't echo what you type, it's a bit unpleasant.  Instead,
+I prefer:
+
+      picocom /dev/ttyUSB0 9600 --emap crcrlf -c --imap lfcrlf
+
+to get local echo and decent CRLF handling.  Either way, at the `qsl>`
+prompt, try `(+ 3 4)` and see what happens.
+
+Let's try Blink
+---------------
+
+Copy and paste the following at the `qsl>` prompt:
+
+      (let ((state t))
+        (defun blink ()
+          (pin 13 state)
+          (setq state (not state))))
+
+      (on-tick 500 blink)
+
+      (on-serial
+       (lambda ()
+         (cond
+          ((>= (readchar) ? ) (setq running nil)))))
+
+      (setq running t)
+      (while running
+        (wait-for-event)
+        (apply (next-event)))
+
+and see if the LED flashes.
+
+Press `.` to stop.

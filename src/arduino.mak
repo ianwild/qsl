@@ -10,7 +10,7 @@ BOARD_TAG = nano
 BOARD_SUB = atmega328
 MONITOR_PORT = /dev/ttyUSB0
 
-AR_NAME = avr-gcc-ar
+#AR_NAME = avr-gcc-ar
 #EXTRA_FLAGS := -Os -flto
 
 QSL_OPTIONS := -DTARGET_ARDUINO=1
