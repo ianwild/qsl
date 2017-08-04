@@ -20,13 +20,13 @@ changes you'd need are:
 
 -   Rename your existing `loop()` to `old_loop()`.
 
--   Create a new function:
+-   Create a new `loop` function:
 
         void loop () {
           QSL::repl ();
         }
 
--   Replace _my_ `serial_readc()` with one that calls your old `loop`, but
+-   Create a `QSL::serial_readc()` that calls your old `loop`, but
     hands control to QSL when there's a character for it to work with:
 
         uint8_t QSL::serial_readc (void) {
