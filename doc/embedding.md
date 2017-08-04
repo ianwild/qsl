@@ -14,7 +14,7 @@ You probably have a `setup()` and a `loop()` function.  The minimal
 changes you'd need are:
 
 -   Install the QSL library, and add `#include <QSL.h>` at the top of
-    your sektch.
+    your sketch.
 
 -   Leave `setup()` untouched.
 
@@ -26,8 +26,8 @@ changes you'd need are:
           QSL::repl ();
         }
 
--   Create a `QSL::serial_readc()` that calls your old `loop`, but
-    hands control to QSL when there's a character for it to work with:
+-   Create a `QSL::serial_readc()` that calls your old `loop`, but hands
+    control to QSL when there's a character for it to work with:
 
         uint8_t QSL::serial_readc (void) {
           for (;;) {
