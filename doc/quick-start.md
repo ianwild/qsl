@@ -59,7 +59,7 @@ Copy and paste this into the Serial Monitor:
     (on-serial
      (lambda ()
        (cond
-        ((>= (readchar) ? ) (setq running nil)))))
+        ((> (readchar) ? ) (setq running nil)))))
 
     (setq running t)
     (while running

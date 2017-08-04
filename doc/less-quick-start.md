@@ -79,7 +79,7 @@ Copy and paste the following at the `qsl>` prompt:
     (on-serial
      (lambda ()
        (cond
-        ((>= (readchar) ? ) (setq running nil)))))
+        ((> (readchar) ? ) (setq running nil)))))
 
     (setq running t)
     (while running
