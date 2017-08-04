@@ -12,8 +12,9 @@
 
 `(quote e1)`
 
->   The `quote` special form returns its single argument,
-    unevaluated.
+>   The `quote` special form returns its single argument, unevaluated.
+    The QSL reader will convert input of the form `'X` to `(quote X)`
+    internally.
 
 `(car v1)`
 
@@ -70,36 +71,41 @@
 `(< v1 v2)`
 
 >   Return `t` if `v1` is less than `v2`, `nil` otherwise.  Note that
-    `v1` and `v2` can be both integers or both characters.
+    `v1` and `v2` must be of the same type: integer, character, or
+    string.
 
 `(<= v1 v2)`
 
 >   Return `t` if `v1` is less than or equal to `v2`, `nil` otherwise.
-    Note that `v1` and `v2` can be both integers or both characters.
+    Note that `v1` and `v2` must be of the same type: integer,
+    character, or string.
 
 `(> v1 v2)`
 
 >   Return `t` if `v1` is greater than `v2`, `nil` otherwise.  Note that
-    `v1` and `v2` can be both integers or both characters.
+    `v1` and `v2` must be of the same type: integer, character, or
+    string.
 
 
 `(>= v1 v2)`
 
 >   Return `t` if `v1` is greater than or equal to `v2`, `nil`
-    otherwise.  Note that `v1` and `v2` can be both integers or both
-    characters.
+    otherwise.  Note that `v1` and `v2` must be of the same type:
+    integer, character, or string.
 
 
 `(= v1 v2)`
 
 >   Return `t` if `v1` is equal to `v2`, `nil` otherwise.  Note that
-    `v1` and `v2` can be both integers or both characters.
+    `v1` and `v2` must be of the same type: integer, character, or
+    string.
 
 
 `(/= v1 v2)`
 
 >   Return `nil` if `v1` is equal to `v2`, `t` otherwise.  Note that
-    `v1` and `v2` can be both integers or both characters.
+    `v1` and `v2` must be of the same type: integer, character, or
+    string.
 
 
 `(progn e1 ...)`
@@ -226,13 +232,13 @@
 
 `(aref v1 v2)`
 
->   Returns the value of the element at position `v2` or the string or
+>   Returns the value of the element at position `v2` of the string or
     array `v1`.
 
 `(aset v1 v2 v3)`
 
->   Modified the string or array `v1` to have the value `v3` at
-    position `v2`.
+>   Modified the string or array `v1` to have the value `v3` at position
+    `v2`.
 
 `(char-code v1)`
 
