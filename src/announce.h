@@ -19,8 +19,8 @@ enum __attribute__ ((packed)) announcement
 void   announce                (enum announcement ann);
 
 void   compiler_announce       (enum announcement ann);
-void   embed_announce          (enum announcement ann);
 void   eval_announce           (enum announcement ann);
+void   hardware_announce       (enum announcement ann);
 void   io_announce             (enum announcement ann);
 void   obj_announce            (enum announcement ann);
 void   stack_announce          (enum announcement ann);

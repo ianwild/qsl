@@ -24,7 +24,7 @@ typedef struct
   int dest;
 } backward_jump;
 
-#endif /* TARGET_ARDUINO */
+#endif // TARGET_ARDUINO
 
 enum __attribute__ ((packed)) opcodes
 {

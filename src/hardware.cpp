@@ -20,7 +20,7 @@ static obj tick_action;
 static obj serial_action;
 
 
-void embed_announce (enum announcement ann)
+void hardware_announce (enum announcement ann)
 {
   switch (ann)
   {

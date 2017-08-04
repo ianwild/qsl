@@ -2,20 +2,21 @@
 #define QSL_SERIAL_IO_H
 
 #include "target.h"
-#include "types.h"
 
 #if TARGET_ARDUINO
 
-START_EXTERN_C
+  #include "types.h"
 
-extern bool slow_output;
+  START_EXTERN_C
 
-uint8_t    serial_readc     (void);
-int16_t    serial_peekc     (void);
-void       serial_printc    (uint8_t ch);
+  extern bool slow_output;
 
-END_EXTERN_C
+  uint8_t    serial_readc     (void);
+  int16_t    serial_peekc     (void);
+  void       serial_printc    (uint8_t ch);
 
-#endif
+  END_EXTERN_C
+
+#endif // TARGET_ARDUINO
 
 #endif // QSL_SERIAL_IO_H

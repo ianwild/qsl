@@ -17,7 +17,7 @@
 
   END_EXTERN_C
 
-#endif
+#endif // TARGET_ARDUINO
 
 
 #endif // QSL_HARDWARE_H

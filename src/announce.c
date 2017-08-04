@@ -12,7 +12,7 @@ void announce (enum announcement ann)
 
   static const PROGMEM announcement_listener listener [] = {
 #if TARGET_ARDUINO
-    embed_announce,
+    hardware_announce,
 #endif
     obj_announce,
     compiler_announce,
