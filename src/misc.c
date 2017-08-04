@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "misc.h"
 #include "integer.h"
 #include "obj.h"
@@ -34,6 +36,17 @@ static int32_t compare_two_args (uint8_t *argc)
   enum typecode t = get_type (left);
   if (t != get_type (right))
     throw_error (bad_type);
+  if (t == string_type)
+  {
+    uint16_t alen;
+    uint8_t *atxt = get_spelling (left, &alen);
+    uint16_t blen;
+    uint8_t *btxt = get_spelling (right, &blen);
+    int cmp = memcmp (atxt, btxt, (alen < blen) ? alen : blen);
+    if (cmp == 0)
+      cmp = (int16_t) alen - (int16_t) blen;
+    return (cmp);
+  }
   int32_t a =
     (t == char_type) ? (left - FIRST_CHAR) : get_int_val (left);
   int32_t b =
