@@ -22,20 +22,20 @@ changes you'd need are:
 
 -   Create a new function:
 
-      void loop () {
-        QSL::repl ();
-      }
+        void loop () {
+          QSL::repl ();
+        }
 
 -   Replace _my_ `serial_readc()` with one that calls your old `loop`, but
     hands control to QSL when there's a character for it to work with:
 
-      uint8_t QSL::serial_readc (void) {
-        for (;;) {
-          if (Serial.available ())
-            return (Serial.read ());
-          old_loop ();
+        uint8_t QSL::serial_readc (void) {
+          for (;;) {
+            if (Serial.available ())
+              return (Serial.read ());
+            old_loop ();
+          }
         }
-      }
 
 -   That's it.
 
