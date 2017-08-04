@@ -37,13 +37,15 @@ obj fn_length (uint8_t *argc)
   uint16_t len = 0;
   obj arg = get_arg (0);
 
+  if (arg == obj_NIL)
+    return (obj_ZERO);
+
   switch (get_type (arg))
   {
   case cons_type:
     len = internal_len (arg);
     break;
 
-  case symbol_type:
   case string_type:
     get_spelling (arg, &len);
     break;
@@ -51,10 +53,6 @@ obj fn_length (uint8_t *argc)
   case array_type:
   case environment_type:
     len = get_header (arg) -> u.array_val [0];
-    break;
-
-  case rom_symbol_type:
-    get_rom_spelling (arg, &len);
     break;
 
   default:
@@ -77,7 +75,6 @@ obj fn_aref (uint8_t *argc)
 
   switch (get_type (target))
   {
-  case symbol_type:
   case string_type:
   {
     uint16_t len;
@@ -94,15 +91,6 @@ obj fn_aref (uint8_t *argc)
     if (idx >= p [0])
       throw_error (bad_idx);
     return (p [idx + 1]);
-  }
-
-  case rom_symbol_type:
-  {
-    uint16_t len;
-    const uint8_t *p = get_rom_spelling (target, &len);
-    if (idx >= len)
-      throw_error (bad_idx);
-    return (FIRST_CHAR + pgm_read_byte_near (p + idx));
   }
 
   default:
