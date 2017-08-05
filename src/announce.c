@@ -2,7 +2,6 @@
 
 #include "announce.h"
 #include "dbg.h"
-#include "io.h"
 
 START_EXTERN_C
 

@@ -122,7 +122,7 @@ int peekc (void)
 #endif
 }
 
-void pushbackc (uint8_t ch)
+static void pushbackc (uint8_t ch)
 {
   latch = ch;
 }

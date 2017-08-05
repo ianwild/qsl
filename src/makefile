@@ -99,19 +99,19 @@ dep:
 
 
 ## AUTODEPS START ##
-announce.c:	announce.h dbg.h io.h
+announce.c:	announce.h dbg.h
 announce.h:	target.h
 arrays.c:	arrays.h cons.h integer.h obj.h stack.h
 arrays.h:	target.h types.h
 compiler.c:	announce.h buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc.h io.h obj.h stack.h
-compiler.h:	rom-symbols.h target.h types.h
-cons.c:	cons.h dbg.h io.h obj.h stack.h
+compiler.h:	obj.h rom-symbols.h target.h types.h
+cons.c:	cons.h dbg.h obj.h stack.h
 cons.h:	target.h types.h
-eval.c:	announce.h compiler.h cons.h dbg.h eval.h fexprs.h gc.h integer.h io.h obj.h stack.h symbols.h
+eval.c:	announce.h compiler.h cons.h dbg.h eval.h gc.h integer.h obj.h stack.h symbols.h
 eval.h:	target.h types.h
 fexprs.c:	compiler.h cons.h eval.h fexprs.h integer.h obj.h stack.h
 fexprs.h:	target.h types.h
-gc.c:	announce.h dbg.h eval.h gc.h io.h obj.h rom-symbols.h stack.h
+gc.c:	announce.h dbg.h gc.h obj.h rom-symbols.h stack.h
 gc.h:	target.h types.h
 hardware.h:	target.h types.h
 integer.c:	dbg.h integer.h io.h obj.h stack.h
@@ -125,7 +125,7 @@ obj.c:	announce.h arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h fexprs
 obj.h:	target.h types.h
 rom-symbols.h:	types.h
 serial_io.h:	target.h types.h
-stack.c:	announce.h buffer-limits.h dbg.h gc.h io.h obj.h stack.h
+stack.c:	announce.h buffer-limits.h dbg.h gc.h obj.h stack.h
 stack.h:	target.h types.h
 symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h
 symbols.h:	target.h types.h

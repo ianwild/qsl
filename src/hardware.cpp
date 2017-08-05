@@ -5,7 +5,6 @@
 #include "gc.h"
 #include "hardware.h"
 #include "integer.h"
-#include "io.h"
 #include "obj.h"
 #include "stack.h"
 

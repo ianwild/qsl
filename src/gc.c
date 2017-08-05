@@ -1,8 +1,6 @@
 #include "announce.h"
 #include "dbg.h"
 #include "gc.h"
-#include "eval.h"
-#include "io.h"
 #include "obj.h"
 #include "rom-symbols.h"
 #include "stack.h"

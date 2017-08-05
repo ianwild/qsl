@@ -3,10 +3,8 @@
 #include "cons.h"
 #include "dbg.h"
 #include "eval.h"
-#include "fexprs.h"
 #include "gc.h"
 #include "integer.h"
-#include "io.h"
 #include "obj.h"
 #include "stack.h"
 #include "symbols.h"
@@ -91,6 +89,21 @@ static obj interpret_bytecodes (void)
 //    printc ('{'); print_int (opcode); printc ('}');
     switch (opcode)
     {
+    case opLOAD_NIL:
+      TRACE (("LOAD_NIL\n"));
+      stack_push (obj_NIL);
+      break;
+
+    case opLOAD_T:
+      TRACE (("LOAD_T\n"));
+      stack_push (obj_T);
+      break;
+
+    case opLOAD_LITERAL:
+      TRACE (("LOAD_LITERAL %04x\n", get_const (*current_function)));
+      stack_push (get_const (*current_function++));
+      break;
+
     case opDROP:
       TRACE (("DROP\n"));
       stack_pop (1);
@@ -142,21 +155,6 @@ static obj interpret_bytecodes (void)
         current_function = function_base + *current_function;
       else
         current_function += 1;
-      break;
-
-    case opLOAD_LITERAL:
-      TRACE (("LOAD_LITERAL %04x\n", get_const (*current_function)));
-      stack_push (get_const (*current_function++));
-      break;
-
-    case opLOAD_NIL:
-      TRACE (("LOAD_NIL\n"));
-      stack_push (obj_NIL);
-      break;
-
-    case opLOAD_T:
-      TRACE (("LOAD_T\n"));
-      stack_push (obj_T);
       break;
 
     case opLOAD_ZERO:

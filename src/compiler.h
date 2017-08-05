@@ -1,6 +1,7 @@
 #ifndef QSL_COMPILER_H
 #define QSL_COMPILER_H
 
+#include "obj.h"
 #include "rom-symbols.h"
 #include "target.h"
 #include "types.h"
@@ -28,7 +29,11 @@ typedef struct
 
 enum __attribute__ ((packed)) opcodes
 {
-  opDROP = LAST_ROM_OBJ + 1,
+  opLOAD_NIL     = obj_NIL,
+  opLOAD_T       = obj_T,
+  opLOAD_LITERAL = obj_QUOTE,
+  opBIND_ARGLIST = obj_LAMBDA,
+  opDROP         = LAST_ROM_OBJ + 1,
   opSWAP,
   opDUP,
   opDUP_IF_NIL,
@@ -36,9 +41,6 @@ enum __attribute__ ((packed)) opcodes
   opJUMP_ALWAYS,
   opJUMP_IF_NIL,
   opJUMP_UNLESS_NIL,
-  opLOAD_LITERAL,
-  opLOAD_NIL,
-  opLOAD_T,
   opLOAD_ZERO,
   opLOAD_ONE,
   opLOAD_VAR,
@@ -46,7 +48,6 @@ enum __attribute__ ((packed)) opcodes
   opSET_FDEFN,
   opCREATE_CONTEXT_BLOCK,
   opINSERT_BINDING,
-  opBIND_ARGLIST,
   opPUSH_CONTEXT,
   opPOP_CONTEXT,
   opCREATE_CLOSURE,
@@ -65,9 +66,6 @@ obj            compile_top_level      (obj expr);
 void           compile_expression     (obj expr, bool value_context);
 void           compile_constant       (obj o);
 void           compile_opcode         (uint8_t);
-
-void           compiler_init          (void);
-void           compiler_report        (void);
 
 uint8_t        get_longest_opcodes    (void);
 uint8_t        get_longest_constants  (void);

@@ -6,11 +6,16 @@
 #    else        : use the name given
 # (Note: if the C name starts "fe_", it's actually a fexpr, not a function)
 
+# these must be the first five objects, and must be in
+# this order (they're known by ordinal in obj.h):
+
 nil             -
 t               -
 quote           fe
 lambda          fe
 apply           fn
+
+# the rest can be moved around freely
 
 car             fn
 cdr             fn

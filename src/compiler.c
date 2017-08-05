@@ -89,7 +89,7 @@ void compiler_announce (enum announcement ann)
   }
 }
 
-void compiler_init (void)
+static void compiler_init (void)
 {
   if (! prog_obj)
     prog_obj = new_extended_object (string_type, MAX_OPCODES_PER_LAMBDA);
@@ -102,7 +102,7 @@ void compiler_init (void)
 }
 
 #if WITH_COMPILER_STATS
-void compiler_report (void)
+static void compiler_report (void)
 {
   printf ("Constants:\n");
   for (unsigned i = 0; i < const_length; i += 1)

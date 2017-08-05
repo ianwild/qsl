@@ -4,7 +4,6 @@
 #include "buffer-limits.h"
 #include "dbg.h"
 #include "gc.h"
-#include "io.h"
 #include "obj.h"
 #include "stack.h"
 

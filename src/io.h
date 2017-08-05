@@ -8,12 +8,10 @@ START_EXTERN_C
 
 int      peekc            (void);
 uint8_t  readc            (void);
-void     pushbackc        (uint8_t ch);
 void     printc           (uint8_t ch);
 void     print1           (obj o);
 obj      internal_read    (void);
 void     print_int        (int32_t n0);
-void     free_io_buffers  (void);
 void     print_prompt     (void);
 void     print_result     (obj o);
 

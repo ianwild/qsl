@@ -1,6 +1,5 @@
 #include "cons.h"
 #include "dbg.h"
-#include "io.h"
 #include "obj.h"
 #include "stack.h"
 
