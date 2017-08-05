@@ -38,6 +38,23 @@ static obj current_closure;
 static obj current_lambda;
 
 
+static void restore_eval_state (void)
+{
+  if (current_closure)
+  {
+    objhdr *p = get_header (current_closure);
+    if (GET_TYPE (p) != closure_type)
+      throw_error (bad_type);
+    current_lambda = p -> u.closure_val.lambda_obj;
+    p = get_header (current_lambda);
+    function_base =
+      get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
+    constants =
+      get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
+    current_function = function_base + interpreter_index;
+  }
+}
+
 static obj get_const (uint8_t idx)
 {
   return (constants [idx]);
@@ -360,23 +377,6 @@ void eval_announce (enum announcement ann)
   }
 }
 
-
-void restore_eval_state (void)
-{
-  if (current_closure)
-  {
-    objhdr *p = get_header (current_closure);
-    if (GET_TYPE (p) != closure_type)
-      throw_error (bad_type);
-    current_lambda = p -> u.closure_val.lambda_obj;
-    p = get_header (current_lambda);
-    function_base =
-      get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
-    constants =
-      get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
-    current_function = function_base + interpreter_index;
-  }
-}
 
 obj interpret_top_level (obj closure)
 {

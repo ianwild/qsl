@@ -26,7 +26,6 @@ START_EXTERN_C
 obj    fn_apply             (uint8_t *argc);
 
 obj    interpret_top_level  (obj closure);
-void   restore_eval_state   (void);
 
 extern obj current_environment;
 
