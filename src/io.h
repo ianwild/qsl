@@ -6,8 +6,6 @@
 
 START_EXTERN_C
 
-int      peekc            (void);
-uint8_t  readc            (void);
 void     printc           (uint8_t ch);
 void     print1           (obj o);
 obj      internal_read    (void);

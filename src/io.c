@@ -71,7 +71,7 @@ static void allocate_io_buffers (void)
   }
 }
 
-uint8_t readc (void)
+static uint8_t readc (void)
 {
   if (latch >= 0)
   {
@@ -100,7 +100,7 @@ uint8_t readc (void)
 #endif
 }
 
-int peekc (void)
+static int peekc (void)
 {
   if (latch >= 0)
     return (latch);
