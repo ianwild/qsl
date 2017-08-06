@@ -38,19 +38,32 @@ static uint8_t longest_const;
   of opcodes and constants, and, in effect, the whole compiler state.
   I _really_ don't want to recurse to that degree.
 
-  Instead, an inner "compiled lambda" is only a skeleton - it needs to
-  be combined with an environment before it becomes runnable.  So, we
-  create a sort of "bookmark", a "compiled lambda" object whose "body"
-  field is the (nested) list to be compiled and whose "environment"
-  field is a marker (`obj_T`, in fact) saying "not yet compiled".
-  Once the outer clause has been compiled, `compile_top_level()` loops
-  through memory, looking for these bookmarks and feeding them to
-  `compile_pending_expression()`.
+  A "compiled lambda" is only a skeleton: it needs to be combined at
+  run time with an environment before it becomes usable, which is what
+  `opCREATE_CLOSURE` does.  That means a closure's `environment`
+  pointer is up for grabs until the _outer_ lambda gets executed...
+
+  _Warning: Trickery Alert_
+
+  We create a sort of "bookmark", a "compiled lambda" object whose
+  "body" field is the (nested) _list to be compiled_ and whose
+  "environment" field is a marker (`obj_T`, in fact) saying "not yet
+  compiled".  Once the outer clause has been compiled,
+  `compile_top_level()` loops through memory, looking for these
+  bookmarks and feeding them to `compile_pending_expression()`.  This
+  may, in turn, generate more bookmarks, which will themselves be
+  caught at a later iteration.
 
   (In fact, the looping starts a little earlier than you might expect.
   The original expression given to `compile_top_level()` is wrapped in
   one of these bookmarks, and immediately becomes eligible for
   processing by `compile_pending_expression()`.)
+
+  Of course the garbage collector needs a special case to understand
+  that an environment of `obj_T` means "will _soon_ be in use", which
+  means throwing an exception in the compiler needs to "un-special
+  case" things (in `obj.c`'s announcement handler) or you'll get an
+  infinite loop.
 */
 
 
