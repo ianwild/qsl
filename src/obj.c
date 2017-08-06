@@ -50,15 +50,9 @@ obj last_allocated_object = LAST_ROM_OBJ;
   relatives) also have a "body" in the low-memory section, which grows
   upwards.  Free memory is the gap between the two.
 
-  The garbage collector can compact the string_space area, but doesn't
-  move the `headers` contents, except that unused elements might get
-  disappeared.
-
-  The free memory area can be used as temporary storage by the `read`
-  and `compile` primitives.  Alternatively, adding a `resize_object()`
-  function would allow these temporary storage areas to live in the
-  `string_space`.  (I think this might be how the stack gets
-  implemented.)
+  The garbage collector can compact the `string_space` area, but
+  doesn't move the `headers` contents, except that unused elements
+  might get disappeared.
 
 */
 

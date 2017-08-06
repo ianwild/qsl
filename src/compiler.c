@@ -25,6 +25,35 @@ static obj *constants;
 static uint8_t const_length;
 static uint8_t longest_const;
 
+/*
+  The `compile_top_level()` function takes an expression and generates
+  two vectors, one a `string_type` of byte-codes, the other an
+  `array_type` of objects referenced by the byte-codes.  This split
+  allows the garbage collector to mark the dependent objects
+  efficiently without needing to parse the opcodes.  Usually, this can
+  be done with only a small amount of recursion, but...
+
+  Problem: what happens to any nested (lambda ...) or (defun ...)
+  expressions during compilation?  These will need their own vectors
+  of opcodes and constants, and, in effect, the whole compiler state.
+  I _really_ don't want to recurse to that degree.
+
+  Instead, an inner "compiled lambda" is only a skeleton - it needs to
+  be combined with an environment before it becomes runnable.  So, we
+  create a sort of "bookmark", a "compiled lambda" object whose "body"
+  field is the (nested) list to be compiled and whose "environment"
+  field is a marker (`obj_T`, in fact) saying "not yet compiled".
+  Once the outer clause has been compiled, `compile_top_level()` loops
+  through memory, looking for these bookmarks and feeding them to
+  `compile_pending_expression()`.
+
+  (In fact, the looping starts a little earlier than you might expect.
+  The original expression given to `compile_top_level()` is wrapped in
+  one of these bookmarks, and immediately becomes eligible for
+  processing by `compile_pending_expression()`.)
+*/
+
+
 static_assert (sizeof (enum opcodes) == 1,
                "opcodes too big for a byte");
 static_assert (last_type_code <= typecode_mask,
@@ -36,25 +65,30 @@ static_assert ((MAX_OPCODES_PER_LAMBDA > 2 * MAX_LITERALS_PER_LAMBDA) &&
                "literal limit not realistic");
 
 #if TARGET_ARDUINO
+
 static_assert (sizeof (objhdr) == 5, "objhdr should be five bytes");
+
 #else
-// Okay - this one's a bit of a trick.
-
-// An objhdr is a flag byte followed by one of:
-//    some uint16_t objects (so total size is odd); or
-//    a pointer (so total size is odd).
-
-// If sizeof(objhdr) is EVEN, then, the compiler has added padding,
-// which means it has decided to ignore the packed attribute, which
-// probably means it doesn't believe the processor can handle
-// misaligned uint16_t or pointer variables.
-
-// Even if it gets far enough to need it, the compact_string_space()
-// function is no respecter of alignment, so the first garbage
-// collection will cause mysterious failures.  Better to head them off
-// early.
 
 static_assert (sizeof (objhdr) & 1, "misaligned accesses might not work");
+/*
+  Okay - that one's a bit of a trick.
+
+  An objhdr is a flag byte followed by one of:
+     some uint16_t objects (so total size is odd); or
+     a pointer (so total size is odd).
+
+  If sizeof(objhdr) is EVEN, then, the compiler has added padding,
+  which means it has decided to ignore the packed attribute, which
+  probably means it doesn't believe the processor can handle
+  misaligned uint16_t or pointer variables.
+
+  Even if it gets far enough to need it, the compact_string_space()
+  function is no respecter of alignment, so the first garbage
+  collection will cause mysterious failures.  Better to head them off
+  early.
+
+*/
 #endif
 
 uint8_t get_longest_opcodes (void)
