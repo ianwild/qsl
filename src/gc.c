@@ -6,7 +6,7 @@
 #include "stack.h"
 
 
-START_EXTERN_C
+START_IMPLEMENTATION
 
 static obj next_to_sweep;
 
@@ -105,4 +105,4 @@ void do_gc (void)
   announce (ann_gc_finished);
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

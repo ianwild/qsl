@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 obj   fn_make_string    (uint8_t *argc);
 obj   fn_make_array     (uint8_t *argc);
@@ -14,6 +14,6 @@ obj   fn_aset           (uint8_t *argc);
 obj   fn_char_code      (uint8_t *argc);
 obj   fn_code_char      (uint8_t *argc);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_ARRAYS_H

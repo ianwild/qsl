@@ -4,11 +4,11 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 void     do_gc          (void);
 void     want_obj       (obj x);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_GC_H

@@ -3,7 +3,7 @@
 #include "announce.h"
 #include "dbg.h"
 
-START_EXTERN_C
+START_IMPLEMENTATION
 
 void announce (enum announcement ann)
 {
@@ -38,4 +38,4 @@ void announce (enum announcement ann)
     }
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

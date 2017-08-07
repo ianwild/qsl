@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 obj    fn_apply             (uint8_t *argc);
 
@@ -12,6 +12,6 @@ obj    interpret_top_level  (obj closure);
 
 extern obj current_environment;
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_EVAL_H

@@ -3,9 +3,7 @@
 #include "obj.h"
 #include "stack.h"
 
-START_EXTERN_C
-
-static const char PROGMEM this_file [] = __FILE__;
+START_IMPLEMENTATION
 
 static objhdr *get_cons_header (obj o)
 {
@@ -105,4 +103,4 @@ obj fn_rplacd (uint8_t *argc)
   return (p -> u.cons_val.cdr_cell = get_arg (0));
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

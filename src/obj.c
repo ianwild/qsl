@@ -17,10 +17,7 @@
 #include "rom-symbols.h"
 #include "stack.h"
 
-START_EXTERN_C
-
-static_assert (1, "");
-static const char PROGMEM this_file [] = __FILE__;
+START_IMPLEMENTATION
 
 static_assert (TOTAL_HEAP_SIZE >= 768, "heap too small");
 
@@ -366,4 +363,4 @@ void obj_announce (enum announcement ann)
   }
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

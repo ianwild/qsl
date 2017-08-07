@@ -4,10 +4,10 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
-uint8_t    get_stack_depth       (void);
-uint8_t    get_stack_deepest     (void);
+uint16_t   get_stack_depth       (void);
+uint16_t   get_stack_deepest     (void);
 void       stack_push            (obj o);
 void       stack_pop             (uint8_t n);
 obj        get_arg               (uint8_t idx);
@@ -26,6 +26,6 @@ void       dump_stack            (void);
 #define dump_stack()
 #endif
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_STACK_H

@@ -4,16 +4,21 @@
 #include "qsl-options.h"
 
 #if ! __cplusplus
-  #define START_EXTERN_C
-  #define END_EXTERN_C
+  #define START_HEADER_FILE
+  #define END_HEADER_FILE
 #elif WITH_NAMESPACE
-  #define START_EXTERN_C namespace QSL {
-  #define END_EXTERN_C   }
+  #define START_HEADER_FILE namespace QSL {
+  #define END_HEADER_FILE   }
 #else
-  #define START_EXTERN_C extern "C" {
-  #define END_EXTERN_C   }
+  #define START_HEADER_FILE extern "C" {
+  #define END_HEADER_FILE   }
 #endif
 
+#define START_IMPLEMENTATION \
+  START_HEADER_FILE \
+  static const char PROGMEM this_file [] = __FILE__;
+
+#define END_IMPLEMENTATION END_HEADER_FILE
 
 #if TARGET_ARDUINO
 

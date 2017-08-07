@@ -3,7 +3,7 @@
 
 #include "target.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 enum __attribute__ ((packed)) announcement
 {
@@ -25,7 +25,7 @@ void   io_announce             (enum announcement ann);
 void   obj_announce            (enum announcement ann);
 void   stack_announce          (enum announcement ann);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 
 #endif // QSL_ANNOUNCE_H

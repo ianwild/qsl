@@ -7,7 +7,7 @@
 
   #include "types.h"
 
-  START_EXTERN_C
+  START_HEADER_FILE
 
   extern bool slow_output;
 
@@ -15,7 +15,7 @@
   int16_t    serial_peekc     (void);
   void       serial_printc    (uint8_t ch);
 
-  END_EXTERN_C
+  END_HEADER_FILE
 
 #endif // TARGET_ARDUINO
 

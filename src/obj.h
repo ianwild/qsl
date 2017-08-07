@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 #define obj_NIL               OBJECT_C (0)
 #define obj_T                 OBJECT_C (1)
@@ -42,6 +42,6 @@ extern obj working_root;
 obj       fn_gc           (uint8_t *argc);
 obj       fn_mem          (uint8_t *argc);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_OBJ_H

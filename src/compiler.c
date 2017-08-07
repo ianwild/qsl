@@ -13,7 +13,7 @@
 #include "obj.h"
 #include "stack.h"
 
-START_EXTERN_C
+START_IMPLEMENTATION
 
 static obj prog_obj;
 static uint8_t *prog;
@@ -183,10 +183,10 @@ forward_jump insert_forward_jump (forward_jump jmp)
 {
   uint8_t here = prog_length;
 #if TARGET_ARDUINO
-  prog [prog_length++] = jmp;
+  compile_opcode (jmp);
   return (here);
 #else
-  prog [prog_length++] = jmp.link;
+  compile_opcode (jmp.link);
   jmp.link = here;
   return (jmp);
 #endif
@@ -223,9 +223,9 @@ backward_jump declare_backward_jump (void)
 void insert_backward_jump (backward_jump jmp)
 {
 #if TARGET_ARDUINO
-  prog [prog_length++] = jmp;
+  compile_opcode (jmp);
 #else
-  prog [prog_length++] = jmp.dest;
+  compile_opcode (jmp.dest);
 #endif
 }
 
@@ -317,21 +317,21 @@ void compile_constant (obj o)
   for (uint8_t i = 0; i < const_length; i += 1)
     if (constants [i] == o)
     {
-      prog [prog_length++] = i;
+      compile_opcode (i);
       return;
     }
 
-  prog [prog_length++] = const_length;
+  if (const_length == MAX_LITERALS_PER_LAMBDA)
+    throw_error (no_mem);
+  compile_opcode (const_length);
   constants [const_length++] = o;
-  if (const_length > longest_const)
-    longest_const = const_length;
 }
 
 void compile_opcode (uint8_t op)
 {
+  if (prog_length == MAX_OPCODES_PER_LAMBDA)
+    throw_error (no_mem);
   prog [prog_length++] = op;
-  if (prog_length > longest_prog)
-    longest_prog = prog_length;
 }
 
 static void compile_pending_expression (obj expr)
@@ -352,6 +352,10 @@ static void compile_pending_expression (obj expr)
     break;
   }
   compile_opcode (opRETURN);
+  if (prog_length > longest_prog)
+    longest_prog = prog_length;
+  if (const_length > longest_const)
+    longest_const = const_length;
   obj c_vec = new_extended_object (array_type, const_length);
   memcpy (get_header (c_vec) -> u.array_val + 1,
           constants, const_length * sizeof (obj));
@@ -403,4 +407,4 @@ obj compile_top_level (obj expr)
   return (closure);
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

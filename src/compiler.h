@@ -6,7 +6,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 #if TARGET_ARDUINO
 
@@ -70,7 +70,7 @@ void           compile_opcode         (uint8_t);
 uint8_t        get_longest_opcodes    (void);
 uint8_t        get_longest_constants  (void);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 
 #endif // QSL_COMPILER_H

@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 void     printc           (uint8_t ch);
 void     print1           (obj o);
@@ -18,6 +18,6 @@ obj      fn_readchar      (uint8_t *argc);
 obj      fn_read          (uint8_t *argc);
 obj      fn_print         (uint8_t *argc);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_IO_H

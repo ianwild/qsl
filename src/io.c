@@ -13,7 +13,7 @@
 #include "stack.h"
 #include "symbols.h"
 
-START_EXTERN_C
+START_IMPLEMENTATION
 
 #if WITH_RC_SCRIPT
 
@@ -504,4 +504,4 @@ obj fn_peekchar (uint8_t *argc)
     return (obj_NIL);
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

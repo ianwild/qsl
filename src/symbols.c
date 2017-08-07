@@ -6,9 +6,7 @@
 #include "rom-symbols.h"
 #include "symbols.h"
 
-START_EXTERN_C
-
-static const char PROGMEM this_file [] = __FILE__;
+START_IMPLEMENTATION
 
 obj find_symbol (uint8_t *spelling, uint16_t len)
 {
@@ -130,4 +128,4 @@ obj set_symbol_value (obj sym, obj val)
   return (val);
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

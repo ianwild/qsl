@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 obj   fe_progn         (uint8_t *argc);
 obj   fe_cond          (uint8_t *argc);
@@ -20,6 +20,6 @@ obj   fe_let_star      (uint8_t *argc);
 
 void  compile_lambda_body    (obj body);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_FEXPRS_H

@@ -7,7 +7,7 @@
 
   #include "types.h"
 
-  START_EXTERN_C
+  START_HEADER_FILE
 
   obj  fn_pin               (uint8_t *argc);
   obj  fn_on_tick           (uint8_t *argc);
@@ -15,7 +15,7 @@
   obj  fn_wait_for_event    (uint8_t *argc);
   obj  fn_next_event        (uint8_t *argc);
 
-  END_EXTERN_C
+  END_HEADER_FILE
 
 #endif // TARGET_ARDUINO
 

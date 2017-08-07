@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 obj  fn_car      (uint8_t *argc);
 obj  fn_cdr      (uint8_t *argc);
@@ -17,6 +17,6 @@ obj      cons           (obj car, obj cdr);
 void     decons         (obj cons, obj *car, obj *cdr);
 uint16_t internal_len   (obj o);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_CONS_H

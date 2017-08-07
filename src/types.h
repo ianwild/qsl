@@ -6,7 +6,7 @@
 
 #include "target.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 enum __attribute__ ((packed)) typecode
 {
@@ -116,6 +116,6 @@ typedef struct __attribute__ ((packed)) objhdr
   } u;
 } objhdr;
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_TYPES_H

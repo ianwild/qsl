@@ -4,7 +4,7 @@
 #include "target.h"
 #include "types.h"
 
-START_EXTERN_C
+START_HEADER_FILE
 
 obj       fn_not          (uint8_t *argc);
 obj       fn_eq           (uint8_t *argc);
@@ -16,6 +16,6 @@ obj       fn_ge           (uint8_t *argc);
 obj       fn_equals       (uint8_t *argc);
 obj       fn_not_equals   (uint8_t *argc);
 
-END_EXTERN_C
+END_HEADER_FILE
 
 #endif // QSL_MISC_H

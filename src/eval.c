@@ -9,9 +9,7 @@
 #include "stack.h"
 #include "symbols.h"
 
-START_EXTERN_C
-
-static const char PROGMEM this_file [] = __FILE__;
+START_IMPLEMENTATION
 
 obj current_environment;
 
@@ -436,4 +434,4 @@ obj fn_apply (uint8_t *argc)
   }
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

@@ -7,14 +7,20 @@
 #include "obj.h"
 #include "stack.h"
 
-START_EXTERN_C
+START_IMPLEMENTATION
 
 static_assert (MAX_STACK_DEPTH > 8, "stack unreasonably small");
 
+#if MAX_STACK_DEPTH < 256
+  typedef uint8_t stack_depth_t;
+#else
+  typedef uint16_t stack_depth_t;
+#endif
+
 static obj stack_obj;
 static obj *base;
-static uint8_t depth;
-static uint8_t deepest;
+static stack_depth_t depth;
+static stack_depth_t deepest;
 
 #if WITH_TRACE
 void print_stack_depth (void)
@@ -33,12 +39,12 @@ void dump_stack (void)
 }
 #endif
 
-uint8_t get_stack_depth (void)
+uint16_t get_stack_depth (void)
 {
   return (depth);
 }
 
-uint8_t get_stack_deepest (void)
+uint16_t get_stack_deepest (void)
 {
   return (deepest);
 }
@@ -46,6 +52,8 @@ uint8_t get_stack_deepest (void)
 
 void stack_push (obj o)
 {
+  if (depth == MAX_STACK_DEPTH)
+    throw_error (no_mem);
   base [depth++] = o;
   if (depth > deepest)
     deepest = depth;
@@ -69,8 +77,6 @@ obj snip_arg (uint8_t idx)
   depth -= 1;
   return (res);
 }
-
-
 
 uint16_t get_and_incr_arg (uint8_t idx)
 {
@@ -115,7 +121,7 @@ void stack_announce (enum announcement ann)
   {
   case ann_gc_starting:
     if (base)
-      for (uint8_t n = depth; n < MAX_STACK_DEPTH; n += 1)
+      for (stack_depth_t n = depth; n < MAX_STACK_DEPTH; n += 1)
         base [n] = obj_NIL;
     want_obj (stack_obj);
     base = NULL;
@@ -135,4 +141,4 @@ void stack_announce (enum announcement ann)
   }
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION

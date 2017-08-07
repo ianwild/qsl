@@ -9,7 +9,7 @@
 #include "obj.h"
 #include "stack.h"
 
-START_EXTERN_C
+START_IMPLEMENTATION
 
 #if REPL_IS_MAIN
 void repl (void)
@@ -41,7 +41,7 @@ static void repl (void)
     print_result (x);
   }
 }
-END_EXTERN_C
+END_IMPLEMENTATION
 
 #if ! REPL_IS_MAIN
 #if __cplusplus && WITH_NAMESPACE

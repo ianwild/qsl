@@ -9,7 +9,7 @@
 #include "stack.h"
 
 #if WITH_NAMESPACE
-START_EXTERN_C
+START_IMPLEMENTATION
 #endif
 
 static uint32_t timeout;
@@ -106,5 +106,5 @@ obj fn_next_event (uint8_t *argc)
 }
 
 #if WITH_NAMESPACE
-END_EXTERN_C
+END_IMPLEMENTATION
 #endif

@@ -1,7 +1,7 @@
 #include "serial_io.h"
 
 #if WITH_NAMESPACE
-START_EXTERN_C
+START_IMPLEMENTATION
 #endif
 
 uint8_t serial_readc  (void) __attribute__ ((weak));
@@ -31,5 +31,5 @@ void serial_printc (uint8_t ch)
 }
 
 #if WITH_NAMESPACE
-END_EXTERN_C
+END_IMPLEMENTATION
 #endif

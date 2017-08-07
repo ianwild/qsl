@@ -4,9 +4,7 @@
 #include "obj.h"
 #include "stack.h"
 
-START_EXTERN_C
-
-static const char PROGMEM this_file [] = __FILE__;
+START_IMPLEMENTATION
 
 int32_t get_int_val (obj o)
 {
@@ -87,4 +85,4 @@ obj fn_divide (uint8_t *argc)
   return (create_int (ans));
 }
 
-END_EXTERN_C
+END_IMPLEMENTATION
