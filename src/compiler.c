@@ -404,6 +404,8 @@ obj compile_top_level (obj expr)
   }
   if (p)
     RELEASE_OBJ (p);
+
+  prog_obj = constants_obj = obj_NIL;
   return (closure);
 }
 
