@@ -38,7 +38,6 @@ LDFLAGS := $(OPTIMISER_FLAGS)
 
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
-	strip $@
 
 rom-symbols.ci:	make-symbols.awk rom.src
 	awk -f make-symbols.awk <rom.src >$@
