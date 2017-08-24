@@ -21,9 +21,9 @@ A body contains the object number of its header, and the header of an
 garbage collector to "slide" bodies down, to keep the free space
 contiguous.
 
-Temporary buffers (for I/O, the call stack, working space for the
-compiler) are allocated in the same way as normal user objects, but
-are released when no longer needed.
+Temporary buffers (for I/O, the environment stack for lexical
+bindings, working space for the compiler) are allocated in the same
+way as normal user objects, but are released when no longer needed.
 
 Built-in functions (`fn_*`) take a single parameter, `uint8_t *argc`,
 where `argc` indicates how many arguments `interpret_bytecodes()` has
