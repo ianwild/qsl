@@ -14,7 +14,7 @@ debug any extra functions you've added to the rest of the interpreter.
 `make arduino`
 --------------
 
-Links (note: _not_ "copies") all the `*.c*` and `*.h*` files into a
+*Links* (note: _not_ "copies") all the `*.c*` and `*.h*` files into a
 newly created directory, `arduino`, renames the C files to `*.cpp`,
 except `main.c` which becomes `main.ino`, then attempts to build the
 interpreter using the `arduino-mk` mechanism.
@@ -33,11 +33,12 @@ upload to the target platform.
 `make lib`
 ----------
 
-Copies (note: _not_ "links) all the the `*.c*` and `*.h*` files into a
-newly created directory, `QSL/lib`, renames the C files to `*.cpp`,
-adds a `qsl-options.h` file that contains the various `WITH_` options
-extracted from the `arduino.mak` file, and adds a `library.properties`
-file that marks the whole `QSL` directory as an Arduino library.
+*Copies* (note: _not_ "links") all the the `*.c*` and `*.h*` files
+into a newly created directory, `QSL/lib`, renames the C files to
+`*.cpp`, adds a `qsl-options.h` file that contains the various `WITH_`
+options extracted from the `arduino.mak` file, and adds a
+`library.properties` file that marks the whole `QSL` directory as an
+Arduino library.
 
 If you move the `QSL` directory to your `sketchbook/libraries`
 directory, then `QSL` will be available from the UI library manager.

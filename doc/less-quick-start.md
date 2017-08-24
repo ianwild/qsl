@@ -15,7 +15,7 @@ It doesn't need to handle them _well_, just not kill the program.
 for you.)
 
 I assume you've got tools installed to build an executable for your
-computer (at least `gcc`, `make`, and `awk`), and that you've
+computer (I need at least `gcc`, `make`, and `awk`), and that you've
 installed and tested the Arduino IDE (for the Arduino libraries, the
 `ttyUSB` permissions, and the `avr-gcc` tool-chain).
 

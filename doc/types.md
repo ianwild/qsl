@@ -10,7 +10,8 @@ Characters are stored as 8-bit values.  (In fact, they aren't "stored"
 at all, but are efficiently encoded as special object references.)
 
 The notation for characters is stolen from Emacs Lisp: `?x` is what
-Common Lisp would call `#\x`.
+Common Lisp would call `#\x`.  Note, though, that no special syntax is
+provided for non-printing characters.
 
 integer
 -------
@@ -29,7 +30,8 @@ A string is a sequence of 0..255 characters.
 
 Strings are written between matching `"` characters.  If a string should
 contain a `"` or a `\`, it must be escaped by preceding it with a
-`\`.  Anything else is acceptable.
+`\`.  Anything else is acceptable.  Again, there's no special syntax
+for non-printing characters.
 
 array
 -----
@@ -45,7 +47,7 @@ symbols, `t` and `nil`, are constants.  All other symbols can be used
 as global or local variable names.  Global variables are initialised
 to point to themselves, which is occasionally useful.  Note that QSL
 is a "lisp-2": the same symbol may name both a variable and a function
-without confusion.
+without conflict.
 
 Anything read by QSL that can't be interpreted in any other way is
 taken to be a symbol, meaning things like `1+` and `...---...` are
