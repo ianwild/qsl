@@ -7,6 +7,9 @@ BOARD_TAG = nano
 BOARD_SUB = atmega328
 MONITOR_PORT = /dev/ttyUSB0
 
+#BOARD_TAG = leonardo
+#MONITOR_PORT = /dev/ttyACM0
+
 #EXTRA_FLAGS := -Os -flto
    # (EXTRA_FLAGS is no longer needed - these seem to be the defaults now)
 
