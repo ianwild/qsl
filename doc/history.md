@@ -84,3 +84,13 @@ So, does an Arduino Nano have enough ROM and RAM to implement a
 bytecode compiler and interpreter?  This took a bit long than three
 weeks to answer - about a year and a half, in fact - but the
 conclusion seems to be "yes".
+
+----------------------------------------------------------------------------
+
+Yesterday (2018-07-28) I was in a shop that was selling an Arduino Mega
+2560 quite cheaply, and decided it might be interesting to see if the
+assumptions QSL makes are as portable as I'd hoped.
+
+As it happens, the only change I needed to make was in the `pin` function
+(in `hardware.cpp`): the Mega needs an explicit `pinMode(...,OUTPUT)`,
+but the Nano is happy with `digitalWrite()` alone.

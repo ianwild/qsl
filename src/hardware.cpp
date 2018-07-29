@@ -44,6 +44,7 @@ obj fn_pin (uint8_t *argc)
   adjust_argc (argc, 2);
   uint32_t pin = get_int_val (get_arg (1));
   uint8_t val = (get_arg (0) == obj_NIL) ? LOW : HIGH;
+  pinMode (pin, OUTPUT);
   digitalWrite (pin, val);
   return (get_arg (1));
 }

@@ -8,8 +8,11 @@ too much will restrict what can be done in QSL.
 In `buffer_limits.h` are a number of constants that control how much
 memory is allocated for the various "hidden" things QSL needs.
 
-`TOTAL_HEAP_SIZE` is the memory QSL ses aside for its workspace.  It
-also needs a few bytes for random C-level variables and the C stack.
+`TOTAL_HEAP_SIZE` is the memory QSL sets aside for its workspace.  It
+also needs a few bytes for random C-level variables and the C stack.  On an
+ATmega2560 you can easily put this up to 7K, which should allow quite
+complex Lisp programs.  You'll get a compile-time error if you try to use a
+heap of less than 768 bytes.
 
 To read _anything_, QSL needs to allocate a buffer of
 `MAX_TOKEN_LENGTH` bytes, but this buffer is freed once a token is

@@ -1,14 +1,22 @@
 # -*- makefile -*-
 
-#BOARD_TAG = uno
-#MONITOR_PORT = /dev/ttyACM0
-
-BOARD_TAG = nano
-BOARD_SUB = atmega328
-MONITOR_PORT = /dev/ttyUSB0
-
 #BOARD_TAG = leonardo
-#MONITOR_PORT = /dev/ttyACM0
+BOARD_TAG = mega
+#BOARD_TAG = nano
+#BOARD_TAG = uno
+
+ifneq ($(filter leonardo mega uno,$(BOARD_TAG)),)
+  MONITOR_PORT = /dev/ttyACM0
+endif
+
+ifeq (mega,$(BOARD_TAG))
+  BOARD_SUB = atmega2560
+endif
+
+ifeq (nano,$(BOARD_TAG))
+  MONITOR_PORT = /dev/ttyUSB0
+  BOARD_SUB = atmega328
+endif
 
 #EXTRA_FLAGS := -Os -flto
    # (EXTRA_FLAGS is no longer needed - these seem to be the defaults now)
