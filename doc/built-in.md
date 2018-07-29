@@ -120,7 +120,7 @@
     in turn until one is found to be non-`nil`.  The remainder of that
     clause is then executed (as if it were a `progn` body).  The
     return value of `cond` is the value of the last expression
-    evaluates (and, therefore, `nil` if all tests fail).
+    evaluated (and, therefore, `nil` if all tests fail).
 
 `(while t1 e1 ...)`
 

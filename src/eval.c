@@ -418,7 +418,10 @@ obj fn_apply (uint8_t *argc)
       throw_error (no_fdefn);
 
     obj res = fn (argc);
+    if (fn == fn_apply)
+      res = pop_arg ();
     stack_pop (*argc);
+    *argc = 0;
     stack_push (res);
     return (obj_NIL);
   }
