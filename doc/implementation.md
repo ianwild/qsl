@@ -8,7 +8,7 @@ distinct objects, so a 16-bit object index is more than wide enough.
 That makes each header 5 bytes.  Headers are allocated from the top of
 memory, working downwards.  (The first few object indices are
 reserved for built-in objects, resident in flash.  RAM-resident object
-hareads are numbered contiguously with the built-in objects.)
+headers are numbered contiguously with the built-in objects.)
 
 Some objects, notably strings and arrays, need a header and a
 variable-length "body".  The bodies are allocated from "string space"
@@ -38,7 +38,7 @@ functions with unusual compile-time behaviour) must have the same
 signature.  However, instead of a count of how many arguments are
 passed, the parameter pointer is either NULL or non-NULL, depending on
 whether the fexpr should compile for a void or a value context.  On
-the stack is a _single_ `obj`, the `cdr` of the fexpr form, wheich the
+the stack is a _single_ `obj`, the `cdr` of the fexpr form, which the
 fexpr must use to perform its magic.
 
 Note that a lambda expression can't know in advance whether it will be

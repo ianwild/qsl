@@ -49,7 +49,7 @@ time in a `sleep` state.
 
 ----------------------------------------------------------------------------
 
-I had, for no discernable reason, decided that it should take me no
+I had, for no discernible reason, decided that it should take me no
 more than a month to get something working.  In fact, it took about
 three weeks to get from zero to `blink`, but ...
 

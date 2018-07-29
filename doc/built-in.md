@@ -164,7 +164,7 @@
 
 `(let ((n1 v1) ...) e1 ...)`
 
->   The values `v1`... are evalued, a new environment created in which
+>   The values `v1`... are evaluated, a new environment created in which
     these values are bound to the names `n1`..., then the
     `e1`... evaluated in this environment as if by a `progn`.
 

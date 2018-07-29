@@ -42,7 +42,7 @@ obj last_allocated_object = LAST_ROM_OBJ;
      string_space                       -> ---------  low memory
 
   Every real object has a header in the `headers` array.  The
-  `headers` array is negatively indexed, and growns downwards through
+  `headers` array is negatively indexed, and grows downwards through
   memory.  Extended objects (strings, arrays, and their close
   relatives) also have a "body" in the low-memory section, which grows
   upwards.  Free memory is the gap between the two.
