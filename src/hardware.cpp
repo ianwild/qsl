@@ -41,12 +41,20 @@ void hardware_announce (enum announcement ann)
 
 obj fn_pin (uint8_t *argc)
 {
+  bool just_read = (*argc == 1);
   adjust_argc (argc, 2);
   uint32_t pin = get_int_val (get_arg (1));
-  uint8_t val = (get_arg (0) == obj_NIL) ? LOW : HIGH;
-  pinMode (pin, OUTPUT);
-  digitalWrite (pin, val);
-  return (get_arg (1));
+  uint8_t old_val = digitalRead (pin);
+  if (! just_read)
+  {
+    obj arg = get_arg (0);
+    uint8_t val = (get_type (arg) == int_type) ? get_int_val (arg) :
+                  (arg == obj_NIL) ? LOW :
+                  HIGH;
+    pinMode (pin, OUTPUT);
+    digitalWrite (pin, val);
+  }
+  return (create_int (old_val));
 }
 
 obj fn_on_tick (uint8_t *argc)

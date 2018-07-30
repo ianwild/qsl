@@ -1,9 +1,9 @@
 # -*- makefile -*-
 
 #BOARD_TAG = leonardo
-BOARD_TAG = mega
+#BOARD_TAG = mega
 #BOARD_TAG = nano
-#BOARD_TAG = uno
+BOARD_TAG = uno
 
 ifneq ($(filter leonardo mega uno,$(BOARD_TAG)),)
   MONITOR_PORT = /dev/ttyACM0
@@ -23,7 +23,7 @@ endif
 
 QSL_OPTIONS := -DTARGET_ARDUINO=1
 QSL_OPTIONS += -DWITH_MEMSTATS=0
-QSL_OPTIONS += -DWITH_RC_SCRIPT=0
+QSL_OPTIONS += -DWITH_RC_SCRIPT=1
 QSL_OPTIONS += -DWITH_NAMESPACE=1
 
 CFLAGS   += $(QSL_OPTIONS) -W -Wall -std=c11
@@ -39,3 +39,6 @@ ARDUINO_DIR = $(HOME)/Arduino/arduino-1.8.3
 ARDMK_DIR = $(HOME)/Arduino/Arduino-Makefile-master
 
 include $(ARDMK_DIR)/Arduino.mk
+
+picocom:
+	picocom $(MONITOR_PORT) 9600 --emap crcrlf -c --imap lfcrlf

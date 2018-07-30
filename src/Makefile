@@ -34,7 +34,7 @@ WARNING_FLAGS := -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
 CFLAGS := --std=c11 $(OPTIMISER_FLAGS) $(WARNING_FLAGS) $(QSL_OPTIONS)
 LDFLAGS := $(OPTIMISER_FLAGS)
 
-.PHONY: clean tar dep tags upload
+.PHONY: clean tar dep tags upload picocom
 
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
@@ -64,8 +64,8 @@ arduino: clean rom-symbols.ci rom-symbols.h qsl-options.h
 	for i in arduino/*.c; do mv $$i $${i%.c}.cpp; done
 	make -C arduino
 
-upload:
-	make -C arduino upload
+upload picocom:
+	make -C arduino $@
 
 clean:
 	rm -fr arduino QSL
