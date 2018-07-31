@@ -217,8 +217,7 @@ obj new_object (enum typecode type, objhdr **hdr)
 {
   obj res = check_available_space (0);
   objhdr *p = GET_HEADER (res);
-  memset (p, 0, sizeof (*p));
-  p -> control = type;
+  *p = (objhdr) {.control = type, .u = {}};
   if (hdr)
     *hdr = p;
   return (working_root = res);
@@ -243,10 +242,10 @@ obj new_extended_object (enum typecode type, uint16_t size)
 
   obj res = check_available_space (true_size);
   objhdr *p = GET_HEADER (res);
-  memset (p, 0, sizeof (*p));
+  *p = (objhdr) {.control = type, .u = {}};
   *(obj *) string_space_top = res;
   string_space_top += sizeof (obj);
-  switch (p -> control = type)
+  switch (type)
   {
   case string_type:
     p -> u.string_val = string_space_top;
@@ -265,6 +264,8 @@ obj new_extended_object (enum typecode type, uint16_t size)
     string_space_top += sizeof (obj);
     memset (string_space_top, 0, size * sizeof (obj));
     string_space_top += size * sizeof (obj);
+    break;
+  default:
     break;
   }
   return (working_root = res);
