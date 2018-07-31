@@ -43,18 +43,48 @@ obj fn_pin (uint8_t *argc)
 {
   bool just_read = (*argc == 1);
   adjust_argc (argc, 2);
-  uint32_t pin = get_int_val (get_arg (1));
+  uint8_t pin = get_int_val (get_arg (1));
   uint8_t old_val = digitalRead (pin);
   if (! just_read)
   {
-    obj arg = get_arg (0);
-    uint8_t val = (get_type (arg) == int_type) ? get_int_val (arg) :
-                  (arg == obj_NIL) ? LOW :
-                  HIGH;
-    pinMode (pin, OUTPUT);
+    uint8_t val = (get_arg (0) == obj_NIL) ? LOW : HIGH;
     digitalWrite (pin, val);
   }
-  return (create_int (old_val));
+  return (old_val ? obj_T : obj_NIL);
+}
+
+obj fn_pwm (uint8_t *argc)
+{
+  adjust_argc (argc, 2);
+  uint8_t pin = get_int_val (get_arg (1));
+  uint8_t val = get_int_val (get_arg (0));
+  analogWrite (pin, val);
+  return (obj_NIL);
+}
+
+obj fn_pin_mode (uint8_t *argc)
+{
+  adjust_argc (argc, 2);
+  uint8_t pin = get_int_val (get_arg (1));
+  obj arg = get_arg (0);
+  uint8_t ch0 = ((get_type (arg) == rom_symbol_type)
+                 ? pgm_read_byte_near (get_rom_spelling (arg, NULL))
+                 : *get_spelling (arg, NULL));
+  switch (ch0)
+  {
+  case 'i': pinMode (pin, INPUT);         break;
+  case 'o': pinMode (pin, OUTPUT);        break;
+  case 'p': pinMode (pin, INPUT_PULLUP);  break;
+  }
+  return (obj_NIL);
+}
+
+
+obj fn_analog_pin (uint8_t *argc)
+{
+  adjust_argc (argc, 1);
+  uint8_t pin = get_int_val (get_arg (1));
+  return (create_int (analogRead (pin)));
 }
 
 obj fn_on_tick (uint8_t *argc)

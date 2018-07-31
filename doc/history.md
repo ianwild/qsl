@@ -26,6 +26,8 @@ Getting that far turned out to be surprisingly easy, so I kept adding
 features until I could do this:
 
 ```
+(pin-mode 13 'o)
+
 (let ((state t))
   (defun blink ()
     (pin 13 state)

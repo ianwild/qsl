@@ -49,6 +49,8 @@ Let's Try Blink
 
 Copy and paste this into the Serial Monitor:
 
+    (pin-mode 13 'o)
+
     (let ((state t))
       (defun blink ()
         (pin 13 state)
