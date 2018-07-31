@@ -279,10 +279,28 @@
 >   Run the function `v1` every time a character is available on the
     serial port.
 
+`(analog-pin v1)`
+
+>   Read the analog level on pin `v1`, returning 0..1023.
+
+`(pin v1)`
+
+>   Read the digital level on pin `v1`, returning `t` (input high) or
+    `nil` (input low).
+
 `(pin v1 v2)`
 
 >   Set pin `v1` to the Arduino constant `LOW` if `v2` is `nil`, to
-    `HIGH` otherwise.
+    `HIGH` otherwise.  Returns the previous value of pin `v1`.
+
+`(pin-mode v1 v2)`
+
+>   Set the mode of pin `v1` to one of `INPUT` if `v2` is `'i`, `OUTPUT`
+>   if `v2` is `'o`, or `INPUT_PULLUP` if `v2` is `'p`.
+
+`(pwm v1 v2)`
+
+>   Set the duty-cycle for pin `v1` to `v2` (0..255).
 
 
 `(wait-for-event)`
