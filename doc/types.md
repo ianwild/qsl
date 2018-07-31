@@ -42,12 +42,11 @@ notation for arrays.
 symbol
 ------
 
-A symbol is typically used to name a variable or a function.  Two
-symbols, `t` and `nil`, are constants.  All other symbols can be used
-as global or local variable names.  Global variables are initialised
-to point to themselves, which is occasionally useful.  Note that QSL
-is a "lisp-2": the same symbol may name both a variable and a function
-without conflict.
+A symbol is typically used to name a variable or a function.  Two symbols,
+`t` and `nil`, are constants.  All other symbols can be used as global
+or local variable names.  Global variables are initialised to `nil`.
+Note that QSL is a "lisp-2": the same symbol may name both a variable
+and a function without conflict.
 
 Anything read by QSL that can't be interpreted in any other way is
 taken to be a symbol, meaning things like `1+` and `...---...` are

@@ -94,7 +94,7 @@ obj symbol_value (obj sym)
       return (p -> u.cons_val.cdr_cell);
   }
 
-  return (sym);
+  return (obj_NIL);
 }
 
 
@@ -111,14 +111,14 @@ obj set_symbol_value (obj sym, obj val)
     objhdr *p = find_global_binding (sym);
     if (p)
     {
-      if (sym == val)
+      if (!val)
         p -> control = unallocated_type;
       else
         p -> u.cons_val.cdr_cell = val;
       return (val);
     }
   }
-  if (sym != val)
+  if (val)
   {
     objhdr *p;
     new_object (global_binding_type, &p);
