@@ -18,8 +18,8 @@ ifeq (nano,$(BOARD_TAG))
   BOARD_SUB = atmega328
 endif
 
-#EXTRA_FLAGS := -Os -flto
-   # (EXTRA_FLAGS is no longer needed - these seem to be the defaults now)
+# uncommenting this next line frees up (2 * (64 - 16)) bytes of RAM
+#EXTRA_FLAGS := -DSERIAL_RX_BUFFER_SIZE=16 -DSERIAL_TX_BUFFER_SIZE=16
 
 QSL_OPTIONS := -DTARGET_ARDUINO=1
 QSL_OPTIONS += -DWITH_MEMSTATS=0
