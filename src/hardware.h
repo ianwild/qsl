@@ -13,6 +13,7 @@
   obj  fn_pwm               (uint8_t *argc);
   obj  fn_pin_mode          (uint8_t *argc);
   obj  fn_analog_pin        (uint8_t *argc);
+  obj  fn_millis            (uint8_t *argc);
   obj  fn_on_tick           (uint8_t *argc);
   obj  fn_on_serial         (uint8_t *argc);
   obj  fn_wait_for_event    (uint8_t *argc);

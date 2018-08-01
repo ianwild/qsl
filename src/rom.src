@@ -72,6 +72,7 @@ pin             fn
 pwm             fn
 pin-mode        fn
 analog-pin      fn
+millis          fn
 on-tick         fn
 on-serial       fn
 wait-for-event  fn

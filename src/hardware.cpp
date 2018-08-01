@@ -79,12 +79,17 @@ obj fn_pin_mode (uint8_t *argc)
   return (obj_NIL);
 }
 
-
 obj fn_analog_pin (uint8_t *argc)
 {
   adjust_argc (argc, 1);
   uint8_t pin = get_int_val (get_arg (1));
   return (create_int (analogRead (pin)));
+}
+
+obj fn_millis (uint8_t *argc)
+{
+  adjust_argc (argc, 0);
+  return (create_int (millis ()));
 }
 
 obj fn_on_tick (uint8_t *argc)
