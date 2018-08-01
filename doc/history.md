@@ -33,7 +33,7 @@ features until I could do this:
     (pin 13 state)
     (setq state (not state))))
 
-(on-tick 500 blink)
+(on-tick 500 'blink)
 
 (on-serial
  (lambda ()
