@@ -69,7 +69,7 @@ upload picocom:
 
 clean:
 	rm -fr arduino QSL
-	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s core
+	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s core tags TAGS
 	rm -f lib-etc/*~ lib-etc/*#
 	rm -f ../doc/*~ ../doc/*#
 
@@ -77,12 +77,12 @@ tar:	clean
 	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`   \
 		--exclude .git                  \
 		--exclude .gitignore            \
-		--exclude TAGS                  \
+		--exclude TAGS --exclude tags   \
 		--directory ..                  \
 		.
 
 tags:
-	find . -name '*.[ch]' -o -name '*.cpp' | etags -
+	ctags -R || find . -name '*.[ch]' -o -name '*.cpp' | etags -
 
 ## generic rules
 
