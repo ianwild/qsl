@@ -16,7 +16,7 @@
 
 #define START_IMPLEMENTATION \
   START_HEADER_FILE \
-  static const char PROGMEM this_file [] = __FILE__;
+  static const char PROGMEM __attribute__ ((unused)) this_file [] = __FILE__;
 
 #define END_IMPLEMENTATION END_HEADER_FILE
 

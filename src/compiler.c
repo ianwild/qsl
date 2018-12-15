@@ -123,6 +123,7 @@ void compiler_announce (enum announcement ann)
   case ann_clear_memory:
   case ann_computation_aborted:
     prog_obj = constants_obj = obj_NIL;
+    // fall through
 
   case ann_gc_starting:
     prog = NULL;
