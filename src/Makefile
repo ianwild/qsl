@@ -97,37 +97,42 @@ dep:
 	touch -c $@
 
 
-## AUTODEPS START ##
-announce.c:	announce.h dbg.h
-announce.h:	target.h
-arrays.c:	arrays.h cons.h integer.h obj.h stack.h
-arrays.h:	target.h types.h
-compiler.c:	announce.h buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc.h io.h obj.h stack.h
-compiler.h:	obj.h rom-symbols.h target.h types.h
-cons.c:	cons.h dbg.h obj.h stack.h
-cons.h:	target.h types.h
-eval.c:	announce.h compiler.h cons.h dbg.h eval.h gc.h integer.h obj.h stack.h symbols.h
-eval.h:	target.h types.h
-fexprs.c:	compiler.h cons.h eval.h fexprs.h integer.h obj.h stack.h
-fexprs.h:	target.h types.h
-gc.c:	announce.h dbg.h gc.h obj.h rom-symbols.h stack.h
-gc.h:	target.h types.h
-hardware.h:	target.h types.h
-integer.c:	dbg.h integer.h io.h obj.h stack.h
-integer.h:	target.h types.h
-io.c:	announce.h buffer-limits.h cons.h dbg.h gc.h integer.h io.h obj.h serial_io.h stack.h symbols.h
-io.h:	target.h types.h
-main.c:	announce.h compiler.h dbg.h eval.h gc.h io.h obj.h stack.h
-misc.c:	integer.h misc.h obj.h stack.h
-misc.h:	target.h types.h
-obj.c:	announce.h arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci rom-symbols.h stack.h
-obj.h:	target.h types.h
-rom-symbols.h:	types.h
-serial_io.h:	target.h types.h
-stack.c:	announce.h buffer-limits.h dbg.h gc.h obj.h stack.h
-stack.h:	target.h types.h
-symbols.c:	dbg.h eval.h obj.h rom-symbols.h symbols.h
-symbols.h:	target.h types.h
-target.h:	qsl-options.h
-types.h:	target.h
-## AUTODEPS END ##
+## AUTODEPS START ## {{{
+announce.c: announce.h dbg.h
+announce.h: target.h
+arrays.c: arrays.h cons.h integer.h obj.h stack.h
+arrays.h: target.h types.h
+compiler.c: announce.h buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc.h
+compiler.c: io.h obj.h stack.h
+compiler.h: obj.h rom-symbols.h target.h types.h
+cons.c: cons.h dbg.h obj.h stack.h
+cons.h: target.h types.h
+eval.c: announce.h compiler.h cons.h dbg.h eval.h gc.h integer.h obj.h stack.h
+eval.c: symbols.h
+eval.h: target.h types.h
+fexprs.c: compiler.h cons.h eval.h fexprs.h integer.h obj.h stack.h
+fexprs.h: target.h types.h
+gc.c: announce.h dbg.h gc.h obj.h rom-symbols.h stack.h
+gc.h: target.h types.h
+hardware.h: target.h types.h
+integer.c: dbg.h integer.h io.h obj.h stack.h
+integer.h: target.h types.h
+io.c: announce.h buffer-limits.h cons.h dbg.h gc.h integer.h io.h obj.h
+io.c: serial_io.h stack.h symbols.h
+io.h: target.h types.h
+main.c: announce.h compiler.h dbg.h eval.h gc.h io.h obj.h stack.h
+misc.c: integer.h misc.h obj.h stack.h
+misc.h: target.h types.h
+obj.c: announce.h arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h
+obj.c: fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci
+obj.c: rom-symbols.h stack.h
+obj.h: target.h types.h
+rom-symbols.h: types.h
+serial_io.h: target.h types.h
+stack.c: announce.h buffer-limits.h dbg.h gc.h obj.h stack.h
+stack.h: target.h types.h
+symbols.c: dbg.h eval.h obj.h rom-symbols.h symbols.h
+symbols.h: target.h types.h
+target.h: qsl-options.h
+types.h: target.h
+## AUTODEPS END ## }}}

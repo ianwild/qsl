@@ -2,8 +2,8 @@
 
 #BOARD_TAG = leonardo
 #BOARD_TAG = mega
-#BOARD_TAG = nano
-BOARD_TAG = uno
+BOARD_TAG = nano
+#BOARD_TAG = uno
 
 ifneq ($(filter leonardo mega uno,$(BOARD_TAG)),)
   MONITOR_PORT = /dev/ttyACM0

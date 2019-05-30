@@ -233,26 +233,7 @@ void insert_backward_jump (backward_jump jmp)
 
 void compile_expression (obj expr, bool value_context)
 {
-  switch (get_type (expr))
-  {
-  case symbol_type:
-  case rom_symbol_type:
-    if (value_context)
-    {
-      switch (expr)
-      {
-      case obj_NIL:      compile_opcode (opLOAD_NIL);  break;
-      case obj_T:        compile_opcode (opLOAD_T);    break;
-
-      default:
-        compile_opcode (opLOAD_VAR);
-        compile_constant (expr);
-        break;
-      }
-    }
-    return;
-
-  case cons_type:
+  if (get_type (expr) == cons_type)
   {
     obj fn;
     obj args;
@@ -292,25 +273,31 @@ void compile_expression (obj expr, bool value_context)
     compile_opcode (n);
     if (maybe_drop && ! value_context)
       compile_opcode (opDROP);
-    return;
   }
+  else if (value_context)
+    switch (expr)
+    {
+    case obj_NIL:
+      compile_opcode (opLOAD_NIL);
+      break;
+    case obj_T:
+      compile_opcode (opLOAD_T);
+      break;
+    case obj_ZERO:
+      compile_opcode (opLOAD_ZERO);
+      break;
+    case obj_ZERO + 1:
+      compile_opcode (opLOAD_ONE);
+      break;
 
-  default:
-    if (value_context)
-      switch (expr)
-      {
-      case obj_NIL:      compile_opcode (opLOAD_NIL);  break;
-      case obj_T:        compile_opcode (opLOAD_T);    break;
-      case obj_ZERO:     compile_opcode (opLOAD_ZERO); break;
-      case obj_ZERO + 1: compile_opcode (opLOAD_ONE);  break;
-
-      default:
+    default:
+      if (expr <= LAST_ROM_OBJ || get_type (expr) == symbol_type)
+        compile_opcode (opLOAD_VAR);
+      else
         compile_opcode (opLOAD_LITERAL);
-        compile_constant (expr);
-        break;
-      }
-    return;
-  }
+      compile_constant (expr);
+      break;
+    }
 }
 
 void compile_constant (obj o)

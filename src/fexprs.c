@@ -10,12 +10,15 @@ START_IMPLEMENTATION
 
 static void compile_progn (obj expr_list, uint8_t *for_value)
 {
-  while (expr_list != obj_NIL)
-  {
-    obj car;
-    decons (expr_list, &car, &expr_list);
-    compile_expression (car, (expr_list == obj_NIL) && for_value);
-  }
+  if (expr_list == obj_NIL)
+    compile_expression (expr_list, !! for_value);
+  else
+    while (expr_list != obj_NIL)
+    {
+      obj car;
+      decons (expr_list, &car, &expr_list);
+      compile_expression (car, (expr_list == obj_NIL) && for_value);
+    }
 }
 
 obj fe_progn (uint8_t *for_value)
@@ -124,7 +127,8 @@ obj fe_quote (uint8_t *for_value)
 
 static void variable_needed (obj s)
 {
-  if (s <= obj_T || get_type (s) != symbol_type)
+  if (s <= obj_T ||
+      (s > LAST_ROM_OBJ && get_type (s) != symbol_type))
     throw_error (var_needed);
 }
 
