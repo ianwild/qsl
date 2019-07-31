@@ -52,6 +52,7 @@ void io_announce (enum announcement ann)
   {
   case ann_gc_starting:
   case ann_computation_aborted:
+  case ann_shutting_down:
     io_buffer = obj_NIL;
     spelling = NULL;
     break;

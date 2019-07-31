@@ -56,7 +56,7 @@ lib:	clean rom-symbols.ci rom-symbols.h
 	cp lib-etc/QSL.h QSL/src
 	cp lib-etc/library.properties QSL
 
-arduino: clean rom-symbols.ci rom-symbols.h qsl-options.h
+arduino: rom-symbols.ci rom-symbols.h qsl-options.h
 	mkdir arduino
 	ln *.[ch]* arduino
 	ln arduino.mak arduino/Makefile
@@ -69,9 +69,10 @@ upload picocom:
 
 clean:
 	rm -fr arduino QSL
-	rm -f $(OBJECTS) $(GENERATED) *~ *# *.bak *.s core tags TAGS
-	rm -f lib-etc/*~ lib-etc/*#
-	rm -f ../doc/*~ ../doc/*#
+	rm -f $(OBJECTS) $(GENERATED) *.s core tags TAGS refs
+	rm -f *~ *# *.bak .*.swp
+	rm -f lib-etc/*~ lib-etc/*# lib-etc/.*.swp
+	rm -f ../doc/*~ ../doc/*# ../doc/.*.swp
 
 tar:	clean
 	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`   \
@@ -83,6 +84,7 @@ tar:	clean
 
 tags:
 	ctags -R || find . -name '*.[ch]' -o -name '*.cpp' | etags -
+	showrefs -B
 
 ## generic rules
 
@@ -104,7 +106,7 @@ arrays.c: arrays.h cons.h integer.h obj.h stack.h
 arrays.h: target.h types.h
 compiler.c: announce.h buffer-limits.h compiler.h cons.h dbg.h fexprs.h gc.h
 compiler.c: io.h obj.h stack.h
-compiler.h: obj.h rom-symbols.h target.h types.h
+compiler.h: obj.h target.h types.h
 cons.c: cons.h dbg.h obj.h stack.h
 cons.h: target.h types.h
 eval.c: announce.h compiler.h cons.h dbg.h eval.h gc.h integer.h obj.h stack.h
@@ -112,7 +114,7 @@ eval.c: symbols.h
 eval.h: target.h types.h
 fexprs.c: compiler.h cons.h eval.h fexprs.h integer.h obj.h stack.h
 fexprs.h: target.h types.h
-gc.c: announce.h dbg.h gc.h obj.h rom-symbols.h stack.h
+gc.c: announce.h dbg.h gc.h obj.h stack.h
 gc.h: target.h types.h
 hardware.h: target.h types.h
 integer.c: dbg.h integer.h io.h obj.h stack.h
@@ -125,13 +127,12 @@ misc.c: integer.h misc.h obj.h stack.h
 misc.h: target.h types.h
 obj.c: announce.h arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h
 obj.c: fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci
-obj.c: rom-symbols.h stack.h
-obj.h: target.h types.h
-rom-symbols.h: types.h
+obj.c: stack.h
+obj.h: frozen-objects.h rom-symbols.h target.h types.h
 serial_io.h: target.h types.h
 stack.c: announce.h buffer-limits.h dbg.h gc.h obj.h stack.h
 stack.h: target.h types.h
-symbols.c: dbg.h eval.h obj.h rom-symbols.h symbols.h
+symbols.c: dbg.h eval.h obj.h symbols.h
 symbols.h: target.h types.h
 target.h: qsl-options.h
 types.h: target.h

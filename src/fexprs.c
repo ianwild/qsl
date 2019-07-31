@@ -128,7 +128,7 @@ obj fe_quote (uint8_t *for_value)
 static void variable_needed (obj s)
 {
   if (s <= obj_T ||
-      (s > LAST_ROM_OBJ && get_type (s) != symbol_type))
+      (s > LAST_ROM_OBJECT && get_type (s) != symbol_type))
     throw_error (var_needed);
 }
 

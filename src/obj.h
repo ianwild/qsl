@@ -1,6 +1,8 @@
 #ifndef QSL_OBJ_H
 #define QSL_OBJ_H
 
+#include "rom-symbols.h"
+#include "frozen-objects.h"
 #include "target.h"
 #include "types.h"
 
@@ -16,6 +18,10 @@ START_HEADER_FILE
 #define obj_ZERO              OBJECT_C (0xC000)
 #define FIRST_CHAR            OBJECT_C (0x7F00)
 #define LAST_POSSIBLE_OBJECT  OBJECT_C (0x7EFF)
+#define LAST_ROM_OBJECT       ROM_OBJECT_COUNT
+#define FIRST_FROZEN_OBJECT   (LAST_ROM_OBJECT + 1)
+#define LAST_FROZEN_OBJECT    (FIRST_FROZEN_OBJECT + FROZEN_OBJECT_COUNT)
+#define FIRST_RAM_OBJECT      (LAST_FROZEN_OBJECT + 1)
 
 enum typecode      get_type             (obj o);
 objhdr            *get_header           (obj o);

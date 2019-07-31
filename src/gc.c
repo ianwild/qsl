@@ -2,7 +2,6 @@
 #include "dbg.h"
 #include "gc.h"
 #include "obj.h"
-#include "rom-symbols.h"
 #include "stack.h"
 
 
@@ -13,7 +12,7 @@ static obj next_to_sweep;
 
 void want_obj (obj o)
 {
-  if (o <= LAST_ROM_OBJ || o > last_allocated_object)
+  if (o < FIRST_RAM_OBJECT || o > last_allocated_object)
     return;
   objhdr *p = get_header (o);
   if (o < next_to_sweep && (GET_FLAGS (p) & gc_wanted) == 0)
@@ -23,7 +22,7 @@ void want_obj (obj o)
 
 static void mark_roots (void)
 {
-  for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+  for (obj i = FIRST_RAM_OBJECT; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
     if ((GET_FLAGS (p) & gc_fixed) ||
@@ -37,7 +36,7 @@ static void mark_roots (void)
 
 void do_gc (void)
 {
-  next_to_sweep = LAST_ROM_OBJ + 1;
+  next_to_sweep = FIRST_RAM_OBJECT;
   announce (ann_gc_starting);
   mark_roots ();
 
@@ -87,9 +86,9 @@ void do_gc (void)
 
   compact_string_space ();
 
-  obj high_water_mark = LAST_ROM_OBJ;
+  obj high_water_mark = FIRST_RAM_OBJECT - 1;
 
-  for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+  for (obj i = FIRST_RAM_OBJECT; i <= last_allocated_object; i += 1)
   {
     objhdr *p = get_header (i);
     if (GET_FLAGS (p) & gc_wanted)

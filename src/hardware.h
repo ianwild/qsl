@@ -19,6 +19,11 @@
   obj  fn_wait_for_event    (uint8_t *argc);
   obj  fn_next_event        (uint8_t *argc);
 
+  #if WITH_PEEK_AND_POKE
+  obj fn_8bits (uint8_t *argc);
+  obj fn_16bits (uint8_t *argc);
+  #endif
+
   END_HEADER_FILE
 
 #endif // TARGET_ARDUINO

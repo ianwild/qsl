@@ -9,6 +9,8 @@
 # these must be the first five objects, and must be in
 # this order (they're known by ordinal in obj.h):
 
+#% yapp:init
+
 nil             -
 t               -
 quote           fe
@@ -77,3 +79,8 @@ on-tick         fn
 on-serial       fn
 wait-for-event  fn
 next-event      fn
+
+#% peek-and-poke
+8bits fn
+16bits fn
+#%

@@ -14,7 +14,6 @@
 #include "misc.h"
 #include "io.h"
 #include "obj.h"
-#include "rom-symbols.h"
 #include "stack.h"
 
 START_IMPLEMENTATION
@@ -26,7 +25,7 @@ static uint8_t *string_space_top = string_space;
 static objhdr *const headers =
   (objhdr *) (string_space + sizeof (string_space));
 
-obj last_allocated_object = LAST_ROM_OBJ;
+obj last_allocated_object = FIRST_RAM_OBJECT - 1;
 
 /*
   Working memory looks like this:
@@ -105,7 +104,7 @@ obj fn_mem (uint8_t *argc)
     break;
 
   case obj_ZERO + 2:
-    n = last_allocated_object - LAST_ROM_OBJ;
+    n = last_allocated_object - FIRST_RAM_OBJECT;
     break;
 
   case obj_ZERO + 10 + 0:
@@ -129,19 +128,19 @@ obj fn_mem (uint8_t *argc)
 static objhdr *GET_HEADER (obj o)
 {
   // just like get_header(), but with less checking
-  return (headers - (o - LAST_ROM_OBJ));
+  return (headers - (o - LAST_FROZEN_OBJECT));
 }
 
 objhdr *get_header (obj o)
 {
-  if (o <= LAST_ROM_OBJ || o > last_allocated_object)
+  if (o < FIRST_RAM_OBJECT || o > last_allocated_object)
     throw_error (bad_obj);
   return (GET_HEADER (o));
 }
 
 const rom_object *get_rom_header (obj o)
 {
-  if (o > LAST_ROM_OBJ)
+  if (o > LAST_ROM_OBJECT)
     throw_error (bad_obj);
 
   return (rom_symbols + o);
@@ -173,7 +172,7 @@ uint8_t *get_spelling (obj o, uint16_t *len)
 
 const uint8_t *get_rom_spelling (obj o, uint16_t *len)
 {
-  if (o > LAST_ROM_OBJ)
+  if (o > LAST_ROM_OBJECT)
     throw_error (bad_obj);
   const uint8_t *p = (uint8_t *)pgm_read_word_near (&rom_symbols [o].name);
   *len = pgm_read_byte_near (p);
@@ -186,7 +185,7 @@ static obj check_available_space (int16_t string_space_needed)
   for (;;)
   {
     objhdr *p = headers - 1;
-    obj i = LAST_ROM_OBJ + 1;
+    obj i = FIRST_RAM_OBJECT;
     while (i <= last_allocated_object)
     {
       if (GET_TYPE (p) == unallocated_type)
@@ -277,7 +276,7 @@ enum typecode get_type (obj o)
     return (int_type);
   if (o >= FIRST_CHAR)
     return (char_type);
-  if (o <= LAST_ROM_OBJ)
+  if (o <= LAST_ROM_OBJECT)
     return (rom_symbol_type);
   if (o > last_allocated_object)
     return (unallocated_type);
@@ -330,12 +329,13 @@ void obj_announce (enum announcement ann)
   switch (ann)
   {
   case ann_computation_aborted:
+  case ann_shutting_down:
 
     // All bets are off, so
     //     (a) the "current object" is no longer sacrosanct
     working_root = obj_NIL;
 
-    for (obj i = LAST_ROM_OBJ + 1; i <= last_allocated_object; i += 1)
+    for (obj i = FIRST_RAM_OBJECT; i <= last_allocated_object; i += 1)
     {
       objhdr *p = GET_HEADER (i);
       if (GET_TYPE (p) == closure_type &&

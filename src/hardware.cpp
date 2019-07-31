@@ -33,6 +33,10 @@ void hardware_announce (enum announcement ann)
     want_obj (serial_action);
     break;
 
+  case ann_shutting_down:
+    tick_action = serial_action = obj_NIL;
+    break;
+
   default:
     break;
   }
@@ -148,6 +152,30 @@ obj fn_next_event (uint8_t *argc)
 
   return (obj_NIL);
 }
+
+#if WITH_PEEK_AND_POKE
+obj fn_8bits (uint8_t *argc)
+{
+  adjust_argc (argc, 2);
+  obj val = get_arg (0);
+  uint8_t *addr = (uint8_t *) get_int_val (get_arg (1));
+  if (val == obj_NIL)
+    return (create_int (*addr));
+  *addr = get_int_val (val);
+  return (val);
+}
+
+obj fn_16bits (uint8_t *argc)
+{
+  adjust_argc (argc, 2);
+  obj val = get_arg (0);
+  uint16_t *addr = (uint16_t *) get_int_val (get_arg (1));
+  if (val == obj_NIL)
+    return (create_int (*addr));
+  *addr = get_int_val (val);
+  return (val);
+}
+#endif
 
 #if WITH_NAMESPACE
 END_IMPLEMENTATION

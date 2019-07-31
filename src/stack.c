@@ -136,6 +136,12 @@ void stack_announce (enum announcement ann)
     stack_reinit ();
     break;
 
+  case ann_shutting_down:
+    depth = 0;
+    base = NULL;
+    stack_obj = obj_NIL;
+    break;
+
   default:
     break;
   }

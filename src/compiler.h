@@ -2,7 +2,6 @@
 #define QSL_COMPILER_H
 
 #include "obj.h"
-#include "rom-symbols.h"
 #include "target.h"
 #include "types.h"
 
@@ -33,7 +32,7 @@ enum __attribute__ ((packed)) opcodes
   opLOAD_T       = obj_T,
   opLOAD_LITERAL = obj_QUOTE,
   opBIND_ARGLIST = obj_LAMBDA,
-  opDROP         = LAST_ROM_OBJ + 1,
+  opDROP         = ROM_OBJECT_COUNT + 1,
   opSWAP,
   opDUP,
   opDUP_IF_NIL,

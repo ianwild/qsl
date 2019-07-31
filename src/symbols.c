@@ -3,7 +3,6 @@
 #include "dbg.h"
 #include "eval.h"
 #include "obj.h"
-#include "rom-symbols.h"
 #include "symbols.h"
 
 START_IMPLEMENTATION
@@ -11,7 +10,7 @@ START_IMPLEMENTATION
 obj find_symbol (uint8_t *spelling, uint16_t len)
 {
   obj sym;
-  for (sym = 0; sym <= LAST_ROM_OBJ; sym += 1)
+  for (sym = 0; sym < FIRST_FROZEN_OBJECT; sym += 1)
   {
     uint16_t rom_len;
     const uint8_t *rom_spelling = get_rom_spelling (sym, &rom_len);
@@ -28,6 +27,9 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
         return (sym);
     }
   }
+
+  for (; sym < FIRST_RAM_OBJECT; sym += 1)
+    ;
 
   for (; sym <= last_allocated_object; sym += 1)
   {
@@ -69,7 +71,7 @@ static obj *find_lexical_binding (obj sym)
 
 static objhdr *find_global_binding (obj sym)
 {
-  for (obj res = LAST_ROM_OBJ + 1; res <= last_allocated_object; res += 1)
+  for (obj res = FIRST_RAM_OBJECT; res <= last_allocated_object; res += 1)
     if (get_type (res) == global_binding_type)
     {
       objhdr *p = get_header (res);

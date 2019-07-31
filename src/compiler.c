@@ -122,6 +122,7 @@ void compiler_announce (enum announcement ann)
   case ann_startup:
   case ann_clear_memory:
   case ann_computation_aborted:
+  case ann_shutting_down:
     prog_obj = constants_obj = obj_NIL;
     // fall through
 
@@ -291,7 +292,7 @@ void compile_expression (obj expr, bool value_context)
       break;
 
     default:
-      if (expr <= LAST_ROM_OBJ || get_type (expr) == symbol_type)
+      if (expr <= LAST_ROM_OBJECT || get_type (expr) == symbol_type)
         compile_opcode (opLOAD_VAR);
       else
         compile_opcode (opLOAD_LITERAL);
@@ -360,7 +361,7 @@ static void compile_pending_expression (obj expr)
 
 obj compile_top_level (obj expr)
 {
-  objhdr *p = ((expr > LAST_ROM_OBJ && expr <= LAST_POSSIBLE_OBJECT)
+  objhdr *p = ((expr >= FIRST_RAM_OBJECT && expr <= LAST_POSSIBLE_OBJECT)
                ? get_header (expr) : NULL);
   objhdr *closure_hdr;
   obj closure;
@@ -368,7 +369,6 @@ obj compile_top_level (obj expr)
   if (p)
     FIX_OBJ (p);
   {
-
     closure = new_object (closure_type, &closure_hdr);
     closure_hdr -> u.closure_val.environment = obj_T;
     closure_hdr -> u.closure_val.lambda_obj = cons (obj_T, expr);
@@ -376,7 +376,7 @@ obj compile_top_level (obj expr)
     for (;;)
     {
       obj next_to_compile;
-      for (next_to_compile = LAST_ROM_OBJ + 1;
+      for (next_to_compile = FIRST_RAM_OBJECT;
            next_to_compile <= last_allocated_object;
            next_to_compile += 1)
       {

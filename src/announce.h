@@ -12,7 +12,8 @@ enum __attribute__ ((packed)) announcement
   ann_computation_aborted,
   ann_gc_starting,
 
-  ann_gc_finished
+  ann_gc_finished,
+  ann_shutting_down
 };
 
 
