@@ -5,14 +5,27 @@
 
 START_IMPLEMENTATION
 
+#if FROZEN_BOOTSTRAP
+#include <stdbool.h>
+static bool shutdown_announced;
+#endif
+
 void announce (enum announcement ann)
 {
+  #if FROZEN_BOOTSTRAP
+  if (shutdown_announced &&
+      (ann == ann_gc_starting || ann == ann_gc_finished))
+    return;
+
+  if (ann == ann_shutting_down)
+    shutdown_announced = true;
+  #endif
   typedef void (*announcement_listener) (enum announcement ann);
 
   static const PROGMEM announcement_listener listener [] = {
-#if TARGET_ARDUINO
+    #if TARGET_ARDUINO
     hardware_announce,
-#endif
+    #endif
     obj_announce,
     compiler_announce,
     eval_announce,

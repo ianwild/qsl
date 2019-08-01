@@ -116,6 +116,55 @@ typedef struct __attribute__ ((packed)) objhdr
   } u;
 } objhdr;
 
+
+typedef struct __attribute__ ((packed)) frozen_hdr
+{
+  uint8_t typecode;
+
+  union
+  {
+    // switch type in
+    // case closure_type:
+    struct
+    {
+      obj environment;
+      obj lambda_obj;
+    } closure_val;
+
+    // case lambda_type:
+    struct
+    {
+      obj opcodes;
+      obj constants;
+    } lambda_body;
+
+    // case symbol_type:
+    struct
+    {
+      uint16_t spelling;
+      obj      global_fn;
+    } symbol_val;
+
+    // case cons_type:
+    // case global_binding_type:
+    struct
+    {
+      obj car_cell;
+      obj cdr_cell;
+    } cons_val;
+
+    // case int_type:
+    int32_t int_val;
+
+    // case string_type:
+    uint16_t string_val;
+
+    // case array_type:
+    // case environment_type:
+    uint16_t array_val;
+  } u;
+} frozen_hdr;
+
 END_HEADER_FILE
 
 #endif // QSL_TYPES_H
