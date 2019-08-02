@@ -54,8 +54,16 @@ obj last_allocated_object = FIRST_RAM_OBJECT - 1;
 
 obj working_root;
 
-
+#if TARGET_ARDUINO
+  #define ARDUINO_FN(fn) fn
+#else
+  #define ARDUINO_FN(fn) NULL
+#endif
 #include "rom-symbols.ci"
+
+#if ! FROZEN_BOOTSTRAP
+  #include "frozen-objects.ci"
+#endif
 
 #if WITH_MEMSTATS
 static void memstats (bool gc_done)

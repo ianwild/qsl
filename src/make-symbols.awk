@@ -49,16 +49,15 @@ END {
     print "};\n";
 
     print "static const PROGMEM rom_object rom_symbols [] = {";
+    fmt = "{bytes + %3d, %s, %d},\n";
     for (i = 0; i < next_sym; i += 1) {
         if (i == arduino_only)
-            print "#if TARGET_ARDUINO";
+          fmt = "{bytes + %3d, ARDUINO_FN (%s), %d},\n";
         lisp_name = symbol_table [i];
         spelling = name_offset [lisp_name];
         fn = c_name [lisp_name];
         printf ("  /* %3d = %-15s */  ", i, lisp_name);
-        printf ("{bytes + %3d, %s, %d},\n", spelling, fn, fn ~ /^fe_/);
+        printf (fmt, spelling, fn, fn ~ /^fe_/);
     }
-    if (arduino_only >= 0)
-        print "#endif";
     print "};\n";
 }

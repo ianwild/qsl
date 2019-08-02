@@ -48,6 +48,13 @@ extern obj working_root;
 obj       fn_gc           (uint8_t *argc);
 obj       fn_mem          (uint8_t *argc);
 
+#if ! FROZEN_BOOTSTRAP
+const frozen_hdr   *get_frozen_header     (obj o);
+enum typecode       frozen_type           (obj o);
+const obj          *get_frozen_body       (obj o);
+const uint8_t      *get_frozen_spelling   (obj o);
+#endif
+
 END_HEADER_FILE
 
 #endif // QSL_OBJ_H

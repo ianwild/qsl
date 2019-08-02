@@ -29,7 +29,6 @@ QSL_OPTIONS += -DWITH_MEMSTATS=1
 QSL_OPTIONS += -DWITH_RC_SCRIPT=0
 QSL_OPTIONS += -DWITH_TRACE=1
 QSL_OPTIONS += -DWITH_THROW_LOCATION=1
-QSL_OPTIONS += -DFROZEN_BOOTSTRAP
 
 OPTIMISER_FLAGS := -Os -flto
 WARNING_FLAGS := -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
@@ -38,7 +37,19 @@ LDFLAGS := $(OPTIMISER_FLAGS)
 
 .PHONY: clean tar dep tags upload picocom
 
+qsl: CFLAGS += -DWITH_FROZEN_OBJECTS=1
 qsl:	$(OBJECTS)
+	$(CC) $(LDFLAGS) $^ -o $@
+
+booter:
+	echo '#define FROZEN_OBJECT_COUNT 0' >frozen-objects.h
+	$(MAKE) $(MAKEFLAGS) qsl-b
+	./qsl-b <frozen.lisp
+	printf '#define FROZEN_OBJECT_COUNT %d\n' $$(wc -l <objects) >frozen-objects.h
+
+
+qsl-b:	CFLAGS += -DFROZEN_BOOTSTRAP=1
+qsl-b:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 rom-symbols.ci:	make-symbols.awk rom.src
