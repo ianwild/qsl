@@ -18,6 +18,13 @@ int32_t get_int_val (obj o)
     printc (']');
     throw_error (bad_type);
   }
+  #if FROZEN_OBJECT_COUNT
+  if (o <= LAST_FROZEN_OBJECT)
+  {
+    const frozen_hdr *p = get_frozen_header (o);
+    return ((int32_t) pgm_read_dword_near (&p -> u.int_val));
+  }
+  #endif
   return (get_header (o) -> u.int_val);
 }
 

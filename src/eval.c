@@ -201,7 +201,10 @@ static obj interpret_bytecodes (void)
 
     case opLOAD_VAR:
       TRACE (("LOAD_VAR %04x\n", get_const (param_0 ())));
-      stack_push (symbol_value (get_const (next_opcode ())));
+      {
+        bool dummy;
+        stack_push (symbol_value (get_const (next_opcode ()), &dummy));
+      }
       break;
 
     case opSETQ:

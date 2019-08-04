@@ -40,8 +40,9 @@
   // means we need special code to get things back.  The Linux version
   // can just use *(x):
 
-  #define pgm_read_byte_near(x) (*(x))
-  #define pgm_read_word_near(x) (*(x))
+  #define pgm_read_byte_near(x)  (*(x))
+  #define pgm_read_word_near(x)  (*(x))
+  #define pgm_read_dword_near(x) (*(x))
 
 #endif // TARGET_ARDUINO
 

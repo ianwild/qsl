@@ -44,7 +44,8 @@ enum __attribute__ ((packed)) errcode
   div_by_zero,
   no_fdefn,
   no_mem,
-  compiler_error
+  compiler_error,
+  read_only
 };
 
 

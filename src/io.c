@@ -203,6 +203,7 @@ void (throw_error) (enum errcode e)
     MSG (no_fdefn);
     MSG (no_mem);
     MSG (compiler_error);
+    MSG (read_only);
 #undef MSG
   }
   slow_output = true;

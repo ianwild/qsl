@@ -45,11 +45,27 @@ obj fn_length (uint8_t *argc)
     break;
 
   case string_type:
+    #if FROZEN_OBJECT_COUNT
+    if (arg >= FIRST_FROZEN_OBJECT && arg <= LAST_FROZEN_OBJECT)
+    {
+      const uint8_t *p = get_frozen_spelling (arg);
+      len = pgm_read_byte_near (p);
+      break;
+    }
+    #endif
     get_spelling (arg, &len);
     break;
 
   case array_type:
   case environment_type:
+    #if FROZEN_OBJECT_COUNT
+    if (arg >= FIRST_FROZEN_OBJECT && arg <= LAST_FROZEN_OBJECT)
+    {
+      const obj *p = get_frozen_body (arg);
+      len = pgm_read_word_near (p);
+      break;
+    }
+    #endif
     len = get_header (arg) -> u.array_val [0];
     break;
 
@@ -74,22 +90,42 @@ obj fn_aref (uint8_t *argc)
   switch (get_type (target))
   {
   case string_type:
-  {
-    uint16_t len;
-    uint8_t *p = get_spelling (target, &len);
-    if (idx >= len)
-      throw_error (bad_idx);
-    return (FIRST_CHAR + p [idx]);
-  }
+    #if FROZEN_OBJECT_COUNT
+    if (target >= FIRST_FROZEN_OBJECT && target <= LAST_FROZEN_OBJECT)
+    {
+      const uint8_t *p = get_frozen_spelling (target);
+      uint16_t len = pgm_read_byte_near (p++);
+      if (idx >= len)
+        throw_error (bad_idx);
+      return (FIRST_CHAR + pgm_read_byte_near (p + idx));
+    }
+    #endif
+    {
+      uint16_t len;
+      uint8_t *p = get_spelling (target, &len);
+      if (idx >= len)
+        throw_error (bad_idx);
+      return (FIRST_CHAR + p [idx]);
+    }
 
   case array_type:
   case environment_type:
-  {
-    obj *p = get_header (target) -> u.array_val;
-    if (idx >= p [0])
-      throw_error (bad_idx);
-    return (p [idx + 1]);
-  }
+    #if FROZEN_OBJECT_COUNT
+    if (target >= FIRST_FROZEN_OBJECT && target <= LAST_FROZEN_OBJECT)
+    {
+      const obj *p = get_frozen_body (target);
+      uint16_t len = pgm_read_word_near (p++);
+      if (idx >= len)
+        throw_error (bad_idx);
+      return (pgm_read_word_near (p + idx));
+    }
+    #endif
+    {
+      obj *p = get_header (target) -> u.array_val;
+      if (idx >= p [0])
+        throw_error (bad_idx);
+      return (p [idx + 1]);
+    }
 
   default:
     throw_error (bad_type);
@@ -112,26 +148,34 @@ obj fn_aset (uint8_t *argc)
   switch (get_type (target))
   {
   case string_type:
-  {
-    if (get_type (new_val) != char_type)
-      throw_error (bad_type);
+    #if FROZEN_OBJECT_COUNT
+    if (target >= FIRST_FROZEN_OBJECT && target <= LAST_FROZEN_OBJECT)
+      throw_error (read_only);
+    #endif
+    {
+      if (get_type (new_val) != char_type)
+        throw_error (bad_type);
 
-    uint16_t len;
-    uint8_t *p = get_spelling (target, &len);
-    if (idx >= len)
-      throw_error (bad_idx);
-    p [idx] = new_val - FIRST_CHAR;
-    break;
-  }
+      uint16_t len;
+      uint8_t *p = get_spelling (target, &len);
+      if (idx >= len)
+        throw_error (bad_idx);
+      p [idx] = new_val - FIRST_CHAR;
+      break;
+    }
 
   case array_type:
-  {
-    obj *p = get_header (target) -> u.array_val;
-    if (idx >= p [0])
-      throw_error (bad_idx);
-    p [idx + 1] = new_val;
-    break;
-  }
+    #if FROZEN_OBJECT_COUNT
+    if (target >= FIRST_FROZEN_OBJECT && target <= LAST_FROZEN_OBJECT)
+      throw_error (read_only);
+    #endif
+    {
+      obj *p = get_header (target) -> u.array_val;
+      if (idx >= p [0])
+        throw_error (bad_idx);
+      p [idx + 1] = new_val;
+      break;
+    }
 
   default:
     throw_error (bad_type);

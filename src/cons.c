@@ -5,10 +5,18 @@
 
 START_IMPLEMENTATION
 
-static objhdr *get_cons_header (obj o)
+static objhdr *get_cons_header (obj o, bool *is_frozen)
 {
   if (get_type (o) != cons_type)
     throw_error (bad_type);
+  #if FROZEN_OBJECT_COUNT
+  if (o >= FIRST_FROZEN_OBJECT && o <= LAST_FROZEN_OBJECT)
+  {
+    *is_frozen = true;
+    return ((objhdr *) get_frozen_header (o));
+  }
+  #endif
+  *is_frozen = false;
   return (get_header (o));
 }
 
@@ -56,7 +64,13 @@ obj fn_car (uint8_t *argc)
   obj cons_cell = get_arg (0);
   if (cons_cell == obj_NIL)
     return (obj_NIL);
-  objhdr *p = get_cons_header (cons_cell);
+  bool is_frozen;
+  objhdr *p = get_cons_header (cons_cell, &is_frozen);
+  if (is_frozen)
+  {
+    frozen_hdr *p0 = (frozen_hdr *)p;
+    return (pgm_read_word_near (&p0 -> u.cons_val.car_cell));
+  }
   return (p -> u.cons_val.car_cell);
 }
 
@@ -66,7 +80,13 @@ obj fn_cdr (uint8_t *argc)
   obj cons_cell = get_arg (0);
   if (cons_cell == obj_NIL)
     return (obj_NIL);
-  objhdr *p = get_cons_header (cons_cell);
+  bool is_frozen;
+  objhdr *p = get_cons_header (cons_cell, &is_frozen);
+  if (is_frozen)
+  {
+    frozen_hdr *p0 = (frozen_hdr *)p;
+    return (pgm_read_word_near (&p0 -> u.cons_val.cdr_cell));
+  }
   return (p -> u.cons_val.cdr_cell);
 }
 
@@ -91,7 +111,10 @@ obj fn_rplaca (uint8_t *argc)
 {
   adjust_argc (argc, 2);
   obj cons_cell = get_arg (1);
-  objhdr *p = get_cons_header (cons_cell);
+  bool is_frozen;
+  objhdr *p = get_cons_header (cons_cell, &is_frozen);
+  if (is_frozen)
+    throw_error (read_only);
   return (p -> u.cons_val.car_cell = get_arg (0));
 }
 
@@ -99,7 +122,10 @@ obj fn_rplacd (uint8_t *argc)
 {
   adjust_argc (argc, 2);
   obj cons_cell = get_arg (1);
-  objhdr *p = get_cons_header (cons_cell);
+  bool is_frozen;
+  objhdr *p = get_cons_header (cons_cell, &is_frozen);
+  if (is_frozen)
+    throw_error (read_only);
   return (p -> u.cons_val.cdr_cell = get_arg (0));
 }
 

@@ -7,7 +7,7 @@
 START_HEADER_FILE
 
 obj  find_symbol        (uint8_t *spelling, uint16_t len);
-obj  symbol_value       (obj sym);
+obj  symbol_value       (obj sym, bool *is_frozen);
 obj  set_symbol_value   (obj sym, obj val);
 
 END_HEADER_FILE

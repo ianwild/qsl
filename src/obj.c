@@ -286,6 +286,13 @@ enum typecode get_type (obj o)
     return (char_type);
   if (o <= LAST_ROM_OBJECT)
     return (rom_symbol_type);
+  #if FROZEN_OBJECT_COUNT
+  if (o >= FIRST_FROZEN_OBJECT && o <= LAST_FROZEN_OBJECT)
+  {
+    const frozen_hdr *p = get_frozen_header (o);
+    return (pgm_read_byte_near (&p -> typecode));
+  }
+  #endif
   if (o > last_allocated_object)
     return (unallocated_type);
   return (GET_TYPE (GET_HEADER (o)));

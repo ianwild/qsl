@@ -50,18 +50,40 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
   return (sym);
 }
 
-static obj *find_lexical_binding (obj sym)
+static obj *find_lexical_binding (obj sym, bool *is_frozen)
 {
   obj env = current_environment;
   while (env != obj_NIL)
   {
+    #if FROZEN_OBJECT_COUNT
+    if (env >= FIRST_FROZEN_OBJECT && env <= LAST_FROZEN_OBJECT)
+    {
+      const obj *p = get_frozen_body (env);
+      uint16_t len = (uint16_t) pgm_read_word_near (p++) - 1;
+      env = (obj) pgm_read_word_near (p++);            // parent environment
+      while (len)
+      {
+        if ((obj) pgm_read_word_near (p) == sym)
+        {
+          *is_frozen = true;
+          return ((obj *) p + 1);
+        }
+        p += 2;
+        len -= 2;
+      }
+      continue;
+    }
+    #endif
     obj *p = get_header (env) -> u.array_val;
     uint16_t len = (uint16_t) *p++ - 1;
     env = *p++;                 // parent environment
     while (len)
     {
       if (*p == sym)
+      {
+        *is_frozen = false;
         return (p + 1);
+      }
       p += 2;
       len -= 2;
     }
@@ -69,50 +91,86 @@ static obj *find_lexical_binding (obj sym)
   return (NULL);
 }
 
-static objhdr *find_global_binding (obj sym)
+static objhdr *find_global_binding (obj sym, bool *is_frozen)
 {
+  #if FROZEN_OBJECT_COUNT
+  for (obj res = FIRST_FROZEN_OBJECT; res <= LAST_FROZEN_OBJECT; res += 1)
+    if (get_type (res) == global_binding_type)
+    {
+      const frozen_hdr *p = get_frozen_header (res);
+      if (pgm_read_word_near (&p -> u.cons_val.car_cell) == sym)
+      {
+        *is_frozen = true;
+        return ((objhdr *) p);
+      }
+    }
+  #endif
   for (obj res = FIRST_RAM_OBJECT; res <= last_allocated_object; res += 1)
     if (get_type (res) == global_binding_type)
     {
       objhdr *p = get_header (res);
       if (p -> u.cons_val.car_cell == sym)
+      {
+        *is_frozen = false;
         return (p);
+      }
     }
   return (NULL);
 }
 
-obj symbol_value (obj sym)
+obj symbol_value (obj sym, bool *is_frozen)
 {
   if (sym <= obj_T)
     return (sym);
   {
-    obj *p = find_lexical_binding (sym);
+    obj *p = find_lexical_binding (sym, is_frozen);
     if (p)
+    {
+      #if FROZEN_OBJECT_COUNT
+      if (*is_frozen)
+        return ((obj) pgm_read_word_near (p));
+      #endif
       return (*p);
+    }
   }
   {
-    objhdr *p = find_global_binding (sym);
+    objhdr *p = find_global_binding (sym, is_frozen);
     if (p)
+    {
+      #if FROZEN_OBJECT_COUNT
+      if (*is_frozen)
+      {
+        const frozen_hdr *p0 = (frozen_hdr *)p;
+        return ((obj) pgm_read_word_near (&p0 -> u.cons_val.cdr_cell));
+      }
+      #endif
       return (p -> u.cons_val.cdr_cell);
+    }
   }
 
   return (obj_NIL);
 }
 
-
 obj set_symbol_value (obj sym, obj val)
 {
   if (sym <= obj_T)
     throw_error (bad_obj);
+  bool is_frozen;
   {
-    obj *p = find_lexical_binding (sym);
-    if (p)
-      return (*p = val);
-  }
-  {
-    objhdr *p = find_global_binding (sym);
+    obj *p = find_lexical_binding (sym, &is_frozen);
     if (p)
     {
+      if (is_frozen)
+        throw_error (read_only);
+      return (*p = val);
+    }
+  }
+  {
+    objhdr *p = find_global_binding (sym, &is_frozen);
+    if (p)
+    {
+      if (is_frozen)
+        throw_error (read_only);
       if (!val)
         p -> control = unallocated_type;
       else
