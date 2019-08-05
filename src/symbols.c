@@ -7,6 +7,15 @@
 
 START_IMPLEMENTATION
 
+static bool compare_with_rom (uint8_t *inram, const uint8_t *inrom, uint16_t len)
+{
+  while (len)
+    if (pgm_read_byte_near (inrom++) != *inram++)
+      return (false);
+  return (true);
+}
+
+
 obj find_symbol (uint8_t *spelling, uint16_t len)
 {
   obj sym;
@@ -14,25 +23,22 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
   {
     uint16_t rom_len;
     const uint8_t *rom_spelling = get_rom_spelling (sym, &rom_len);
-    if (rom_len == len)
-    {
-      uint8_t *new_spelling = spelling;
-      while (rom_len)
-      {
-        if (pgm_read_byte_near (rom_spelling++) != *new_spelling++)
-          break;
-        rom_len -= 1;
-      }
-      if (rom_len == 0)
-        return (sym);
-    }
+    if (rom_len == len && compare_with_rom (spelling, rom_spelling, len))
+      return (sym);
   }
 
   for (; sym < FIRST_RAM_OBJECT; sym += 1)
-    ;
+    if (get_type (sym) == symbol_type)
+    {
+      const uint8_t *frozen_spelling = get_frozen_spelling (sym);
+      uint16_t frozen_len = pgm_read_byte_near (frozen_spelling++);
+      if (frozen_len == len &&
+          compare_with_rom (spelling, frozen_spelling, len))
+        return (sym);
+    }
+
 
   for (; sym <= last_allocated_object; sym += 1)
-  {
     if (get_type (sym) == symbol_type)
     {
       uint16_t ram_len;
@@ -41,7 +47,6 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
           memcmp (spelling, ram_spelling, len) == 0)
         return (sym);
     }
-  }
 
   sym = new_extended_object (symbol_type, len);
   uint16_t dummy;

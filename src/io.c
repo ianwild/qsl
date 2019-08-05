@@ -375,24 +375,49 @@ obj fn_read (uint8_t *argc)
   return (internal_read ());
 }
 
+#if PRINT_WITH_QUOTES
+static void print_quoted1 (uint8_t q, uint8_t ch)
+{
+  if (ch == q || ch == '\\')
+    printc ('\\');
+  printc (ch);
+}
+#endif
+
 static void print_quoted (uint8_t q, obj o)
 {
-  uint16_t len;
-  uint8_t *p = get_spelling (o, &len);
-#if PRINT_WITH_QUOTES
-  printc (q);
-  while (len--)
+  #if FROZEN_OBJECT_COUNT
+  if (o >= FIRST_FROZEN_OBJECT && o <= LAST_FROZEN_OBJECT)
   {
-    if (*p == q || *p == '\\')
-      printc ('\\');
-    printc (*p++);
+    const uint8_t *p = get_frozen_spelling (o);
+    uint16_t len = pgm_read_byte_near (p++);
+    #if PRINT_WITH_QUOTES
+    printc (q);
+    while (len--)
+      print_quoted1 (q, pgm_read_byte_near (p++));
+    printc (q);
+    #else
+    (void) q;
+    while (len--)
+      printc (pgm_read_byte_near (p++));
+    #endif
   }
-  printc (q);
-#else
-  (void) q;
-  while (len--)
-    printc (*p++);
-#endif
+  else
+  #endif
+  {
+    uint16_t len;
+    uint8_t *p = get_spelling (o, &len);
+    #if PRINT_WITH_QUOTES
+    printc (q);
+    while (len--)
+      print_quoted1 (q, *p++);
+    printc (q);
+    #else
+    (void) q;
+    while (len--)
+      printc (*p++);
+    #endif
+  }
 }
 
 void print1 (obj o)
@@ -455,14 +480,31 @@ void print1 (obj o)
   {
     printc ('#');
     printc ('(');
-    obj *p = get_header (o) -> u.array_val;
-    uint16_t n = *p++;
-    while (n)
+    #if FROZEN_OBJECT_COUNT
+    if (o >= FIRST_FROZEN_OBJECT && o <= LAST_FROZEN_OBJECT)
     {
-      print1 (*p++);
-      n -= 1;
-      if (n)
-        printc (' ');
+      const obj *p = get_frozen_body (o);
+      uint16_t n = pgm_read_word_near (p++);
+      while (n)
+      {
+        print1 (pgm_read_word_near (p++));
+        n -= 1;
+        if (n)
+          printc (' ');
+      }
+    }
+    else
+    #endif
+    {
+      obj *p = get_header (o) -> u.array_val;
+      uint16_t n = *p++;
+      while (n)
+      {
+        print1 (*p++);
+        n -= 1;
+        if (n)
+          printc (' ');
+      }
     }
     printc (')');
     break;
