@@ -37,7 +37,6 @@ LDFLAGS := $(OPTIMISER_FLAGS)
 
 .PHONY: clean tar dep tags upload picocom
 
-qsl: CFLAGS += -DWITH_FROZEN_OBJECTS=1
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
@@ -139,13 +138,13 @@ main.c: announce.h compiler.h dbg.h eval.h gc.h io.h obj.h stack.h
 misc.c: integer.h misc.h obj.h stack.h
 misc.h: target.h types.h
 obj.c: announce.h arrays.h buffer-limits.h compiler.h cons.h dbg.h eval.h
-obj.c: fexprs.h gc.h hardware.h integer.h io.h misc.h obj.h rom-symbols.ci
-obj.c: stack.h
+obj.c: fexprs.h frozen-objects.ci gc.h hardware.h integer.h io.h misc.h obj.h
+obj.c: rom-symbols.ci stack.h
 obj.h: frozen-objects.h rom-symbols.h target.h types.h
 serial_io.h: target.h types.h
 stack.c: announce.h buffer-limits.h dbg.h gc.h obj.h stack.h
 stack.h: target.h types.h
-symbols.c: dbg.h eval.h obj.h symbols.h
+symbols.c: dbg.h eval.h misc.h obj.h symbols.h
 symbols.h: target.h types.h
 target.h: qsl-options.h
 types.h: target.h

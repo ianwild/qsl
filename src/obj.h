@@ -20,7 +20,7 @@ START_HEADER_FILE
 #define LAST_POSSIBLE_OBJECT  OBJECT_C (0x7EFF)
 #define LAST_ROM_OBJECT       ROM_OBJECT_COUNT
 #define FIRST_FROZEN_OBJECT   (LAST_ROM_OBJECT + 1)
-#define LAST_FROZEN_OBJECT    (FIRST_FROZEN_OBJECT + FROZEN_OBJECT_COUNT)
+#define LAST_FROZEN_OBJECT    (FIRST_FROZEN_OBJECT + FROZEN_OBJECT_COUNT - 1)
 #define FIRST_RAM_OBJECT      (LAST_FROZEN_OBJECT + 1)
 
 enum typecode      get_type             (obj o);
@@ -48,11 +48,15 @@ extern obj working_root;
 obj       fn_gc           (uint8_t *argc);
 obj       fn_mem          (uint8_t *argc);
 
-#if ! FROZEN_BOOTSTRAP
+#if FROZEN_OBJECT_COUNT > 0
 const frozen_hdr   *get_frozen_header     (obj o);
 enum typecode       frozen_type           (obj o);
 const obj          *get_frozen_body       (obj o);
 const uint8_t      *get_frozen_spelling   (obj o);
+
+#define HEADER_FIELD(o,f) (o < FIRST_RAM_OBJECT ? pgm_read_word_near (&get_frozen_header (o) -> f) : get_header (o) -> f)
+#else
+#define HEADER_FIELD(o,f) (get_header (o) -> f)
 #endif
 
 END_HEADER_FILE

@@ -61,7 +61,7 @@ obj working_root;
 #endif
 #include "rom-symbols.ci"
 
-#if ! FROZEN_BOOTSTRAP
+#if FROZEN_OBJECT_COUNT > 0
   #include "frozen-objects.ci"
 #endif
 
@@ -142,7 +142,10 @@ static objhdr *GET_HEADER (obj o)
 objhdr *get_header (obj o)
 {
   if (o < FIRST_RAM_OBJECT || o > last_allocated_object)
+  {
+    fprintf (stderr, "%d <= %d <= %d failed\n", FIRST_RAM_OBJECT, o, last_allocated_object);
     throw_error (bad_obj);
+  }
   return (GET_HEADER (o));
 }
 

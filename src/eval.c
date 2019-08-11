@@ -28,9 +28,9 @@ static char *symname (uint8_t opcode)
 }
 #endif
 
-static obj *constants;
-static uint8_t *function_base;
-static uint8_t *current_function;
+static const obj *constants;
+static const uint8_t *function_base;
+static const uint8_t *current_function;
 static uint16_t interpreter_index;
 static obj current_closure;
 static obj current_lambda;
@@ -40,49 +40,78 @@ static void restore_eval_state (void)
 {
   if (current_closure)
   {
-    objhdr *p = get_header (current_closure);
-    if (GET_TYPE (p) != closure_type)
+    printf ("current_closure is %d\n", current_closure);
+    if (get_type (current_closure) != closure_type)
       throw_error (bad_type);
-    current_lambda = p -> u.closure_val.lambda_obj;
-    p = get_header (current_lambda);
-    function_base =
-      get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
-    constants =
-      get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
+    current_lambda = HEADER_FIELD (current_closure, u.closure_val.lambda_obj);
+    printf ("current_lambda is %d\n", current_lambda);
+    #if FROZEN_OBJECT_COUNT > 0
+    if (current_lambda >= FIRST_FROZEN_OBJECT && current_lambda <= LAST_FROZEN_OBJECT)
+    {
+      const frozen_hdr *p = get_frozen_header (current_lambda);
+      function_base =
+        get_frozen_spelling (pgm_read_word_near (&p -> u.lambda_body.opcodes)) + 1;
+      constants =
+        get_frozen_body (pgm_read_word_near (&p -> u.lambda_body.constants)) + 1;
+    }
+    else
+    #endif
+    {
+      objhdr *p = get_header (current_lambda);
+      function_base =
+        get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
+      constants =
+        get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
+    }
     current_function = function_base + interpreter_index;
   }
 }
 
 static obj get_const (uint8_t idx)
 {
+  #if FROZEN_OBJECT_COUNT > 0
+  if (current_lambda <= LAST_FROZEN_OBJECT)
+    return (pgm_read_word_near (constants + idx));
+  #endif
   return (constants [idx]);
 }
 
 static uint8_t param_0 (void)
 {
+  #if FROZEN_OBJECT_COUNT > 0
+  if (current_lambda <= LAST_FROZEN_OBJECT)
+    return (pgm_read_byte_near (current_function));
+  #endif
   return (current_function [0]);
 }
 
 #if WITH_TRACE
 static uint8_t param_1 (void)
 {
+  #if FROZEN_OBJECT_COUNT > 0
+  if (current_lambda <= LAST_FROZEN_OBJECT)
+    return (pgm_read_byte_near (current_function + 1));
+  #endif
   return (current_function [1]);
 }
 #endif
 
 static uint8_t next_opcode (void)
 {
+  #if FROZEN_OBJECT_COUNT > 0
+  if (current_lambda <= LAST_FROZEN_OBJECT)
+    return (pgm_read_byte_near (current_function++));
+  #endif
   return (*current_function++);
 }
 
 static void call_lambda (obj fn, uint8_t argc)
 {
-  objhdr *p = get_header (fn);
   obj lambda = obj_NIL;
-  switch (GET_TYPE (p))
+  switch (get_type (fn))
   {
   case symbol_type:
-    lambda = p -> u.symbol_val.global_fn;
+    lambda = HEADER_FIELD (fn, u.symbol_val.global_fn);
     break;
 
   case closure_type:
@@ -104,7 +133,7 @@ static void call_lambda (obj fn, uint8_t argc)
     stack_push (create_int (interpreter_index));
     current_closure = lambda;
     interpreter_index = 0;
-    current_environment = get_header (lambda) -> u.closure_val.environment;
+    current_environment = HEADER_FIELD (lambda, u.closure_val.environment);
     restore_eval_state ();
   }
   else

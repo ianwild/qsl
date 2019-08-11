@@ -2,51 +2,51 @@
 
 #include "dbg.h"
 #include "eval.h"
+#include "misc.h"
 #include "obj.h"
 #include "symbols.h"
 
 START_IMPLEMENTATION
 
-static bool compare_with_rom (uint8_t *inram, const uint8_t *inrom, uint16_t len)
-{
-  while (len)
-    if (pgm_read_byte_near (inrom++) != *inram++)
-      return (false);
-  return (true);
-}
-
 
 obj find_symbol (uint8_t *spelling, uint16_t len)
 {
-  obj sym;
-  for (sym = 0; sym < FIRST_FROZEN_OBJECT; sym += 1)
+  obj sym = 0;
+
+  for (; sym <= LAST_ROM_OBJECT; sym += 1)
   {
     uint16_t rom_len;
     const uint8_t *rom_spelling = get_rom_spelling (sym, &rom_len);
-    if (rom_len == len && compare_with_rom (spelling, rom_spelling, len))
+    if (compare_strings (spelling, len, false,
+                         rom_spelling, rom_len, true) == 0)
       return (sym);
   }
 
-  for (; sym < FIRST_RAM_OBJECT; sym += 1)
+  #if FROZEN_OBJECT_COUNT > 0
+  for (; sym <= LAST_FROZEN_OBJECT; sym += 1)
+  {
     if (get_type (sym) == symbol_type)
     {
       const uint8_t *frozen_spelling = get_frozen_spelling (sym);
       uint16_t frozen_len = pgm_read_byte_near (frozen_spelling++);
-      if (frozen_len == len &&
-          compare_with_rom (spelling, frozen_spelling, len))
+      if (compare_strings (spelling, len, false,
+                           frozen_spelling, frozen_len, true) == 0)
         return (sym);
     }
-
+  }
+  #endif
 
   for (; sym <= last_allocated_object; sym += 1)
+  {
     if (get_type (sym) == symbol_type)
     {
       uint16_t ram_len;
       const uint8_t *ram_spelling = get_spelling (sym, &ram_len);
-      if (ram_len == len &&
-          memcmp (spelling, ram_spelling, len) == 0)
+      if (compare_strings (spelling, len, false,
+                           ram_spelling, ram_len, true) == 0)
         return (sym);
     }
+  }
 
   sym = new_extended_object (symbol_type, len);
   uint16_t dummy;

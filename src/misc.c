@@ -25,6 +25,20 @@ obj fn_neq (uint8_t *argc)
   return (get_arg (0) != get_arg (1) ? obj_T : obj_NIL);
 }
 
+static const uint8_t *find_string_addr (obj o, uint16_t *len, bool *in_rom)
+{
+  #if FROZEN_OBJECT_COUNT
+  if (o >= FIRST_FROZEN_OBJECT && o <= LAST_FROZEN_OBJECT)
+  {
+    const uint8_t *s = get_frozen_spelling (o);
+    *len = pgm_read_byte_near (s++);
+    *in_rom = true;
+    return (s);
+  }
+  #endif
+  *in_rom = false;
+  return (get_spelling (o, len));
+}
 
 static int32_t compare_two_args (uint8_t *argc)
 {
@@ -36,14 +50,13 @@ static int32_t compare_two_args (uint8_t *argc)
     throw_error (bad_type);
   if (t == string_type)
   {
-    uint16_t alen;
-    uint8_t *atxt = get_spelling (left, &alen);
-    uint16_t blen;
-    uint8_t *btxt = get_spelling (right, &blen);
-    int cmp = memcmp (atxt, btxt, (alen < blen) ? alen : blen);
-    if (cmp == 0)
-      cmp = (int16_t) alen - (int16_t) blen;
-    return (cmp);
+    uint16_t llen;
+    bool lrom;
+    const uint8_t *s1 = find_string_addr (left, &llen, &lrom);
+    uint16_t rlen;
+    bool rrom;
+    const uint8_t *s2 = find_string_addr (right, &rlen, &rrom);
+    return (compare_strings (s1, llen, lrom, s2, rlen, rrom));
   }
   int32_t a =
     (t == char_type) ? (left - FIRST_CHAR) : get_int_val (left);
@@ -81,6 +94,22 @@ obj fn_equals (uint8_t *argc)
 obj fn_not_equals (uint8_t *argc)
 {
   return ((compare_two_args (argc) != 0) ? obj_T : obj_NIL);
+}
+
+
+int compare_strings (const uint8_t *s1, uint16_t len1, bool in_rom1,
+                     const uint8_t *s2, uint16_t len2, bool in_rom2)
+{
+  size_t n = (len1 < len2) ? len1 : len2;
+  for (size_t i = 0; i < n; i += 1)
+  {
+    uint8_t ch1 = in_rom1 ? pgm_read_byte_near (s1 + i) : s1 [i];
+    uint8_t ch2 = in_rom2 ? pgm_read_byte_near (s2 + i) : s2 [i];
+    int delta = ch1 - ch2;
+    if (delta)
+      return (delta);
+  }
+  return (len1 - len2);
 }
 
 END_IMPLEMENTATION
