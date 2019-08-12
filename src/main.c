@@ -100,11 +100,11 @@ static obj follow (obj o)
 static void write_frozen_state (void)
 {
   obj last_object = pack_ram_headers ();
-  FILE *bytes = fopen ("bytes", "w");
+  FILE *bytes = fopen ("bytes.ci", "w");
   int byte_count = 0;
-  FILE *words = fopen ("words", "w");
+  FILE *words = fopen ("words.ci", "w");
   int word_count = 0;
-  FILE *objects = fopen ("objects", "w");
+  FILE *objects = fopen ("objects.ci", "w");
   //int object_count = 0;
 
   for (obj o = FIRST_RAM_OBJECT; o <= last_object; o += 1)
@@ -122,7 +122,7 @@ static void write_frozen_state (void)
     case closure_type:
       fprintf (objects,
                "{.typecode = closure_type, "
-               ".u.closure_val = {.environment = %d, .lambda_obj = %d}},\n",
+               ".u = {.closure_val = {.environment = %d, .lambda_obj = %d}}},\n",
                follow (p -> u.closure_val.environment),
                follow (p -> u.closure_val.lambda_obj));
       break;
@@ -130,7 +130,7 @@ static void write_frozen_state (void)
     case lambda_type:
       fprintf (objects,
                "{.typecode = lambda_type, "
-               ".u.lambda_body = {.opcodes = %d, .constants = %d}},\n",
+               ".u = {.lambda_body = {.opcodes = %d, .constants = %d}}},\n",
                follow (p -> u.lambda_body.opcodes),
                follow (p -> u.lambda_body.constants));
       break;
@@ -139,14 +139,14 @@ static void write_frozen_state (void)
       spelling = p -> u.symbol_val.spelling;
       fprintf (objects,
                "{.typecode = symbol_type, "
-               ".u.symbol_val = {.spelling = %d, .global_fn = %d}},\n",
+               ".u = {.symbol_val = {.spelling = %d, .global_fn = %d}}},\n",
                byte_count, follow (p -> u.symbol_val.global_fn));
       break;
 
     case cons_type:
       fprintf (objects,
                "{.typecode = cons_type, "
-               ".u.cons_val = {.car_cell = %d, .cdr_cell = %d}},\n",
+               ".u = {.cons_val = {.car_cell = %d, .cdr_cell = %d}}},\n",
                follow (p -> u.cons_val.car_cell),
                follow (p -> u.cons_val.cdr_cell));
       break;
@@ -154,35 +154,35 @@ static void write_frozen_state (void)
     case global_binding_type:
       fprintf (objects,
                "{.typecode = global_binding_type, "
-               ".u.cons_val = {.car_cell = %d, .cdr_cell = %d}},\n",
+               ".u = {.cons_val = {.car_cell = %d, .cdr_cell = %d}}},\n",
                follow (p -> u.cons_val.car_cell),
                follow (p -> u.cons_val.cdr_cell));
       break;
 
     case int_type:
       fprintf (objects,
-               "{.typecode = int_type, .u.int_val = %d},\n",
+               "{.typecode = int_type, .u = {.int_val = %d}},\n",
                p -> u.int_val);
       break;
 
     case string_type:
       spelling = p -> u.string_val;
       fprintf (objects,
-               "{.typecode = string_type, .u.string_val = %d},\n",
+               "{.typecode = string_type, .u = {.string_val = %d}},\n",
                byte_count);
       break;
 
     case array_type:
       body = p -> u.array_val;
       fprintf (objects,
-               "{.typecode = array_type, .u.array_val = %d},\n",
+               "{.typecode = array_type, .u = {.array_val = %d}},\n",
                word_count);
       break;
 
     case environment_type:
       body = p -> u.array_val;
       fprintf (objects,
-               "{.typecode = environment_type, .u.array_val = %d},\n",
+               "{.typecode = environment_type, .u = {.array_val = %d}},\n",
                word_count);
       break;
 

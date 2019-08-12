@@ -43,7 +43,7 @@ obj find_symbol (uint8_t *spelling, uint16_t len)
       uint16_t ram_len;
       const uint8_t *ram_spelling = get_spelling (sym, &ram_len);
       if (compare_strings (spelling, len, false,
-                           ram_spelling, ram_len, true) == 0)
+                           ram_spelling, ram_len, false) == 0)
         return (sym);
     }
   }

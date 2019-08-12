@@ -19,7 +19,7 @@ GENERATED += qsl
 GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 GENERATED += qsl-options.h
-GENERATED += bytes words objects
+GENERATED += bytes.ci words.ci objects.ci
 
 QSL_OPTIONS :=
 QSL_OPTIONS += -DTARGET_ARDUINO=0
@@ -44,7 +44,7 @@ booter:
 	echo '#define FROZEN_OBJECT_COUNT 0' >frozen-objects.h
 	$(MAKE) $(MAKEFLAGS) qsl-b
 	./qsl-b <frozen.lisp
-	printf '#define FROZEN_OBJECT_COUNT %d\n' $$(wc -l <objects) >frozen-objects.h
+	printf '#define FROZEN_OBJECT_COUNT %d\n' $$(wc -l <objects.ci) >frozen-objects.h
 
 
 qsl-b:	CFLAGS += -DFROZEN_BOOTSTRAP=1

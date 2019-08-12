@@ -143,7 +143,7 @@ objhdr *get_header (obj o)
 {
   if (o < FIRST_RAM_OBJECT || o > last_allocated_object)
   {
-    fprintf (stderr, "%d <= %d <= %d failed\n", FIRST_RAM_OBJECT, o, last_allocated_object);
+    print_int (o);
     throw_error (bad_obj);
   }
   return (GET_HEADER (o));

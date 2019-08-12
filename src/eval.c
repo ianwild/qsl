@@ -40,11 +40,9 @@ static void restore_eval_state (void)
 {
   if (current_closure)
   {
-    printf ("current_closure is %d\n", current_closure);
     if (get_type (current_closure) != closure_type)
       throw_error (bad_type);
     current_lambda = HEADER_FIELD (current_closure, u.closure_val.lambda_obj);
-    printf ("current_lambda is %d\n", current_lambda);
     #if FROZEN_OBJECT_COUNT > 0
     if (current_lambda >= FIRST_FROZEN_OBJECT && current_lambda <= LAST_FROZEN_OBJECT)
     {

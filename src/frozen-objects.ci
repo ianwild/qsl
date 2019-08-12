@@ -1,19 +1,26 @@
 static const PROGMEM uint8_t frozen_bytes [] = {
-#include /* */ "bytes"
+#include /* */ "bytes.ci"
 };
 
 static const PROGMEM uint16_t frozen_words [] = {
-#include /* */ "words"
+#include /* */ "words.ci"
 };
 
 static const PROGMEM frozen_hdr frozen_objects [] = {
-#include /* */ "objects"
+#include /* */ "objects.ci"
 };
 
 const frozen_hdr *get_frozen_header (obj o)
 {
   if (o < FIRST_FROZEN_OBJECT || o > LAST_FROZEN_OBJECT)
+  {
+    print_int (FIRST_FROZEN_OBJECT);
+    printc ('<'); print_int (o);
+    printc ('<'); print_int (LAST_FROZEN_OBJECT);
+    printc ('\n');
+
     throw_error (bad_obj);
+  }
 
   return (frozen_objects + (o - FIRST_FROZEN_OBJECT));
 }

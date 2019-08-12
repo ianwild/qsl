@@ -29,8 +29,6 @@ END {
     print "static const PROGMEM uint8_t bytes [] = {";
     idx = 0;
     for (i = 0; i < next_sym; i += 1) {
-        if (i == arduino_only)
-            print "#if TARGET_ARDUINO";
         lisp_name = symbol_table [i];
         len = length(lisp_name);
         name_offset [lisp_name] = idx;
@@ -44,8 +42,6 @@ END {
         idx += len + 1;
         printf ("\n");
     }
-    if (arduino_only >= 0)
-        print "#endif";
     print "};\n";
 
     print "static const PROGMEM rom_object rom_symbols [] = {";

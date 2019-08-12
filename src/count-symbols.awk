@@ -16,15 +16,7 @@ END {
     print "#ifndef QSL_ROM_SYMBOLS_H";
     print "#define QSL_ROM_SYMBOLS_H\n";
 
-    if (arduino_only >= 0) {
-        print "#if TARGET_ARDUINO"
-        printf ("  #define ROM_OBJECT_COUNT    OBJECT_C (%d)\n", next_sym - 1);
-        print "#else"
-        printf ("  #define ROM_OBJECT_COUNT    OBJECT_C (%d)\n", arduino_only - 1);
-        print "#endif\n"
-    } else {
         printf ("#define ROM_OBJECT_COUNT    OBJECT_C (%d)\n\n", next_sym - 1);
-    }
 
     print "#endif // QSL_ROM_SYMBOLS_H";
 }
