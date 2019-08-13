@@ -20,6 +20,7 @@ GENERATED += rom-symbols.ci
 GENERATED += rom-symbols.h
 GENERATED += qsl-options.h
 GENERATED += bytes.ci words.ci objects.ci
+GENERATED += qsl-b
 
 QSL_OPTIONS :=
 QSL_OPTIONS += -DTARGET_ARDUINO=0
@@ -87,11 +88,11 @@ clean:
 	rm -f ../doc/*~ ../doc/*# ../doc/.*.swp
 
 tar:	clean
-	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`   \
-		--exclude .git                  \
-		--exclude .gitignore            \
-		--exclude TAGS --exclude tags   \
-		--directory ..                  \
+	tar czf `date +/tmp/qsl.%Y-%m-%d.tgz`                  \
+		--exclude .git                                 \
+		--exclude .gitignore                           \
+		--exclude TAGS --exclude tags --exclude refs   \
+		--directory ..                                 \
 		.
 
 tags:
@@ -149,3 +150,4 @@ symbols.h: target.h types.h
 target.h: qsl-options.h
 types.h: target.h
 ## AUTODEPS END ## }}}
+

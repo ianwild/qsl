@@ -1,8 +1,8 @@
 # -*- makefile -*-
 
 #BOARD_TAG = leonardo
-BOARD_TAG = mega
-#BOARD_TAG = nano
+#BOARD_TAG = mega
+BOARD_TAG = nano
 #BOARD_TAG = uno
 
 ifneq ($(filter leonardo mega uno,$(BOARD_TAG)),)
@@ -24,9 +24,9 @@ endif
 QSL_OPTIONS := -DTARGET_ARDUINO=1
 QSL_OPTIONS += -DWITH_MEMSTATS=0
 QSL_OPTIONS += -DWITH_RC_SCRIPT=0
-QSL_OPTIONS += -DWITH_NAMESPACE=1
+QSL_OPTIONS += -DWITH_NAMESPACE=0
 QSL_OPTIONS += -DWITH_PEEK_AND_POKE=1
-QSL_OPTIONS += -DWITH_THROW_LOCATION=1
+QSL_OPTIONS += -DWITH_THROW_LOCATION=0
 
 CFLAGS   += $(QSL_OPTIONS) -W -Wall -std=c11
 CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes -Werror

@@ -33,7 +33,7 @@
 */
 
 #if TARGET_ARDUINO
-  #define TOTAL_HEAP_SIZE          (1024 * 7)
+  #define TOTAL_HEAP_SIZE          (1024 )//* 7)
   #define MAX_OPCODES_PER_LAMBDA     64
   #define MAX_LITERALS_PER_LAMBDA    16
   #define MAX_STACK_DEPTH            64

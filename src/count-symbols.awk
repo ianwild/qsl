@@ -16,7 +16,7 @@ END {
     print "#ifndef QSL_ROM_SYMBOLS_H";
     print "#define QSL_ROM_SYMBOLS_H\n";
 
-        printf ("#define ROM_OBJECT_COUNT    OBJECT_C (%d)\n\n", next_sym - 1);
+    printf ("#define ROM_OBJECT_COUNT    OBJECT_C (%d)\n", next_sym - 1);
 
     print "#endif // QSL_ROM_SYMBOLS_H";
 }
