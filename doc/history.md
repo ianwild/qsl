@@ -96,3 +96,18 @@ assumptions QSL makes are as portable as I'd hoped.
 As it happens, the only change I needed to make was in the `pin` function
 (in `hardware.cpp`): the Mega needs an explicit `pinMode(...,OUTPUT)`,
 but the Nano is happy with `digitalWrite()` alone.
+
+----------------------------------------------------------------------------
+
+About a year later, I realised that it's pretty dumb to repeatedly type in
+the same functions every time I want to test something, given that there's
+such a huge amount of flash unused.  Hence "frozen objects".
+
+The theory is that the Linux version of QSL can compile S-expressions
+then write out its memory as a trio of source files.  If these files are
+then included in the Arduino build, we get a collection of pre-defined
+Lisp functions and constants ready to use on reset, and that occupy _no_
+RAM.
+
+So far, it seems to work, though I'm not convinced that the build process
+is in its most elegant form.
