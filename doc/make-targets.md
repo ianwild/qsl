@@ -25,8 +25,8 @@ in the _next_ build (either `make` or `make arduino`).
 
 Re-compiles QSL to include a special "...and then dump RAM" routine,
 then runs this new version with input from `frozen.lisp`.  The end result
-is that anything defined in `frozen.lisp` becomes defined in the _next_
-build (either `make` or `make arduino`).
+is that anything defined in `frozen.lisp` becomes a pre-defined constant
+or function in the _next_ build (either `make` or `make arduino`).
 
 
 `make arduino`

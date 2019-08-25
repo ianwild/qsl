@@ -314,6 +314,7 @@
     return `nil`.
 
 `(8bits address [val])`
+
 `(16bits address [val])`
 
 >   If an integer `val` is supplied, write the low-order 8 or 16 bits to
