@@ -81,6 +81,6 @@ wait-for-event  fn
 next-event      fn
 
 #% peek-and-poke
-8bits fn
-16bits fn
+8bits           fn
+16bits          fn
 #%
