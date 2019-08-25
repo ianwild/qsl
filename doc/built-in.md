@@ -312,3 +312,11 @@
 
 >   If a registered event is ready, return its function, otherwise
     return `nil`.
+
+`(8bits address [val])`
+`(16bits address [val])`
+
+>   If an integer `val` is supplied, write the low-order 8 or 16 bits to
+    the given `address`, and return `val`.  If `val` is `nil` (or not
+    supplied), read an 8 or 16 bit value from the given `address`.
+
