@@ -3,12 +3,12 @@
 Other than a few immediate objects (15-bit integers and 8-bit
 characters), every user-created object is represented by a "header",
 big enough to contain a flag byte and two "object indices".  With only
-a couple of kilobytes to play with, were not going to get many
+a couple of kilobytes to play with, we're not going to get many
 distinct objects, so a 16-bit object index is more than wide enough.
 That makes each header 5 bytes.  Headers are allocated from the top of
 memory, working downwards.  (The first few object indices are
 reserved for built-in objects, resident in flash.  RAM-resident object
-headers are numbered contiguously with the built-in objects.)
+headers are numbered consecutively with the built-in objects.)
 
 Some objects, notably strings and arrays, need a header and a
 variable-length "body".  The bodies are allocated from "string space"
@@ -48,3 +48,10 @@ This means that most of the time `opCALL` will be followed by an
 `opDROP`.  As a further consequence, `apply`, though a function and
 not a fexpr, must know for itself the call-site context, so it gets
 quite a bit of special casing.
+
+If "frozen objects" are used, they are initialised as a snapshot of RAM,
+and so have a similar format.  They live in flashm squeezed between the
+ROM-resident built-ins and the RAM-resident objects.  Their body pointers,
+if any, _also_ point into ROM, so they are necessarily immutable.
+(If a "frozen" symbol is unbound, however, it _can_ be assigned in RAM.)
+

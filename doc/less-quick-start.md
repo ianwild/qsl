@@ -19,14 +19,6 @@ computer (I need at least `gcc`, `make`, and `awk`), and that you've
 installed and tested the Arduino IDE (for the Arduino libraries, the
 `ttyUSB` permissions, and the `avr-gcc` tool-chain).
 
-Preparation
------------
-
-Since you don't have any frozen objects yet, you should suppress the
-complications they bring.  To do this, edit `frozen-objects.h' to contain
-a single line:
-
-      #define FROZEN_OBJECT_COUNT 0
 
 Building and Running the Test Version
 -------------------------------------
@@ -35,7 +27,7 @@ Get a copy of the QSL sources - either download the ZIP file or clone
 the repo.
 
 To build the test version, go into the `src` directory and type
-`make`. If this works, type something like:
+`make simple qsl`. If this works, type something like:
 
     echo '(+ 3 4)' | ./qsl
 
@@ -53,9 +45,9 @@ Edit `arduino.mak` to make sure the `BOARD_TAG`, `BOARD_SUB`, and
 your `arduino-mk` installation.  (See your `arduino-mk` documentation
 for `BOARD_TAG`, `MONITOR_PORT`, and other variables you might need.)
 
-Once you're happy with `arduino.mak`, type `make arduino`.  This will
-create an `arduino` sub-directory, link all the source files, then do
-a build.  If that works, ...
+Once you're happy with `arduino.mak`, type `make simple arduino`.
+This will create an `arduino` sub-directory, link all the source files,
+then do a build.  If that works, ...
 
 
 Uploading and Testing the Arduino Version

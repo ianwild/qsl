@@ -24,11 +24,11 @@ GENERATED += qsl-b
 
 QSL_OPTIONS :=
 QSL_OPTIONS += -DTARGET_ARDUINO=0
-QSL_OPTIONS += -DPRINT_WITH_QUOTES=1
-QSL_OPTIONS += -DWITH_COMPILER_STATS=1
-QSL_OPTIONS += -DWITH_MEMSTATS=1
+QSL_OPTIONS += -DPRINT_WITH_QUOTES=0
+QSL_OPTIONS += -DWITH_COMPILER_STATS=0
+QSL_OPTIONS += -DWITH_MEMSTATS=0
 QSL_OPTIONS += -DWITH_RC_SCRIPT=0
-QSL_OPTIONS += -DWITH_TRACE=1
+QSL_OPTIONS += -DWITH_TRACE=0
 QSL_OPTIONS += -DWITH_THROW_LOCATION=1
 
 OPTIMISER_FLAGS := -Os -flto
@@ -36,18 +36,21 @@ WARNING_FLAGS := -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Werror
 CFLAGS := --std=c11 $(OPTIMISER_FLAGS) $(WARNING_FLAGS) $(QSL_OPTIONS)
 LDFLAGS := $(OPTIMISER_FLAGS)
 
-.PHONY: clean tar dep tags upload picocom
+.PHONY: clean tar dep tags upload picocom frozen simple
 
 qsl:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
-booter:
+simple:
 	echo '#define FROZEN_OBJECT_COUNT 0' >frozen-objects.h
+
+frozen: simple
 	$(MAKE) $(MAKEFLAGS) qsl-b
 	./qsl-b <frozen.lisp
 	printf '#define FROZEN_OBJECT_COUNT %d\n' $$(wc -l <objects.ci) >frozen-objects.h
 
 
+# Don't use this target directly, only via the stanza above
 qsl-b:	CFLAGS += -DFROZEN_BOOTSTRAP=1
 qsl-b:	$(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@
