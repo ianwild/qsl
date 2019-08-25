@@ -19,6 +19,15 @@ computer (I need at least `gcc`, `make`, and `awk`), and that you've
 installed and tested the Arduino IDE (for the Arduino libraries, the
 `ttyUSB` permissions, and the `avr-gcc` tool-chain).
 
+Preparation
+-----------
+
+Since you don't have any frozen objects yet, you should suppress the
+complications they bring.  To do this, edit `frozen-objects.h' to contain
+a single line:
+
+      #define FROZEN_OBJECT_COUNT 0
+
 Building and Running the Test Version
 -------------------------------------
 
