@@ -112,7 +112,7 @@ void stack_reinit (void)
 {
   if (! stack_obj)
     stack_obj = new_extended_object (array_type, MAX_STACK_DEPTH);
-  base = get_header (stack_obj) -> u.array_val + 1;
+  base = wksp_obj_ptr (get_header (stack_obj) -> u.array_val) + 1;
 }
 
 void stack_announce (enum announcement ann)

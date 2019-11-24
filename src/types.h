@@ -93,7 +93,11 @@ typedef struct __attribute__ ((packed)) objhdr
     // case symbol_type:
     struct
     {
+      #if USE_DIRECT_POINTERS
       uint8_t *spelling;
+      #else
+      uint16_t spelling;
+      #endif
       obj      global_fn;
     } symbol_val;
 
@@ -109,11 +113,19 @@ typedef struct __attribute__ ((packed)) objhdr
     int32_t int_val;
 
     // case string_type:
+    #if USE_DIRECT_POINTERS
     uint8_t *string_val;
+    #else
+    uint16_t string_val;
+    #endif
 
     // case array_type:
     // case environment_type:
-    obj  *array_val;
+    #if USE_DIRECT_POINTERS
+    obj     *array_val;
+    #else
+    uint16_t array_val;
+    #endif
   } u;
 } objhdr;
 

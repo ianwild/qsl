@@ -61,4 +61,12 @@ const uint8_t      *get_frozen_spelling   (obj o);
 
 END_HEADER_FILE
 
+#if USE_DIRECT_POINTERS
+#define wksp_byte_ptr(x) (x)
+#define wksp_obj_ptr(x) (x)
+#else
+uint8_t *wksp_byte_ptr (uint16_t x);
+obj     *wksp_obj_ptr (uint16_t x);
+#endif
+
 #endif // QSL_OBJ_H

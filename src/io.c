@@ -496,7 +496,7 @@ void print1 (obj o)
     else
     #endif
     {
-      obj *p = get_header (o) -> u.array_val;
+      obj *p = wksp_obj_ptr (get_header (o) -> u.array_val);
       uint16_t n = *p++;
       while (n)
       {

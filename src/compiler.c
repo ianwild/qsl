@@ -145,7 +145,7 @@ static void compiler_init (void)
   if (! constants_obj)
     constants_obj = new_extended_object (array_type, MAX_LITERALS_PER_LAMBDA);
   prog = get_spelling (prog_obj, NULL);
-  constants = get_header (constants_obj) -> u.array_val + 1;
+  constants = wksp_obj_ptr (get_header (constants_obj) -> u.array_val) + 1;
   prog_length = 0;
   const_length = 0;
 }
@@ -346,12 +346,13 @@ static void compile_pending_expression (obj expr)
   if (const_length > longest_const)
     longest_const = const_length;
   obj c_vec = new_extended_object (array_type, const_length);
-  memcpy (get_header (c_vec) -> u.array_val + 1,
+  memcpy (wksp_obj_ptr (get_header (c_vec) -> u.array_val) + 1,
           constants, const_length * sizeof (obj));
   get_header (body) -> control = lambda_type;
   get_header (body) -> u.lambda_body.constants = c_vec;
   obj b_vec = new_extended_object (string_type, prog_length);
-  memcpy (get_header (b_vec) -> u.string_val + 1, prog, prog_length);
+  memcpy (wksp_byte_ptr (get_header (b_vec) -> u.string_val) + 1,
+          prog, prog_length);
   get_header (body) -> u.lambda_body.opcodes = b_vec;
   get_header (expr) -> u.closure_val.environment = obj_NIL;
 

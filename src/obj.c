@@ -54,6 +54,27 @@ obj last_allocated_object = FIRST_RAM_OBJECT - 1;
 
 obj working_root;
 
+#if USE_DIRECT_POINTERS
+
+#define WKSP_OBJ_IDX(x) ((obj *) (x))
+#define WKSP_BYTE_IDX(x) ((uint8_t *) (x))
+
+#else
+
+#define WKSP_OBJ_IDX(x) ((uint16_t) ((x) - string_space))
+#define WKSP_BYTE_IDX(x) ((uint16_t) ((x) - string_space))
+
+uint8_t *wksp_byte_ptr (uint16_t x)
+{
+  return (string_space + x);
+}
+
+obj *wksp_obj_ptr (uint16_t x)
+{
+  return ((obj *) (string_space + x));
+}
+#endif
+
 #if TARGET_ARDUINO
   #define ARDUINO_FN(fn) fn
 #else
@@ -163,11 +184,11 @@ uint8_t *get_spelling (obj o, uint16_t *len)
   switch (GET_TYPE (hdr))
   {
   case string_type:
-    p = hdr -> u.string_val;
+    p = wksp_byte_ptr (hdr -> u.string_val);
     break;
 
   case symbol_type:
-    p = hdr -> u.symbol_val.spelling;
+    p = wksp_byte_ptr (hdr -> u.symbol_val.spelling);
     break;
 
   default:
@@ -256,18 +277,18 @@ obj new_extended_object (enum typecode type, uint16_t size)
   switch (type)
   {
   case string_type:
-    p -> u.string_val = string_space_top;
+    p -> u.string_val = WKSP_BYTE_IDX (string_space_top);
     *string_space_top = size;
     string_space_top += size + 1;
     break;
   case symbol_type:
-    p -> u.symbol_val.spelling = string_space_top;
+    p -> u.symbol_val.spelling = WKSP_BYTE_IDX (string_space_top);
     *string_space_top = size;
     string_space_top += size + 1;
     break;
   case array_type:
   case environment_type:
-    p -> u.array_val = (obj *) string_space_top;
+    p -> u.array_val = WKSP_OBJ_IDX (string_space_top);
     *(obj *) string_space_top = (obj) size;
     string_space_top += sizeof (obj);
     memset (string_space_top, 0, size * sizeof (obj));
@@ -315,13 +336,13 @@ void compact_string_space (void)
     case symbol_type:
     case string_type:
       len = * (from + sizeof (obj)) + 1;
-      back_ptr = p -> u.string_val;
+      back_ptr = wksp_byte_ptr (p -> u.string_val);
       break;
     case array_type:
     case environment_type:
       len = * (obj *) (from + sizeof (obj)) + 1;
       len *= sizeof (obj);
-      back_ptr = p -> u.array_val;
+      back_ptr = wksp_obj_ptr (p -> u.array_val);
       break;
     default:
       break;
@@ -331,7 +352,7 @@ void compact_string_space (void)
     {
       if (to != from)
         memmove (to, from, len);
-      p -> u.string_val = to + sizeof (obj);
+      p -> u.string_val = WKSP_BYTE_IDX (to + sizeof (obj));
       to += len;
     }
     from += len;

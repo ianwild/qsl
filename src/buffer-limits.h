@@ -41,7 +41,7 @@
   #define MAX_STACK_DEPTH            64
   #define MAX_TOKEN_LENGTH           32
 #else
-  #define TOTAL_HEAP_SIZE         10240
+  #define TOTAL_HEAP_SIZE         (512 * 1024)
   #define MAX_OPCODES_PER_LAMBDA    255
   #define MAX_LITERALS_PER_LAMBDA    64
   #define MAX_STACK_DEPTH           256

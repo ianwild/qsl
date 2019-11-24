@@ -66,7 +66,7 @@ obj fn_length (uint8_t *argc)
       break;
     }
     #endif
-    len = get_header (arg) -> u.array_val [0];
+    len = wksp_obj_ptr (get_header (arg) -> u.array_val) [0];
     break;
 
   default:
@@ -121,7 +121,7 @@ obj fn_aref (uint8_t *argc)
     }
     #endif
     {
-      obj *p = get_header (target) -> u.array_val;
+      obj *p = wksp_obj_ptr (get_header (target) -> u.array_val);
       if (idx >= p [0])
         throw_error (bad_idx);
       return (p [idx + 1]);
@@ -170,7 +170,7 @@ obj fn_aset (uint8_t *argc)
       throw_error (read_only);
     #endif
     {
-      obj *p = get_header (target) -> u.array_val;
+      obj *p = wksp_obj_ptr (get_header (target) -> u.array_val);
       if (idx >= p [0])
         throw_error (bad_idx);
       p [idx + 1] = new_val;

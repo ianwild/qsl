@@ -79,7 +79,7 @@ static obj *find_lexical_binding (obj sym, bool *is_frozen)
       continue;
     }
     #endif
-    obj *p = get_header (env) -> u.array_val;
+    obj *p = wksp_obj_ptr (get_header (env) -> u.array_val);
     uint16_t len = (uint16_t) *p++ - 1;
     env = *p++;                 // parent environment
     while (len)

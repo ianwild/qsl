@@ -57,9 +57,11 @@ static void restore_eval_state (void)
     {
       objhdr *p = get_header (current_lambda);
       function_base =
-        get_header (p -> u.lambda_body.opcodes) -> u.string_val + 1;
+        wksp_byte_ptr (get_header (p -> u.lambda_body.opcodes)
+                       -> u.string_val) + 1;
       constants =
-        get_header (p -> u.lambda_body.constants) -> u.array_val + 1;
+        wksp_obj_ptr (get_header (p -> u.lambda_body.constants)
+                      -> u.array_val) + 1;
     }
     current_function = function_base + interpreter_index;
   }
@@ -256,7 +258,7 @@ static obj interpret_bytecodes (void)
         uint8_t size = next_opcode ();
         obj new_env = new_extended_object (environment_type, 1 + 2 * size);
         objhdr *p = get_header (new_env);
-        p -> u.array_val [1] = current_environment;
+        wksp_obj_ptr (p -> u.array_val) [1] = current_environment;
         stack_push (obj_ZERO);
         stack_push (new_env);
       }
@@ -289,7 +291,7 @@ static obj interpret_bytecodes (void)
         if (size)
         {
           objhdr *p = get_header (new_env);
-          obj *fill_ptr = p -> u.array_val + 1;
+          obj *fill_ptr = wksp_obj_ptr (p -> u.array_val) + 1;
           *fill_ptr++ = current_environment;
           current_environment = new_env;
           for (uint8_t i = 1; i <= size; i += 1)
@@ -312,8 +314,8 @@ static obj interpret_bytecodes (void)
         uint8_t idx = 2 + 2 * get_and_incr_arg (2);
         obj sym = get_const (next_opcode ());
         objhdr *p = get_header (get_arg (1));
-        p -> u.array_val [idx] = sym;
-        p -> u.array_val [idx + 1] = pop_arg ();
+        wksp_obj_ptr (p -> u.array_val) [idx] = sym;
+        wksp_obj_ptr (p -> u.array_val) [idx + 1] = pop_arg ();
       }
       break;
 
@@ -326,7 +328,7 @@ static obj interpret_bytecodes (void)
       TRACE (("POP_CONTEXT\n"));
       {
         objhdr *p = get_header (current_environment);
-        current_environment = p -> u.array_val [1];
+        current_environment = wksp_obj_ptr (p -> u.array_val) [1];
       }
       break;
 
