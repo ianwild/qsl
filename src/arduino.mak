@@ -37,7 +37,7 @@ CXXFLAGS += $(QSL_OPTIONS) -W -Wall -std=gnu++11
 CXXFLAGS += $(EXTRA_FLAGS)
 LDFLAGS  += $(EXTRA_FLAGS)
 
-ARDUINO_DIR = $(HOME)/Arduino/arduino-1.8.3
+ARDUINO_DIR = $(HOME)/Arduino/arduino-1.8.9
 ARDMK_DIR = $(HOME)/Arduino/Arduino-Makefile-master
 
 include $(ARDMK_DIR)/Arduino.mk
